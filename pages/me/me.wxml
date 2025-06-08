@@ -23,23 +23,23 @@
       <!--电话图标-->
         <image class="phone-icon" src="/images/me/phone.svg" mode="aspectFill" />
         <!-- 显示用户电话号码，电话号码数据从 userInfo 对象的 phone 属性中获取 -->
-        <text class="phone-number">{{userInfo.phone}}</text>
+        <text class="phone-number">{{userInfo.phone_num}}</text>
         <!--复制图标-->
-        <image class="copy-icon1" src="/images/me/copy.svg" bindtap="copyText" mode="aspectFill" />
+        <image class="copy-icon1" src="/images/me/copy.svg" bindtap="copyPhone" mode="aspectFill" />
       </view>
       <!-- 包含用户个性签名信息的容器-->
       <view class="box2" style="background-color: #FFE89E;">
       <!--风格图标-->
         <image class="style-icon" src="/images/me/style.svg" mode="aspectFill" />
         <!-- 显示用户个性签名，签名数据从 userInfo 对象的 signiture 属性中获取 -->
-        <text class="signiture">{{userInfo.signiture}}</text>
+        <text class="signiture">{{userInfo.motto}}</text>
         <!--复制图标-->
-        <image class="copy-icon2" src="/images/me/copy.svg" bindtap="copyText" mode="aspectFill" />
+        <image class="copy-icon2" src="/images/me/copy.svg" bindtap="copySignature" mode="aspectFill" />
       </view>
     </view>
      <!-- 用户头像区域，显示默认的头像占位图 -->
     <view class="avatar">
-      <image src="/images/me/avatar.png" mode="aspectFill" />
+      <image src="{{userInfo.profile_photo}}" mode="aspectFill" />
     </view>
   </view>
   
@@ -57,7 +57,7 @@
       <!-- 积分值的显示区域，点击后触发 goToPointsPage 函数 -->
       <button class="score-value" bindtap="goToMyPointPage" style="width:100%;">
       <!-- 显示用户的积分，积分值从 userPoints 变量获取 -->
-        <text class="score-number">{{userPoints}}</text>
+        <text class="score-number">{{userInfo.score}}</text>
         <!--白色箭头图标-->
         <image class="arrow-icon-white" src="/images/me/right_arrow_white.svg" mode="aspectFill" />
       </button>
