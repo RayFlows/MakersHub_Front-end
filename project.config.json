@@ -17,7 +17,19 @@
       "ignore": [],
       "disablePlugins": [],
       "outputPath": ""
-    }
+    },
+    "compileWorklet": false,
+    "uglifyFileName": false,
+    "uploadWithSourceMap": true,
+    "packNpmManually": false,
+    "minifyWXSS": true,
+    "minifyWXML": true,
+    "localPlugins": false,
+    "disableUseStrict": false,
+    "useCompilerPlugins": false,
+    "condition": false,
+    "swc": false,
+    "disableSWC": true
   },
   "condition": {},
   "editorSetting": {
@@ -25,5 +37,6 @@
     "tabSize": 2
   },
   "appid": "wx4f3a36d5ea82ed7d",
-  "projectname": "makershub_front"
+  "projectname": "makershub_front",
+  "simulatorPluginLibVersion": {}
 }

@@ -1,0 +1,178 @@
+/* 值班申请页面 WXSS 样式文件 */
+
+/* 整体容器 */
+.container {
+  min-height: 100vh;
+  background-color: #222831;
+  padding-top: 45rpx; /* 向下移动避免顶部遮挡 */
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+}
+
+/* 顶部区域 */
+.header {
+  padding: 60rpx 0 0 0;
+  text-align: center;
+}
+
+.title {
+  color: white;
+  font-size: 34rpx;
+  font-weight: bold;
+}
+
+/* 表单容器 */
+.form-container {
+  width: 600rpx;
+  background: #00ADB5;
+  border-radius: 40rpx;
+  padding: 40rpx 40rpx 0 40rpx; /* 去掉底部 padding */
+  margin: 0 40rpx;
+  position: relative;
+}
+
+/* 时段选择区域 */
+.time-section {
+  margin-bottom: 50rpx;
+}
+
+.section-title {
+  display: block;
+  color: white;
+  font-size: 32rpx;
+  font-weight: 600;
+  margin-bottom: 30rpx;
+}
+
+/* 选择器行 */
+.picker-row {
+  display: flex;
+  justify-content: space-between;
+  gap: 20rpx;
+}
+
+/* 选择器项 */
+.picker-item {
+  flex: 1;
+  background: white;
+  border-radius: 20rpx;
+  overflow: hidden;
+}
+
+.picker-content {
+  padding: 24rpx 30rpx;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: white;
+  border-radius: 20rpx;
+  min-height: 80rpx;
+  box-sizing: border-box;
+}
+
+.picker-text {
+  color: #666;
+  font-size: 28rpx;
+  flex: 1;
+}
+
+.picker-arrow {
+  color: #999;
+  font-size: 24rpx;
+  margin-left: 20rpx;
+}
+
+/* 提交按钮容器 */
+.submit-container {
+  padding: 60rpx 40rpx 80rpx 40rpx;
+  margin: 0 40rpx;
+}
+
+.submit-btn {
+  width: 92%;               /* 比原来 100% 稍微窄一点 */
+  height: 88rpx;            /* 原来是 100rpx，缩小一点 */
+  line-height: 88rpx;       /* 设置与高度一致，使文字垂直居中 */
+  background: #00ADB5;
+  color: white;
+  font-size: 34rpx;         /* 字体略微缩小 */
+  font-weight: bold;
+  border: none;
+  border-radius: 45rpx;
+  padding: 0;               /* 不需要上下 padding，防止影响居中 */
+  text-align: center;
+  box-shadow: 0 8rpx 20rpx rgba(45, 212, 191, 0.3);
+  margin: 0 auto;           /* 居中显示 */
+}
+
+
+.submit-btn:active {
+  background: #14b8a6;
+  transform: translateY(2rpx);
+}
+
+/* 选择器激活状态 */
+.picker-item:active .picker-content {
+  background: #f8f9fa;
+}
+.bottom-image {
+  width: 440rpx;
+  height: 174rpx;
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 99;
+}
+/* container 设为定位上下文 */
+.container {
+  position: relative;
+  min-height: 100vh;
+  background-color: #222831;
+  padding-top: 45rpx;
+  box-sizing: border-box;
+  /* 保留原来的 flex，为了兼容其他布局 */
+  display: flex;
+  flex-direction: column;
+}
+
+/* 表单绝对定位，上移并水平居中 */
+.form-container {
+  position: absolute;
+  top: 200rpx;           /* 根据实际效果微调 */
+  left: 50%;
+  transform: translateX(-50%);
+  width: 600rpx;
+  background: #00ADB5;
+  border-radius: 40rpx;
+  padding: 40rpx 40rpx 0 40rpx;
+  /* 去掉原来的外边距 */
+  margin: 0;
+}
+
+/* 提交按钮也绝对定位，紧贴表单下方 */
+.submit-container {
+  position: absolute;
+  top: 930rpx;           /* ＝.form-container top + form 容器实际高度 + 间隙，按需微调 */
+  left: 50%;
+  transform: translateX(-50%);
+  /* 去掉外边距，让按钮紧贴 */
+  margin: 0;
+  padding: 0;
+}
+
+/* submit-btn 保留原样 */
+.submit-btn {
+  width: 92%;
+  height: 88rpx;
+  line-height: 88rpx;
+  background: #00ADB5;
+  color: white;
+  font-size: 34rpx;
+  font-weight: bold;
+  border: none;
+  border-radius: 45rpx;
+  text-align: center;
+  box-shadow: 0 8rpx 20rpx rgba(45, 212, 191, 0);
+  margin: 0 auto;
+}

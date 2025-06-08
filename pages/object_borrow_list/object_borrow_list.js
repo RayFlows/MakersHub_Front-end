@@ -13,7 +13,7 @@ Page({
         start_str: '申请时间',
         start_time: '2025-05-20',
         type: '个人',
-        poster: '/images/site_borrow_list/1.png'
+        poster: '/images/object_borrow_list/1.png'
       },
       {
         event_id: 2,
@@ -21,7 +21,7 @@ Page({
         start_str: '申请时间',
         start_time: '2025-05-18',
         type: '个人',
-        poster: '/images/site_borrow_list/1.png'
+        poster: '/images/object_borrow_list/1.png'
       }
     ],
     approvedList: [
@@ -30,7 +30,7 @@ Page({
         event_name: '教室A',
         start_time: '2025-05-15',
         type: '部门',
-        poster: '/images/site_borrow_list/1.png'
+        poster: '/images/object_borrow_list/1.png'
       }
     ],
     returnedList: [
@@ -39,7 +39,7 @@ Page({
         event_name: '摄影设备',
         start_time: '2025-05-12',
         type: '借用归还',
-        poster: '/images/site_borrow_list/1.png'
+        poster: '/images/object_borrow_list/1.png'
       }
     ]
   },

@@ -59,6 +59,6 @@
   </view>
 
   <!--底部的猫猫图标-->
-  <!-- <image class="icon-in-bottom" src="/images/editPage/cat_in_bottom.svg" mode="aspectFill" /> -->
+  <image class="icon-in-bottom" src="/images/duty_application/white_cat.svg" mode="aspectFill" />
 
 </view>
