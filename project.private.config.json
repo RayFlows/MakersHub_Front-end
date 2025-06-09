@@ -24,11 +24,25 @@
     "miniprogram": {
       "list": [
         {
-          "name": "pages/personal_stuff_borrow_permit/personal_stuff_borrow_permit",
-          "pathName": "pages/personal_stuff_borrow_permit/personal_stuff_borrow_permit",
+          "name": "pages/task/task",
+          "pathName": "pages/task/task",
           "query": "",
           "scene": null,
           "launchMode": "default"
+        },
+        {
+          "name": "pages/activity_list/activity_list",
+          "pathName": "pages/activity_list/activity_list",
+          "query": "",
+          "launchMode": "default",
+          "scene": null
+        },
+        {
+          "name": "pages/personal_stuff_borrow_permit/personal_stuff_borrow_permit",
+          "pathName": "pages/personal_stuff_borrow_permit/personal_stuff_borrow_permit",
+          "query": "",
+          "launchMode": "default",
+          "scene": null
         },
         {
           "name": "pages/index/index",
