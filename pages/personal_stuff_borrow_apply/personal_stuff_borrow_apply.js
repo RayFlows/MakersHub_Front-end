@@ -146,7 +146,7 @@ Page({
     wx.navigateBack({
       delta: 1,
       fail: () => {
-        wx.switchTab({ url: '/pages/index/index', fail: () => wx.navigateTo({ url: '/pages/index/index' }) });
+        wx.switchTab({ url: '/pages/base_management_work_page/base_management_work_page', fail: () => wx.navigateTo({ url: '/pages/index/index' }) });
       }
     });
   },
@@ -176,7 +176,7 @@ Page({
     }
     const deadline = `${selectedYear.replace('年', '')}-${selectedMonth.replace('月', '').padStart(2, '0')}-${selectedDay.replace('日', '').padStart(2, '0')} 00:00:00`;
     const materials = selectedTextList.filter(item => item);
-    const submitData = { task_name, name, phone: leaderPhone, email, grade, major, content, deadline, materials };
+    const submitData = { task_name, name, phone: leaderPhone, email, grade, major, content, deadline, materials , type:0};
     wx.showLoading({ title: '提交中...' });
     wx.request({
       url: `${API_BASE}/borrow/apply`,

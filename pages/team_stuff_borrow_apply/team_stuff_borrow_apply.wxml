@@ -13,11 +13,22 @@
 
   <view class="form-container">
 
+    <!-- 新增任务名称字段 -->
+    <text class="form-label">任务名称</text>
+    <input
+      class="input-field {{ isTaskNameFocused ? 'focused' : '' }}"
+      placeholder="请输入任务名称"
+      data-field="task_name"
+      bindinput="onInput"
+      bindfocus="onTaskNameFocus"
+      bindblur="onTaskNameBlur" />
+
     <text class="form-label">负责人姓名</text>
     <input
       class="input-field {{ isLeaderNameFocused ? 'focused' : '' }}"
       placeholder="负责人姓名"
-      data-field="leaderName"
+      data-field="name"
+      bindinput="onInput"
       bindfocus="onLeaderNameFocus"
       bindblur="onLeaderNameBlur" />
 
@@ -26,6 +37,7 @@
       class="input-field {{ isLeaderPhoneFocused ? 'focused' : '' }}"
       placeholder="负责人电话"
       data-field="leaderPhone"
+      bindinput="onInput"
       bindfocus="onLeaderPhoneFocus"
       bindblur="onLeaderPhoneBlur" />
 
@@ -34,6 +46,7 @@
       class="input-field {{ isEmailFocused ? 'focused' : '' }}"
       placeholder="邮箱地址"
       data-field="email"
+      bindinput="onInput"
       bindfocus="onEmailFocus"
       bindblur="onEmailBlur" />
 
@@ -42,6 +55,7 @@
       class="input-field {{ isGradeFocused ? 'focused' : '' }}"
       placeholder="年级（例如：2023级）"
       data-field="grade"
+      bindinput="onInput"
       bindfocus="onGradeFocus"
       bindblur="onGradeBlur" />
 
@@ -50,32 +64,37 @@
       class="input-field {{ isMajorFocused ? 'focused' : '' }}"
       placeholder="专业（例如：计算机科学）"
       data-field="major"
+      bindinput="onInput"
       bindfocus="onMajorFocus"
       bindblur="onMajorBlur" />
 
-    <text class="form-label">项目编号</text>
-    <input
-      class="input-field {{ isProjectIdFocused ? 'focused' : '' }}"
-      placeholder="项目编号"
-      data-field="projectId"
-      bindfocus="onProjectIdFocus"
-      bindblur="onProjectIdBlur" />
+      <text class="form-label">项目编号</text>
+      <input
+        class="input-field {{ isProjectIdFocused ? 'focused' : '' }}"
+        placeholder="项目编号"
+        data-field="project_number"
+        bindinput="onInput"
+        bindfocus="onProjectIdFocus"
+        bindblur="onProjectIdBlur" />
 
-    <text class="form-label">指导老师姓名</text>
-    <input
-      class="input-field {{ isAdvisorNameFocused ? 'focused' : '' }}"
-      placeholder="指导老师姓名"
-      data-field="advisorName"
-      bindfocus="onAdvisorNameFocus"
-      bindblur="onAdvisorNameBlur" />
+      <text class="form-label">指导老师姓名</text>
+      <input
+        class="input-field {{ isAdvisorNameFocused ? 'focused' : '' }}"
+        placeholder="指导老师姓名"
+        data-field="supervisor_name"
+        bindinput="onInput"
+        bindfocus="onAdvisorNameFocus"
+        bindblur="onAdvisorNameBlur" />
 
-    <text class="form-label">指导老师电话</text>
-    <input
-      class="input-field {{ isAdvisorPhoneFocused ? 'focused' : '' }}"
-      placeholder="指导老师电话"
-      data-field="advisorPhone"
-      bindfocus="onAdvisorPhoneFocus"
-      bindblur="onAdvisorPhoneBlur" />
+      <text class="form-label">指导老师电话</text>
+      <input
+        class="input-field {{ isAdvisorPhoneFocused ? 'focused' : '' }}"
+        placeholder="指导老师电话"
+        data-field="supervisor_phone"
+        bindinput="onInput"
+        bindfocus="onAdvisorPhoneFocus"
+        bindblur="onAdvisorPhoneBlur" />
+
 
   </view>
   
@@ -110,28 +129,34 @@
         mode="selector" 
         range="{{years}}" 
         bindchange="onYearChange"
-        data-type="deadline">  <!-- 新增 -->
+        data-type="deadline">
         <view>{{selectedYear || '年份'}}</view>
       </picker>
       <picker 
         mode="selector" 
         range="{{months}}" 
         bindchange="onMonthChange"
-        data-type="deadline">  <!-- 新增 -->
+        data-type="deadline">
         <view>{{selectedMonth || '月份'}}</view>
       </picker>
       <picker 
         mode="selector" 
         range="{{days}}" 
         bindchange="onDayChange"
-        data-type="deadline">  <!-- 新增 -->
+        data-type="deadline">
         <view>{{selectedDay || '日期'}}</view>
       </picker>
     </view>
 
   <view class="form-label">借用理由</view>
 
-  <textarea class="input-field textarea-field {{isDescriptionFocused ? 'focused' : ''}}" placeholder="请输入借用理由" data-field="taskContent" bindtap = "onDescriptionFocused" bindblur = "onDescriptionBlur"/>
+  <textarea 
+    class="input-field textarea-field {{isDescriptionFocused ? 'focused' : ''}}" 
+    placeholder="请输入借用理由" 
+    data-field="content" 
+    bindinput="onInput"
+    bindfocus="onDescriptionFocus" 
+    bindblur="onDescriptionBlur"/>
 
   <button class="submit-btn" bindtap="onSubmit" style="width: 227rpx;">提交</button>
 
