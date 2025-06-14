@@ -24,11 +24,25 @@
     "miniprogram": {
       "list": [
         {
+          "name": "pages/team_stuff_borrow_permit/team_stuff_borrow_permit",
+          "pathName": "pages/team_stuff_borrow_permit/team_stuff_borrow_permit",
+          "query": "",
+          "scene": null,
+          "launchMode": "default"
+        },
+        {
+          "name": "pages/team_stuff_borrow_permit/team_stuff_borrow_permit",
+          "pathName": "pages/team_stuff_borrow_permit/team_stuff_borrow_permit",
+          "query": "",
+          "launchMode": "default",
+          "scene": null
+        },
+        {
           "name": "pages/personal_stuff_borrow_permit/personal_stuff_borrow_permit",
           "pathName": "pages/personal_stuff_borrow_permit/personal_stuff_borrow_permit",
           "query": "borrow_id=BR20250612142500",
-          "scene": null,
-          "launchMode": "default"
+          "launchMode": "default",
+          "scene": null
         },
         {
           "name": "pages/team_stuff_borrow_apply/team_stuff_borrow_apply",

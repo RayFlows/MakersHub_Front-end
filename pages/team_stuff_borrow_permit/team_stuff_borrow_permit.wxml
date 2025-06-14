@@ -1,8 +1,8 @@
-<!--pages/team_stuff_borrow_permit/team_stuff_borrow_permit.wxml-->
+<!--pages/personal_stuff_borrow_permit.wxml-->
 
 <view class="container">
   <navBar 
-    title='团队借物申请单' 
+    title='{{applyDetail.type === 0 ? "个人借物申请单" : "团队借物申请单"}}' 
     background='#222831' 
     color='#fff' 
     back="{{true}}" 
@@ -12,71 +12,109 @@
     bindhome="handlerGohomeClick">
   </navBar>
 
-  <view class="form-container">
-    <view class="form-header">团队借物申请单</view>
+  <!-- 加载中状态 -->
+  <view class="loading-container" wx:if="{{loading}}">
+    <text>加载中...</text>
+  </view>
+
+  <!-- 主要内容 -->
+  <view class="form-container" wx:if="{{!loading}}">
+    <view class="form-header">{{applyDetail.type === 0 ? "个人借物申请单" : "团队借物申请单"}}</view>
+
+    <!-- 申请编号 -->
+    <view class="form-item">
+      <text class="form-label">申请编号</text>
+      <view class="form-input">{{applyDetail.borrow_id}}</view>
+    </view>
+
+    <!-- 任务名称 -->
+    <view class="form-item" wx:if="{{applyDetail.task_name}}">
+      <text class="form-label">任务名称</text>
+      <view class="form-input">{{applyDetail.task_name}}</view>
+    </view>
 
     <!-- 姓名 -->
     <view class="form-item">
       <text class="form-label">姓名</text>
-      <view class="form-input"></view>
+      <view class="form-input">{{applyDetail.name}}</view>
     </view>
 
-    <!-- 学号 -->
+    <!-- 学号/年级 -->
     <view class="form-item">
-      <text class="form-label">学号</text>
-      <view class="form-input"></view>
+      <text class="form-label">{{applyDetail.student_id ? '学号' : '年级'}}</text>
+      <view class="form-input">{{applyDetail.student_id || applyDetail.grade}}</view>
+    </view>
+
+    <!-- 专业 -->
+    <view class="form-item">
+      <text class="form-label">专业</text>
+      <view class="form-input">{{applyDetail.major}}</view>
     </view>
 
     <!-- 电话 -->
     <view class="form-item">
       <text class="form-label">电话</text>
-      <view class="form-input"></view>
+      <view class="form-input">{{applyDetail.phone}}</view>
     </view>
 
     <!-- 邮箱 -->
     <view class="form-item">
       <text class="form-label">邮箱</text>
-      <view class="form-input"></view>
+      <view class="form-input">{{applyDetail.email}}</view>
     </view>
+
+    <!-- 团队借物特有字段 -->
+    <block wx:if="{{applyDetail.type === 1}}">
+      <!-- 项目编号 -->
+      <view class="form-item" wx:if="{{applyDetail.project_id}}">
+        <text class="form-label">项目编号</text>
+        <view class="form-input">{{applyDetail.project_id}}</view>
+      </view>
+
+      <!-- 指导老师姓名 -->
+      <view class="form-item" wx:if="{{applyDetail.advisor_name}}">
+        <text class="form-label">指导老师</text>
+        <view class="form-input">{{applyDetail.advisor_name}}</view>
+      </view>
+
+      <!-- 指导老师电话 -->
+      <view class="form-item" wx:if="{{applyDetail.advisor_phone}}">
+        <text class="form-label">指导老师电话</text>
+        <view class="form-input">{{applyDetail.advisor_phone}}</view>
+      </view>
+    </block>
 
     <!-- 借用物资 -->
     <view class="form-item">
       <text class="form-label">借用物资</text>
       <view class="form-input">
-        <text>开发板-ESP32-1
-        开发板-ESP8266-2
-        </text>
+        <block wx:for="{{materialsList}}" wx:key="id">
+          <text>{{item.text}}\n</text>
+        </block>
+        <!-- 如果没有格式化的物资列表，显示原始数据 -->
+        <block wx:if="{{!materialsList || materialsList.length === 0}}">
+          <block wx:for="{{applyDetail.materials}}" wx:key="index">
+            <text>{{item}}\n</text>
+          </block>
+        </block>
       </view>
     </view>
 
-    <!-- 项目编号 -->
-    <view class="form-item">
-      <text class="form-label">项目编号</text>
-      <view class="form-input"></view>
+    <!-- 借用理由 -->
+    <view class="form-item" wx:if="{{applyDetail.content}}">
+      <text class="form-label">借用理由</text>
+      <view class="form-input">{{applyDetail.content}}</view>
     </view>
 
-    <!-- 指导老师 -->
-    <view class="form-item">
-      <text class="form-label">指导老师</text>
-      <view class="form-input"></view>
-    </view>
-
-    <!-- 指导老师联系方式 -->
-    <view class="form-item">
-      <text class="form-label">指导老师联系方式</text>
-      <view class="form-input"></view>
-    </view>
-
-    <!-- 时间选择器组 -->
     <!-- 起借时间 -->
     <view class="time-group">
       <text class="form-label">起借时间</text>
       <view class="time-row">
-        <view class="form-input"></view>
+        <view class="form-input">{{borrowTime.year || '----'}}</view>
         <text class="form-label">年</text>
-        <view class="form-input"></view>
+        <view class="form-input">{{borrowTime.month || '--'}}</view>
         <text class="form-label">月</text>
-        <view class="form-input"></view>
+        <view class="form-input">{{borrowTime.day || '--'}}</view>
         <text class="form-label">日</text>
       </view>
     </view>
@@ -85,23 +123,44 @@
     <view class="time-group">
       <text class="form-label">归还时间</text>
       <view class="time-row">
-        <view class="form-input"></view>
+        <view class="form-input">{{returnTime.year || '----'}}</view>
         <text class="form-label">年</text>
-        <view class="form-input"></view>
+        <view class="form-input">{{returnTime.month || '--'}}</view>
         <text class="form-label">月</text>
-        <view class="form-input"></view>
+        <view class="form-input">{{returnTime.day || '--'}}</view>
         <text class="form-label">日</text>
       </view>
     </view>
+
+    <!-- 当前状态 -->
+    <view class="form-item">
+      <text class="form-label">申请状态</text>
+      <view class="form-input">{{applyDetail.status_desc}}</view>
+    </view>
+
   </view>
 
-  <view class="reply-container">
-    <textarea class="form-input {{isLinkFocused ? 'focused' : ''}}" bindtap = "onLinkFocused" bindblur = "onLinkBlur" placeholder="若打回，请输入理由（不超过150字）" data-field="link" maxlength="150" ></textarea>
+  <!-- 审核操作区域 - 只有状态为0（待审核）时才显示 -->
+  <view class="reply-container" wx:if="{{!loading && applyDetail.status === 0}}">
+    <textarea 
+      class="form-input {{isLinkFocused ? 'focused' : ''}}" 
+      bindfocus="onLinkFocused" 
+      bindblur="onLinkBlur" 
+      bindinput="onInput"
+      placeholder="若打回，请输入理由（不超过150字）" 
+      data-field="replyReason" 
+      maxlength="150" 
+      value="{{replyReason}}">
+    </textarea>
     <view class="reply-buttons">
-      <button class="submit-btn" bindtap="onSubmit">通过</button>
-      <button class="submit-btn" bindtap="onSubmit">打回</button>
+      <button class="submit-btn" bindtap="onSubmit" data-action="approve">通过</button>
+      <button class="submit-btn" bindtap="onSubmit" data-action="reject">打回</button>
     </view>
   </view>
-  
+
+  <!-- 已审核状态提示 -->
+  <view class="status-info" wx:if="{{!loading && applyDetail.status !== 0}}">
+    <text>此申请已处理：{{applyDetail.status_desc}}</text>
+  </view>
   
 </view>

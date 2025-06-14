@@ -1,5 +1,3 @@
-// pages/personal_stuff_borrow_permit/personal_stuff_borrow_permit.js
-
 const API_BASE = 'http://146.56.227.73:8000';
 const TOKEN_KEY = 'auth_token';
 
@@ -57,13 +55,13 @@ Page({
   onLoad: function(options) {
     console.log('页面参数:', options);
     
-    var borrowId = options.borrow_id;
+    const borrowId = options.borrow_id;
     if (!borrowId) {
       wx.showToast({
         title: '缺少申请ID',
         icon: 'none'
       });
-      var that = this;
+      const that = this;
       setTimeout(function() {
         wx.navigateBack();
       }, 1500);
@@ -78,8 +76,8 @@ Page({
    * 加载借物申请详情
    */
   loadApplyDetail: function(borrowId) {
-    var token = wx.getStorageSync(TOKEN_KEY);
-    var that = this;
+    const token = wx.getStorageSync(TOKEN_KEY);
+    const that = this;
     
     if (!token) {
       wx.showToast({
@@ -102,7 +100,7 @@ Page({
         console.log('获取申请详情成功:', response);
         
         if (response.data && response.data.status === 'ok') {
-          var detail = response.data.data;
+          const detail = response.data.data;
           that.processApplyDetail(detail);
         } else {
           console.error('获取详情失败:', response.data);
@@ -126,109 +124,104 @@ Page({
   },
 
   /**
- * 处理申请详情数据
- */
-processApplyDetail: function(detail) {
-  console.log('处理详情数据:', detail);
-  
-  // 格式化借用时间（申请时间）
-  var borrowTime = this.formatDateTime(detail.created_at);
-  console.log('格式化后的借用时间:', borrowTime);
-  
-  // 格式化归还时间
-  var returnTime = this.formatDateTime(detail.deadline);
-  console.log('格式化后的归还时间:', returnTime);
-  
-  // 格式化物资列表
-  var materialsList = this.formatMaterials(detail.materials);
-  console.log('格式化后的物资列表:', materialsList);
-  
-  // 更新页面数据
-  this.setData({
-    applyDetail: {
-      borrow_id: detail.borrow_id || '',
-      task_name: detail.task_name || '',
-      name: detail.name || '',
-      student_id: detail.student_id || detail.grade || '', // 如果没有学号，用年级代替
-      phone: detail.phone || '',
-      email: detail.email || '',
-      grade: detail.grade || '',
-      major: detail.major || '',
-      project_id: detail.project_id || '',
-      advisor_name: detail.advisor_name || '',
-      advisor_phone: detail.advisor_phone || '',
-      content: detail.content || '',
-      materials: detail.materials || [],
-      created_at: detail.created_at || '',
-      deadline: detail.deadline || '',
-      status: detail.status || 0,
-      status_desc: detail.status_desc || '',
-      type: detail.type || 0
-    },
-    borrowTime: borrowTime,
-    returnTime: returnTime,
-    materialsList: materialsList
-  });
-  
-  console.log('页面数据更新完成:', this.data);
-},
-
-  /**
-   * 格式化日期时间
+   * 处理申请详情数据
    */
-  formatDateTime: function(dateTimeStr) {
-    if (!dateTimeStr) {
-      return { year: '', month: '', day: '' };
-    }
+  processApplyDetail: function(detail) {
+    console.log('处理详情数据:', detail);
     
-    try {
-      // 处理日期字符串，可能格式为 "2025-06-12T10:30:00" 或 "2025-06-12 10:30:00"
-      var dateStr = dateTimeStr.split('T')[0] || dateTimeStr.split(' ')[0];
-      var dateParts = dateStr.split('-');
-      var year = dateParts[0];
-      var month = dateParts[1];
-      var day = dateParts[2];
-      
-      return {
-        year: year || '',
-        month: month || '',
-        day: day || ''
-      };
-    } catch (error) {
-      console.error('日期格式化失败:', error);
-      return { year: '', month: '', day: '' };
-    }
-  },
-
-  /**
-   * 格式化物资列表
-   */
-  formatMaterials: function(materials) {
-    if (!materials || !Array.isArray(materials)) {
-      return [];
-    }
+    // 🔥 直接在这里格式化时间数据，不调用任何函数
+    let borrowTime = { year: '', month: '', day: '' };
+    let returnTime = { year: '', month: '', day: '' };
+    let materialsList = [];
     
-    var result = [];
-    for (var i = 0; i < materials.length; i++) {
-      var material = materials[i];
-      if (typeof material === 'string') {
-        result.push({
-          id: i,
-          text: material
-        });
-      } else if (typeof material === 'object') {
-        result.push({
-          id: i,
-          text: JSON.stringify(material)
-        });
-      } else {
-        result.push({
-          id: i,
-          text: '未知物品'
-        });
+    // ===== 格式化借用时间（申请时间） =====
+    if (detail.created_at) {
+      console.log('格式化借用时间输入:', detail.created_at);
+      try {
+        const dateMatch = detail.created_at.match(/^(\d{4})-(\d{1,2})-(\d{1,2})/);
+        if (dateMatch) {
+          borrowTime = {
+            year: dateMatch[1],
+            month: dateMatch[2],
+            day: dateMatch[3]
+          };
+          console.log('借用时间格式化结果:', borrowTime);
+        }
+      } catch (error) {
+        console.error('借用时间格式化失败:', error);
       }
     }
-    return result;
+    
+    // ===== 格式化归还时间 =====
+    if (detail.deadline) {
+      console.log('格式化归还时间输入:', detail.deadline);
+      try {
+        const dateMatch = detail.deadline.match(/^(\d{4})-(\d{1,2})-(\d{1,2})/);
+        if (dateMatch) {
+          returnTime = {
+            year: dateMatch[1],
+            month: dateMatch[2],
+            day: dateMatch[3]
+          };
+          console.log('归还时间格式化结果:', returnTime);
+        }
+      } catch (error) {
+        console.error('归还时间格式化失败:', error);
+      }
+    }
+    
+    // ===== 格式化物资列表 =====
+    if (detail.materials && Array.isArray(detail.materials)) {
+      console.log('格式化物资列表输入:', detail.materials);
+      detail.materials.forEach((material, index) => {
+        if (typeof material === 'string') {
+          materialsList.push({
+            id: index,
+            text: material
+          });
+        } else if (typeof material === 'object') {
+          materialsList.push({
+            id: index,
+            text: JSON.stringify(material)
+          });
+        } else {
+          materialsList.push({
+            id: index,
+            text: '未知物品'
+          });
+        }
+      });
+      console.log('物资列表格式化结果:', materialsList);
+    }
+    
+    // 更新页面数据
+    this.setData({
+      applyDetail: {
+        borrow_id: detail.borrow_id || '',
+        task_name: detail.task_name || '',
+        name: detail.name || '',
+        student_id: detail.student_id || detail.grade || '',
+        phone: detail.phone || '',
+        email: detail.email || '',
+        grade: detail.grade || '',
+        major: detail.major || '',
+        project_id: detail.project_id || '',
+        advisor_name: detail.advisor_name || '',
+        advisor_phone: detail.advisor_phone || '',
+        content: detail.content || '',
+        materials: detail.materials || [],
+        created_at: detail.created_at || '',
+        deadline: detail.deadline || '',
+        status: detail.status || 0,
+        status_desc: detail.status_desc || '',
+        type: detail.type || 0
+      },
+      borrowTime: borrowTime,
+      returnTime: returnTime,
+      materialsList: materialsList
+    });
+    
+    console.log('页面数据更新完成:', this.data);
   },
 
   /**
@@ -246,28 +239,29 @@ processApplyDetail: function(detail) {
     });
   },
 
-    /**
+  /**
    * 输入事件处理
    */
   onInput: function(e) {
-    var field = e.currentTarget.dataset.field;
+    const field = e.currentTarget.dataset.field;
     console.log('输入字段:', field, '输入值:', e.detail.value);
-    var updateData = {};
+    const updateData = {};
     updateData[field] = e.detail.value;
     this.setData(updateData);
   },
+
   /**
    * 审核操作
    */
   onSubmit: function(e) {
-    var action = e.currentTarget.dataset.action || '通过';
-    var buttonText = e.target.innerText || action;
+    const action = e.currentTarget.dataset.action || '通过';
+    const buttonText = e.target.innerText || action;
     
     console.log('审核操作:', buttonText, action);
     
-    // 判断是通过还是打回 - 避免使用 includes
-    var isApprove = buttonText.indexOf('通过') !== -1 || action === 'approve';
-    var isReject = buttonText.indexOf('打回') !== -1 || action === 'reject';
+    // 判断是通过还是打回
+    const isApprove = buttonText.indexOf('通过') !== -1 || action === 'approve';
+    const isReject = buttonText.indexOf('打回') !== -1 || action === 'reject';
     
     if (isReject && !this.data.replyReason.trim()) {
       wx.showToast({
@@ -277,8 +271,8 @@ processApplyDetail: function(detail) {
       return;
     }
     
-    var confirmText = isApprove ? '确认通过此申请？' : '确认打回此申请？';
-    var that = this;
+    const confirmText = isApprove ? '确认通过此申请？' : '确认打回此申请？';
+    const that = this;
     
     wx.showModal({
       title: '确认操作',
@@ -295,8 +289,8 @@ processApplyDetail: function(detail) {
    * 提交审核结果
    */
   submitReview: function(isApprove) {
-    var token = wx.getStorageSync(TOKEN_KEY);
-    var that = this;
+    const token = wx.getStorageSync(TOKEN_KEY);
+    const that = this;
     
     if (!token) {
       wx.showToast({
@@ -306,7 +300,7 @@ processApplyDetail: function(detail) {
       return;
     }
 
-    var submitData = {
+    const submitData = {
       borrow_id: this.data.borrowId,
       action: isApprove ? 'approve' : 'reject',
       reason: isApprove ? '' : this.data.replyReason

@@ -136,9 +136,9 @@ Page({
         return;
       }
 
-      // 获取申请类型
-      let type = item.type === 1 ? '团队' : '个人';
-
+      // 获取申请类型 - 保存原始type值用于跳转判断
+      let typeText = item.type === 1 ? '团队' : '个人';
+      let originalType = item.type; // 保存原始type值
 
       // 获取物品摘要
       let materials_summary = '无物品';
@@ -171,7 +171,8 @@ Page({
         start_str: '申请时间',
         start_time: item.created_at ? item.created_at.split('T')[0] : '未知时间',
         deadline: item.deadline ? item.deadline.split('T')[0] : '未设置',
-        type: type,
+        type: typeText, // 显示用的文本
+        originalType: originalType, // 保存原始type值用于跳转判断
         status: item.status || 0,
         status_desc: item.status_desc || '未知状态',
         materials_count: item.materials ? item.materials.length : 0,
@@ -180,7 +181,10 @@ Page({
         email: item.email || '',
         grade: item.grade || '',
         major: item.major || '',
-        poster: poster
+        poster: poster,
+        project_number: item.project_number || '',
+        supervisor_name: item.supervisor_name || '',
+        supervisor_phone: item.supervisor_phone || ''
       };
 
       console.log("✅ 直接创建的记录:", record);
@@ -349,14 +353,41 @@ Page({
   },
 
   /**
-   * 跳转到详情页
+   * 跳转到详情页 - 修复后的版本，增加了错误处理和调试信息
    */
   navigateToDetail(e) {
-    const dataset = e.currentTarget.dataset;
-    const borrowId = dataset.eventId || dataset.eventid;
-    console.log('跳转到详情页:', borrowId);
+    console.log('===== navigateToDetail 开始 =====');
+    console.log('事件对象 e:', e);
+    
+    // 安全地获取 dataset
+    let dataset;
+    console.log("_______________________________________________________")
+    console.log("e",e);
+    console.log("e.currentTarget",e.currentTarget);
+    console.log("e.currentTarget.dataset",e.currentTarget.dataset);
+    if (e && e.currentTarget && e.currentTarget.dataset) {
+      dataset = e.currentTarget.dataset;
+    } else if (e && e.target && e.target.dataset) {
+      dataset = e.target.dataset;
+    } else {
+      console.error('无法获取 dataset:', e);
+      wx.showToast({
+        title: '获取数据失败',
+        icon: 'none'
+      });
+      return;
+    }
+    
+    console.log('获取到的 dataset:', dataset);
+    
+    // 获取参数，支持多种命名方式
+    const borrowId = dataset.eventId || dataset.eventid || dataset['event-id'];
+    const originalType = dataset.originalType || dataset.originaltype || dataset['original-type'];
+    
+    console.log('解析后的参数:', { borrowId, originalType });
     
     if (!borrowId) {
+      console.error('缺少申请ID:', dataset);
       wx.showToast({
         title: '缺少申请ID',
         icon: 'none'
@@ -364,9 +395,62 @@ Page({
       return;
     }
     
+    // 根据原始类型判断跳转到哪个页面
+    let targetUrl = '';
+    let targetPageType = '';
+    console.log('++++++++++++++++++++++++++++++++++++++++');
+    if (originalType === 1 || originalType === '1') {
+      // 团队借物 - 跳转到团队借物申请清单
+      console.log("teamBorrowId:",borrowId)
+      targetUrl = `/pages/team_stuff_borrow_permit/team_stuff_borrow_permit?borrow_id=${borrowId}`;
+      targetPageType = '团队借物';
+    } else {
+      // 个人借物 - 跳转到个人借物申请清单
+      targetUrl = `/pages/personal_stuff_borrow_permit/personal_stuff_borrow_permit?borrow_id=${borrowId}`;
+      targetPageType = '个人借物';
+    }
+    
+    console.log(`准备跳转到${targetPageType}页面:`, targetUrl);
+    
     wx.navigateTo({
-      url: `/pages/personal_stuff_borrow_permit/personal_stuff_borrow_permit?borrow_id=${borrowId}`
+      url: targetUrl,
+      success: () => {
+        console.log(`✅ 成功跳转到${targetPageType}页面`);
+      },
+      fail: (error) => {
+        console.error(`❌ ${targetPageType}页面跳转失败:`, error);
+        
+        // 如果是团队页面跳转失败，尝试跳转到个人页面作为备选
+        if (originalType === 1 || originalType === '1') {
+          console.log('团队页面跳转失败，尝试跳转到个人页面...');
+          const fallbackUrl = `/pages/personal_stuff_borrow_permit/personal_stuff_borrow_permit?borrow_id=${borrowId}`;
+          wx.navigateTo({
+            url: fallbackUrl,
+            success: () => {
+              console.log('✅ 备选跳转成功');
+              wx.showToast({
+                title: '已使用备选页面',
+                icon: 'none'
+              });
+            },
+            fail: (fallbackError) => {
+              console.error('❌ 备选跳转也失败:', fallbackError);
+              wx.showToast({
+                title: '页面跳转失败',
+                icon: 'none'
+              });
+            }
+          });
+        } else {
+          wx.showToast({
+            title: '页面跳转失败',
+            icon: 'none'
+          });
+        }
+      }
     });
+    
+    console.log('===== navigateToDetail 结束 =====');
   },
 
   /**
