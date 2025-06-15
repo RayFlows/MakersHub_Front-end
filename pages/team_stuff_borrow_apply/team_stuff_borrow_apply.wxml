@@ -13,7 +13,7 @@
 
   <view class="form-container">
 
-    <!-- 新增任务名称字段 -->
+    <!-- 新增任务名称字段
     <text class="form-label">任务名称</text>
     <input
       class="input-field {{ isTaskNameFocused ? 'focused' : '' }}"
@@ -21,7 +21,7 @@
       data-field="task_name"
       bindinput="onInput"
       bindfocus="onTaskNameFocus"
-      bindblur="onTaskNameBlur" />
+      bindblur="onTaskNameBlur" /> -->
 
     <text class="form-label">负责人姓名</text>
     <input
@@ -31,6 +31,16 @@
       bindinput="onInput"
       bindfocus="onLeaderNameFocus"
       bindblur="onLeaderNameBlur" />
+
+      <text class="form-label">借用人学号</text>
+    <input
+      class="input-field {{ isLeaderNameFocused ? 'focused' : '' }}"
+      placeholder="负责人学号"
+      value="{{student_id}}"
+      data-field="student_id"
+      bindinput="onInput"
+      bindfocus="onLeaderIdFocus"
+      bindblur="onLeaderIdBlur" />
 
     <text class="form-label">负责人电话</text>
     <input

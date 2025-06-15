@@ -1,0 +1,163 @@
+/* pages/MyPoints/MyPoints.wxss */
+
+page {
+  background-color: #222831;
+  overflow: hidden;
+}
+
+.container {
+  position: relative;
+  overflow-x: hidden;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
+  height: 100vh;
+}
+
+.tab {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 150rpx;
+  margin-top: 10rpx;
+  margin-bottom: 25rpx;
+}
+
+.tab text {
+  font-size: 32rpx;
+  color: #FFFFFF;
+  height: 80rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.active {
+  position: relative;
+  border: none;
+  color: #00ADB5 !important;
+  border-bottom: 6rpx solid #00ADB5;
+}
+
+.list-container {
+  overflow-x: hidden;
+  flex: 1;
+  height: auto;
+  touch-action: none;
+}
+
+swiper {
+  flex: 1;
+  height: 100%;
+  width: 100vw;
+}
+
+swiper-item {
+  min-height: 80%;
+  overflow-x: hidden;
+  display: flex;
+  flex-direction: column;
+  height: auto;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 30rpx;
+  overflow-y: auto;
+}
+
+.item-container {
+  display: flex;
+  align-items: center;
+  width: 619rpx;
+  height: 183rpx;
+  justify-content: flex-start;
+  background-color: #ffffff;
+  color: #393E46;
+  border-radius: 35rpx;
+  gap: 20rpx;
+  margin-bottom: 40rpx;
+}
+
+.item-image {
+  width: 183rpx;
+  height: 183rpx;
+  border-radius: 35rpx 0rpx 0rpx 35rpx;
+}
+
+.item-details {
+  height: 181rpx;
+  width: 200rpx;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 15rpx;
+}
+
+.name {
+  font-size: 36rpx;
+  font-weight: 600;
+  color: #393E46;
+  max-width: 100%;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  text-align: left;
+}
+
+.label {
+  font-size: 24rpx;
+  color: #888;
+}
+
+.value {
+  font-size: 24rpx;
+  color: #333;
+  display: inline-block;
+  white-space: nowrap;
+}
+
+.tag {
+  display: inline-block;
+  white-space: nowrap;
+  background-color: #ffeaa7;
+  color: #333;
+  font-size: 22rpx;
+  padding: 4rpx 12rpx;
+  border-radius: 24rpx;
+}
+
+.time-and-tag {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 28rpx;
+  flex-wrap: nowrap;
+}
+
+.detail-btn {
+  width: 160rpx;
+  height: 65rpx;
+  background: #00BAAD;
+  color: #fff;
+  border-radius: 30rpx;
+  font-size: 26rpx;
+  line-height: 60rpx;
+  text-align: center;
+  margin: 20rpx;
+}
+
+.detail-btn:active {
+  filter: brightness(0.95);
+}
+
+.bottom-image {
+  width: 440rpx;
+  height: 174rpx;
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 99;
+}
