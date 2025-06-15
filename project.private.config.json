@@ -27,13 +27,20 @@
           "name": "pages/team_stuff_borrow_permit/team_stuff_borrow_permit",
           "pathName": "pages/team_stuff_borrow_permit/team_stuff_borrow_permit",
           "query": "",
+          "scene": null,
+          "launchMode": "default"
+        },
+        {
+          "name": "pages/team_stuff_borrow_permit/team_stuff_borrow_permit",
+          "pathName": "pages/team_stuff_borrow_permit/team_stuff_borrow_permit",
+          "query": "",
           "launchMode": "default",
           "scene": null
         },
         {
-          "name": "pages/my_site_borrow_detail/my_site_borrow_detail",
-          "pathName": "pages/my_site_borrow_detail/my_site_borrow_detail",
-          "query": "",
+          "name": "pages/personal_stuff_borrow_permit/personal_stuff_borrow_permit",
+          "pathName": "pages/personal_stuff_borrow_permit/personal_stuff_borrow_permit",
+          "query": "borrow_id=BR20250612142500",
           "launchMode": "default",
           "scene": null
         },
@@ -45,29 +52,36 @@
           "scene": null
         },
         {
-          "name": "pages/stuff_borrow_permit_list/stuff_borrow_permit_list",
-          "pathName": "pages/stuff_borrow_permit_list/stuff_borrow_permit_list",
+          "name": "pages/base_management_work_page/base_management_work_page",
+          "pathName": "pages/base_management_work_page/base_management_work_page",
           "query": "",
           "launchMode": "default",
           "scene": null
         },
         {
-          "name": "pages/my_site_borrow_list/my_site_borrow_list",
-          "pathName": "pages/my_site_borrow_list/my_site_borrow_list",
+          "name": "pages/object_borrow_list/object_borrow_list",
+          "pathName": "pages/object_borrow_list/object_borrow_list",
           "query": "",
           "launchMode": "default",
           "scene": null
         },
         {
-          "name": "pages/site_borrow_detail/site_borrow_detail",
-          "pathName": "pages/site_borrow_detail/site_borrow_detail",
+          "name": "pages/personal_stuff_borrow_detail/personal_stuff_borrow_detail",
+          "pathName": "pages/personal_stuff_borrow_detail/personal_stuff_borrow_detail",
           "query": "",
           "launchMode": "default",
           "scene": null
         },
         {
-          "name": "pages/site_borrow_apply/site_borrow_apply",
-          "pathName": "pages/site_borrow_apply/site_borrow_apply",
+          "name": "pages/object_borrow_list/object_borrow_list",
+          "pathName": "pages/object_borrow_list/object_borrow_list",
+          "query": "",
+          "launchMode": "default",
+          "scene": null
+        },
+        {
+          "name": "pages/my_stuff_borrow_list/my_stuff_borrow_list",
+          "pathName": "pages/my_stuff_borrow_list/my_stuff_borrow_list",
           "query": "",
           "launchMode": "default",
           "scene": null
