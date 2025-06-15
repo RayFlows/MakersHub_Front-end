@@ -1,6 +1,9 @@
 const API_BASE = 'http://146.56.227.73:8000';
 const TOKEN_KEY = 'auth_token';
 
+const API_BASE = 'http://146.56.227.73:8000';
+const TOKEN_KEY = 'auth_token';
+
 Page({
   /**
    * 页面的初始数据
@@ -234,6 +237,7 @@ Page({
   },
 
   onLinkBlur: function() {
+  onLinkBlur: function() {
     this.setData({
       isLinkFocused: false
     });
@@ -241,7 +245,14 @@ Page({
 
   /**
    * 输入事件处理
+   * 输入事件处理
    */
+  onInput: function(e) {
+    const field = e.currentTarget.dataset.field;
+    console.log('输入字段:', field, '输入值:', e.detail.value);
+    const updateData = {};
+    updateData[field] = e.detail.value;
+    this.setData(updateData);
   onInput: function(e) {
     const field = e.currentTarget.dataset.field;
     console.log('输入字段:', field, '输入值:', e.detail.value);
@@ -251,6 +262,38 @@ Page({
   },
 
   /**
+   * 审核操作
+   */
+  onSubmit: function(e) {
+    const action = e.currentTarget.dataset.action || '通过';
+    const buttonText = e.target.innerText || action;
+    
+    console.log('审核操作:', buttonText, action);
+    
+    // 判断是通过还是打回
+    const isApprove = buttonText.indexOf('通过') !== -1 || action === 'approve';
+    const isReject = buttonText.indexOf('打回') !== -1 || action === 'reject';
+    
+    if (isReject && !this.data.replyReason.trim()) {
+      wx.showToast({
+        title: '请输入打回理由',
+        icon: 'none'
+      });
+      return;
+    }
+    
+    const confirmText = isApprove ? '确认通过此申请？' : '确认打回此申请？';
+    const that = this;
+    
+    wx.showModal({
+      title: '确认操作',
+      content: confirmText,
+      success: function(res) {
+        if (res.confirm) {
+          that.submitReview(isApprove);
+        }
+      }
+    });
    * 审核操作
    */
   onSubmit: function(e) {
@@ -348,9 +391,85 @@ Page({
         });
       }
     });
+   * 提交审核结果
+   */
+  submitReview: function(isApprove) {
+    const token = wx.getStorageSync(TOKEN_KEY);
+    const that = this;
+    
+    if (!token) {
+      wx.showToast({
+        title: '请先登录',
+        icon: 'none'
+      });
+      return;
+    }
+
+    const submitData = {
+      borrow_id: this.data.borrowId,
+      action: isApprove ? 'approve' : 'reject',
+      reason: isApprove ? '' : this.data.replyReason
+    };
+
+    console.log('提交审核数据:', submitData);
+
+    wx.showLoading({ title: '处理中...' });
+
+    wx.request({
+      url: API_BASE + '/borrow/review',
+      method: 'POST',
+      data: submitData,
+      header: {
+        'Authorization': 'Bearer ' + token,
+        'Content-Type': 'application/json'
+      },
+      success: function(response) {
+        wx.hideLoading();
+        console.log('审核结果:', response);
+        
+        if (response.statusCode === 200 || response.statusCode === 201) {
+          wx.showToast({
+            title: isApprove ? '审核通过' : '已打回',
+            icon: 'success'
+          });
+          
+          // 延迟返回上级页面
+          setTimeout(function() {
+            wx.navigateBack();
+          }, 1500);
+        } else {
+          wx.showToast({
+            title: (response.data && response.data.message) || '操作失败',
+            icon: 'none'
+          });
+        }
+      },
+      fail: function(error) {
+        wx.hideLoading();
+        console.error('审核请求失败:', error);
+        wx.showToast({
+          title: '网络错误',
+          icon: 'none'
+        });
+      }
+    });
   },
 
   /**
+   * 返回按钮点击事件
+   */
+  handlerGobackClick: function() {
+    wx.navigateBack({
+      delta: 1,
+      fail: function() {
+        wx.switchTab({ 
+          url: '/pages/base_management_work_page/base_management_work_page', 
+          fail: function() {
+            wx.navigateTo({ url: '/pages/index/index' });
+          }
+        });
+      }
+    });
    * 返回按钮点击事件
    */
   handlerGobackClick: function() {
@@ -382,6 +501,20 @@ Page({
         });
       }
     });
+   * 首页按钮点击事件
+   */
+  handlerGohomeClick: function() {
+    wx.switchTab({
+      url: '/pages/index/index',
+      fail: function() {
+        wx.navigateTo({ 
+          url: '/pages/index/index', 
+          fail: function() {
+            wx.showToast({ title: '跳转失败', icon: 'none' });
+          }
+        });
+      }
+    });
   },
 
   /**
@@ -392,5 +525,13 @@ Page({
     setTimeout(function() {
       wx.stopPullDownRefresh();
     }, 1500);
+   * 下拉刷新
+   */
+  onPullDownRefresh: function() {
+    this.loadApplyDetail(this.data.borrowId);
+    setTimeout(function() {
+      wx.stopPullDownRefresh();
+    }, 1500);
   }
+});
 });

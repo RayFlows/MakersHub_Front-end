@@ -151,6 +151,7 @@ Page({
       delta: 1,
       fail: () => {
         wx.switchTab({ url: '/pages/base_management_work_page/base_management_work_page', fail: () => wx.navigateTo({ url: '/pages/index/index' }) });
+        wx.switchTab({ url: '/pages/base_management_work_page/base_management_work_page', fail: () => wx.navigateTo({ url: '/pages/index/index' }) });
       }
     });
   },
