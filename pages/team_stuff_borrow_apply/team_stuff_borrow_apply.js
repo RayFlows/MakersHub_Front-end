@@ -6,8 +6,9 @@ const TOKEN_KEY = "auth_token";
 Page({
   data: {
     // 表单数据
-    task_name: '',
+    // task_name: '',
     name: '',
+    student_id: '',
     leaderPhone: '',
     email: '',
     grade: '',
@@ -18,8 +19,9 @@ Page({
     content: '',
 
     // 焦点状态
-    isTaskNameFocused: false,
+    // isTaskNameFocused: false,
     isLeaderNameFocused: false,
+    isLeaderIdFocused: false,
     isLeaderPhoneFocused: false,
     isEmailFocused: false,
     isGradeFocused: false,
@@ -117,13 +119,16 @@ Page({
     this.setData({ [field]: e.detail.value });
   },
 
-  // 焦点事件处理 - 任务名称
-  onTaskNameFocus() { this.setData({ isTaskNameFocused: true }); },
-  onTaskNameBlur() { this.setData({ isTaskNameFocused: false }); },
+  // // 焦点事件处理 - 任务名称
+  // onTaskNameFocus() { this.setData({ isTaskNameFocused: true }); },
+  // onTaskNameBlur() { this.setData({ isTaskNameFocused: false }); },
 
   // 焦点事件处理 - 负责人姓名
   onLeaderNameFocus() { this.setData({ isLeaderNameFocused: true }); },
   onLeaderNameBlur() { this.setData({ isLeaderNameFocused: false }); },
+  
+  onleaderIdFocus() { this.setData({ isLeaderIdFocused: true }); },
+  onLeaderIdBlur() { this.setData({ isLeaderIdFocused: false }); },
 
   // 焦点事件处理 - 负责人电话
   onLeaderPhoneFocus() { this.setData({ isLeaderPhoneFocused: true }); },
@@ -303,8 +308,9 @@ confirmAndSubmit() {
 // 真正提交逻辑
 onSubmit() {
   const {
-    task_name,
+    // task_name,
     name,
+    student_id,
     leaderPhone,
     email,
     grade,
@@ -319,7 +325,7 @@ onSubmit() {
     selectedTextList
   } = this.data;
 
-  if (!task_name || !name || !leaderPhone || !email || !grade || !major || !content) {
+  if (!student_id || !name || !leaderPhone || !email || !grade || !major || !content) {
     wx.showToast({ title: '请填写完整基本信息', icon: 'none' });
     return;
   }
@@ -343,8 +349,9 @@ onSubmit() {
   const deadline = `${selectedYear.replace('年', '')}-${selectedMonth.replace('月', '').padStart(2, '0')}-${selectedDay.replace('日', '').padStart(2, '0')} 00:00:00`;
 
   const submitData = {
-    task_name,
+    // task_name,
     name,
+    student_id,
     phone: leaderPhone,
     email,
     grade,
@@ -396,8 +403,9 @@ onSubmit() {
   // 重置表单
   resetForm() {
     this.setData({
-      task_name: '',
+      // task_name: '',
       name: '',
+      student_id: '',
       leaderPhone: '',
       email: '',
       grade: '',
@@ -414,8 +422,9 @@ onSubmit() {
       selectedTextList: [''],
       
       // 重置焦点状态
-      isTaskNameFocused: false,
+      // isTaskNameFocused: false,
       isLeaderNameFocused: false,
+      isLeaderIdFocused: false,
       isLeaderPhoneFocused: false,
       isEmailFocused: false,
       isGradeFocused: false,

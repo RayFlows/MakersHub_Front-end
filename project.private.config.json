@@ -24,6 +24,13 @@
     "miniprogram": {
       "list": [
         {
+          "name": "pages/stuff_borrow_permit_list/stuff_borrow_permit_list",
+          "pathName": "pages/stuff_borrow_permit_list/stuff_borrow_permit_list",
+          "query": "",
+          "scene": null,
+          "launchMode": "default"
+        },
+        {
           "name": "pages/team_stuff_borrow_permit/team_stuff_borrow_permit",
           "pathName": "pages/team_stuff_borrow_permit/team_stuff_borrow_permit",
           "query": "",

@@ -14,7 +14,7 @@ Page({
     // 借物申请详情数据
     applyDetail: {
       borrow_id: '',
-      task_name: '',
+      // task_name: '',
       name: '',
       student_id: '',
       phone: '',
@@ -198,7 +198,7 @@ Page({
     this.setData({
       applyDetail: {
         borrow_id: detail.borrow_id || '',
-        task_name: detail.task_name || '',
+        // task_name: detail.task_name || '',
         name: detail.name || '',
         student_id: detail.student_id || detail.grade || '',
         phone: detail.phone || '',

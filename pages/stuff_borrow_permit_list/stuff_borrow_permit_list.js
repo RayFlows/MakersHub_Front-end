@@ -168,6 +168,7 @@ Page({
       const record = {
         event_id: item.borrow_id || '',
         event_name: item.task_name || '未命名申请',
+        name: item.name,
         start_str: '申请时间',
         start_time: item.created_at ? item.created_at.split('T')[0] : '未知时间',
         deadline: item.deadline ? item.deadline.split('T')[0] : '未设置',

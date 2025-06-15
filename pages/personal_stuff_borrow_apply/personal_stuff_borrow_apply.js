@@ -5,8 +5,9 @@ const token = wx.getStorageSync(TOKEN_KEY);
 Page({
   data: {
     // 表单数据
-    task_name: '',
+    // task_name: '',
     name: '',
+    student_id: '',
     leaderPhone: '', 
     email: '', 
     grade: '', 
@@ -15,6 +16,7 @@ Page({
 
     // 焦点状态
     isLeaderNameFocused: false,
+    isLeaderIdFocused: false,
     isLeaderPhoneFocused: false,
     isEmailFocused: false,
     isGradeFocused: false,
@@ -83,6 +85,8 @@ Page({
   // 焦点事件处理
   onLeaderNameFocus() { this.setData({ isLeaderNameFocused: true }); },
   onLeaderNameBlur() { this.setData({ isLeaderNameFocused: false }); },
+  onleaderIdFocus() { this.setData({ isLeaderIdFocused: true }); },
+  onLeaderIdBlur() { this.setData({ isLeaderIdFocused: false }); },
   onLeaderPhoneFocus() { this.setData({ isLeaderPhoneFocused: true }); },
   onLeaderPhoneBlur() { this.setData({ isLeaderPhoneFocused: false }); },
   onEmailFocus() { this.setData({ isEmailFocused: true }); },
@@ -161,8 +165,8 @@ Page({
   },
 
   onSubmit(e) {
-    const { task_name, name, leaderPhone, email, grade, major, content, selectedYear, selectedMonth, selectedDay, selectedTextList } = this.data;
-    if (!task_name || !name || !leaderPhone || !email || !grade || !major || !content) {
+    const { name, student_id, leaderPhone, email, grade, major, content, selectedYear, selectedMonth, selectedDay, selectedTextList } = this.data;
+    if (!name || !student_id || !leaderPhone || !email || !grade || !major || !content) {
       wx.showToast({ title: '请填写完整信息', icon: 'none' });
       return;
     }
@@ -176,7 +180,7 @@ Page({
     }
     const deadline = `${selectedYear.replace('年', '')}-${selectedMonth.replace('月', '').padStart(2, '0')}-${selectedDay.replace('日', '').padStart(2, '0')} 00:00:00`;
     const materials = selectedTextList.filter(item => item);
-    const submitData = { task_name, name, phone: leaderPhone, email, grade, major, content, deadline, materials , type:0};
+    const submitData = { name, student_id, phone: leaderPhone, email, grade, major, content, deadline, materials , type:0};
     wx.showLoading({ title: '提交中...' });
     wx.request({
       url: `${API_BASE}/borrow/apply`,
@@ -204,8 +208,9 @@ Page({
 
   resetForm() {
     this.setData({ 
-      task_name: '',
+      // task_name: '',
       name: '',
+      student_id: '',
       leaderPhone: '',
       email: '',
       grade: '',
@@ -219,6 +224,7 @@ Page({
       multiIndexList: [[]],
       selectedTextList: [],
       isLeaderNameFocused: false,
+      isLeaderIdFocused: false,
       isLeaderPhoneFocused: false,
       isEmailFocused: false,
       isGradeFocused: false,
