@@ -21,11 +21,11 @@
     "pages/personal_stuff_borrow_permit/personal_stuff_borrow_permit",
     "pages/team_stuff_borrow_permit/team_stuff_borrow_permit",
     "pages/site_borrow_permit/site_borrow_permit",
-    "pages/object_borrow/object_borrow",
-    "pages/field_borrow/field_borrow",
+    "pages/object_borrow_list/object_borrow_list",
     "pages/remote_control/remote_control",
     "pages/personal_stuff_borrow_apply/personal_stuff_borrow_apply",
-    "pages/site_borrow_list/site_borrow_list"
+    "pages/site_borrow_list/site_borrow_list",
+    "pages/duty_application/duty_application"
   ],
   "window": {
     "backgroundTextStyle": "light",

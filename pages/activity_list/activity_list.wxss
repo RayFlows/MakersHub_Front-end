@@ -190,7 +190,15 @@ button:active {
   filter: brightness(0.95)
 }
 
-
+.bottom-image {
+  width: 440rpx;
+  height: 174rpx;
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 99;
+}
 
 /* 底部图片样式 */
 /* .bottom-image {

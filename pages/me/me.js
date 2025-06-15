@@ -1,169 +1,139 @@
-const api = require('../../API/me.js')
+// pages/me/me.js
+const API_BASE = 'http://146.56.227.73:8000'
+const TOKEN_KEY = 'auth_token' // 统一使用你登录时设置的 key
+const token = wx.getStorageSync(TOKEN_KEY)
+console.log('本地获取到的 token:', token)
 
 Page({
   data: {
-    isAssociationMember:2, // 判断是否是协会成员
-    textToCopy: '这是要复制的文本',//用于复制的文本
+    textToCopy: '',
+
     userInfo: {
-      avatar: '', // 头像
-      real_name: '',          // 用户名
-      phone_num: '',         // 用户电话
-      score: '',     // 积分
-      role: '' // 用户身份，0是社团外人员，1是干事，2是部长
+      profile_photo: '../../images/me/avatar.png',
+      real_name: '用户123',
+      phone_num: 'dsdf',
+      motto: 'safsa',
+      score: 10,
+      role: 0
     },
-    // 按钮处理函数映射
+    isAssociationMember: 1,
+
     itemHandler: [
       'goToBorrowPage',
       'goToProjectPage',
       'goToVenuePage',
       'goToHonorWallPage'
     ],
-    items: ['我的借物','我的项目','我的场地','荣誉墙','协会工作'],
-    activeTab: 'me' // 当前页面为我的
+    items: ['我的借物', '我的项目', '我的场地', '荣誉墙', '协会工作'],
+    activeTab: 'me'
   },
 
-  // 点击底部导航项时调用
-  switchPage(e) {
-    const target = e.currentTarget.dataset.page;
-    if (target === this.data.activeTab) {
-      return; // 点击的是当前页面，无需跳转
-    }
+  onLoad() {
+    this.fetchUserProfile()
+  },
 
-    let url = '';
-    switch (target) {
-      case 'community':
-        url = '/pages/community/community'; // 社区页面（此处用community页面占位）
-        break;
-      case 'index':
-        url = '/pages/index/index'; // 首页
-        break;
-      case 'me':
-        url = '/pages/me/me'; // 我的页面
-        break;
-    }
-
-    // 使用 wx.redirectTo 或 wx.reLaunch 进行页面跳转，防止页面堆栈积累
-    wx.redirectTo({
-      url: url,
-      fail: () => {
-        wx.showToast({
-          title: '页面跳转失败',
-          icon: 'none'
-        });
+  fetchUserProfile() {
+    wx.request({
+      url: `${API_BASE}/users/profile`,
+      method: 'GET',
+      header: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}`
       },
-      complete: () => {
-        // 可在此处添加统一的清理或提示操作
+      success: res => {
+        console.log('[me] 用户信息请求响应:', res)
+        if (res.statusCode === 200 && res.data) {
+          const info = res.data
+          this.setData({
+            userInfo: {
+              state: info.state || 1,
+              real_name: info.real_name || '',
+              phone_num: info.phone_num || '',
+              motto: info.motto || '',
+              score: info.score || 0,
+              role: info.role || 0,
+              profile_photo: info.profile_photo || ''
+            },
+            isAssociationMember: info.role > 0
+          })
+        } else {
+          wx.showToast({ title: '获取用户信息失败', icon: 'none' })
+        }
+      },
+      fail: err => {
+        console.error('[me] 请求失败:', err)
+        wx.showToast({ title: '请求失败，请检查网络', icon: 'none' })
       }
-    });
+    })
   },
 
-  onLoad: function (options) {
-    // 获取用户信息，包括用户名、电话、个性签名、积分
-    api.fetchUserData(this, 
-      (data) => console.log('成功:', data),
-      (err) => console.error('失败:', err)
-    )
-    console.log(this.data.userInfo.role);
-    switch(this.data.userInfo.role) {
-      case 0:
-        isAssociationMember = false;
-        break;
-      case 1:
-        isAssociationMember = true;
-        break;
-      case 2:
-        isAssociationMember = true;
-        break;
-      default:
-        wx.showToast({
-          title: '权限异常',
-          icon:'error',
-        });
-        console.log('获取权限异常');
-    }
-  },
-
-  
-
-  // 复制文本到剪贴板
-  copyText: function () {
-    // 使用 wx.setClipboardData 方法将指定的文本复制到剪贴板
+  copyPhone() {
     wx.setClipboardData({
-      data: this.data.textToCopy,// 需要复制的文本，从页面的data中获取
-      success: () => {// 复制成功时的回调函数
-        // 显示复制成功的提示
-        wx.showToast({
-          title: '复制成功',// 提示内容
-          icon: 'success',// 显示成功图标
-          duration: 2000// 提示显示时长，单位为毫秒
-        });
+      data: this.data.userInfo.phone_num,
+      success: () => {
+        wx.showToast({ title: '电话已复制', icon: 'success' })
       },
-      fail: () => {// 复制失败时的回调函数
-        // 显示复制失败的提示
-        wx.showToast({
-          title: '复制失败',// 提示内容
-          icon: 'none',// 不显示图标
-          duration: 2000// 提示显示时长
-        });
-      }
-    });
-  },
-
-  // 封装页面跳转函数
-  navigateToPage: function (url) {
-    wx.navigateTo({
-      url: url ,
-      // + '?avatar=' + avatar + '&real_name=' + real_name + '&phone_name=' + phone_num,
       fail: () => {
-        wx.showToast({
-          title: '页面跳转失败',
-          icon: 'none'
-        });
-      },
-      complete: () => {
-        // 可在此处添加统一的清理或提示操作
+        wx.showToast({ title: '复制失败', icon: 'none' })
       }
-    });
+    })
   },
 
-  // 页面跳转到编辑页面的函数
-  goToEditPage: function () {
-    this.navigateToPage('/pages/editPage/editPage');
+  copySignature() {
+    wx.setClipboardData({
+      data: this.data.userInfo.motto,
+      success: () => {
+        wx.showToast({ title: '签名已复制', icon: 'success' })
+      },
+      fail: () => {
+        wx.showToast({ title: '复制失败', icon: 'none' })
+      }
+    })
   },
 
-  // 页面跳转到积分页面的函数
-  goToMyPointPage: function () {
-    this.navigateToPage('/pages/MyPoints/MyPoints');
+  navigateToPage(url) {
+    wx.navigateTo({
+      url,
+      fail: () => wx.showToast({ title: '页面跳转失败', icon: 'none' })
+    })
   },
 
-  // 页面跳转到借物页面的函数
-  goToBorrowPage: function () {
-    this.navigateToPage('/pages/borrow/borrow');
+  switchPage(e) {
+    const target = e.currentTarget.dataset.page
+    if (target === this.data.activeTab) return
+
+    let url = ''
+    if (target === 'community') url = '/pages/community/community'
+    else if (target === 'index') url = '/pages/index/index'
+    else if (target === 'me') url = '/pages/me/me'
+
+    wx.redirectTo({
+      url,
+      fail: () => wx.showToast({ title: '页面跳转失败', icon: 'none' })
+    })
   },
 
-  // 页面跳转到项目页面的函数
-  goToProjectPage: function () {
-    this.navigateToPage('/pages/project/project');
+  goToEditPage() {
+    this.navigateToPage('/pages/editPage/editPage')
   },
 
-  // 页面跳转到我的场地页面的函数
-  goToVenuePage: function () {
-    this.navigateToPage('/pages/venue/venue');
+  goToMyPointPage() {
+    this.navigateToPage('/pages/MyPoints/MyPoints')
   },
 
-  // 页面跳转到协会工作页面的函数
-  goToWorkPage: function () {
-    this.navigateToPage('/pages/club_work/club_work');
+  goToBorrowPage() {
+    this.navigateToPage('/pages/borrow/borrow')
   },
-
-  // 页面跳转到荣誉墙页面的函数
-  goToHonorWallPage: function () {
-    this.navigateToPage('/pages/honor-wall/honor-wall');
+  goToProjectPage() {
+    this.navigateToPage('/pages/project/project')
   },
-
-  // 页面跳转到社区页面的函数
-  goToCommunityPage: function () {
-    this.navigateToPage('/pages/CommunityPage/CommunityPage');
+  goToVenuePage() {
+    this.navigateToPage('/pages/venue/venue')
   },
-});
-
+  goToHonorWallPage() {
+    this.navigateToPage('/pages/honor-wall/honor-wall')
+  },
+  goToWorkPage() {
+    this.navigateToPage('/pages/club_work/club_work')
+  }
+})

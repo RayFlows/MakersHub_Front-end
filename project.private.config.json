@@ -4,85 +4,35 @@
   "setting": {
     "compileHotReLoad": true,
     "skylineRenderEnable": false,
-    "urlCheck": false
+    "urlCheck": false,
+    "coverView": true,
+    "lazyloadPlaceholderEnable": false,
+    "preloadBackgroundData": false,
+    "autoAudits": false,
+    "useApiHook": true,
+    "useApiHostProcess": true,
+    "showShadowRootInWxmlPanel": true,
+    "useStaticServer": false,
+    "useLanDebug": false,
+    "showES6CompileOption": false,
+    "checkInvalidKey": true,
+    "ignoreDevUnusedFiles": true,
+    "bigPackageSizeSupport": false
   },
-  "libVersion": "trial",
+  "libVersion": "3.8.7",
   "condition": {
     "miniprogram": {
       "list": [
         {
-          "name": "pages/site_borrow_list/site_borrow_list",
-          "pathName": "pages/site_borrow_list/site_borrow_list",
+          "name": "pages/task/task",
+          "pathName": "pages/task/task",
           "query": "",
-          "launchMode": "default",
-          "scene": null
+          "scene": null,
+          "launchMode": "default"
         },
         {
-          "name": "pages/team_stuff_borrow_apply/team_stuff_borrow_apply",
-          "pathName": "pages/team_stuff_borrow_apply/team_stuff_borrow_apply",
-          "query": "",
-          "launchMode": "default",
-          "scene": null
-        },
-        {
-          "name": "pages/MyPoints/MyPoints",
-          "pathName": "pages/MyPoints/MyPoints",
-          "query": "",
-          "launchMode": "default",
-          "scene": null
-        },
-        {
-          "name": "pages/remote_control/remote_control",
-          "pathName": "pages/remote_control/remote_control",
-          "query": "",
-          "launchMode": "default",
-          "scene": null
-        },
-        {
-          "name": "pages/object_borrow/object_borrow",
-          "pathName": "pages/object_borrow/object_borrow",
-          "query": "",
-          "launchMode": "default",
-          "scene": null
-        },
-        {
-          "name": "pages/remote_control/remote_control",
-          "pathName": "pages/remote_control/remote_control",
-          "query": "",
-          "launchMode": "default",
-          "scene": null
-        },
-        {
-          "name": "pages/field_borrow/field_borrow",
-          "pathName": "pages/field_borrow/field_borrow",
-          "query": "",
-          "launchMode": "default",
-          "scene": null
-        },
-        {
-          "name": "pages/object_borrow/object_borrow",
-          "pathName": "pages/object_borrow/object_borrow",
-          "query": "",
-          "launchMode": "default",
-          "scene": null
-        },
-        {
-          "name": "pages/site_borrow_permit/site_borrow_permit",
-          "pathName": "pages/site_borrow_permit/site_borrow_permit",
-          "query": "",
-          "launchMode": "default",
-          "scene": null
-        },
-        {
-          "name": "pages/team_stuff_borrow_permit/team_stuff_borrow_permit",
-          "pathName": "pages/team_stuff_borrow_permit/team_stuff_borrow_permit",
-          "query": "",
-          "launchMode": "default",
-          "scene": null
-        },
-        {
-          "name": "pages/activity_submit/activity_submit",
-          "pathName": "pages/activity_submit/activity_submit",
+          "name": "pages/activity_list/activity_list",
+          "pathName": "pages/activity_list/activity_list",
           "query": "",
           "launchMode": "default",
           "scene": null
@@ -95,22 +45,22 @@
           "scene": null
         },
         {
-          "name": "pages/editPage/editPage",
-          "pathName": "pages/editPage/editPage",
+          "name": "pages/index/index",
+          "pathName": "pages/index/index",
           "query": "",
           "launchMode": "default",
           "scene": null
         },
         {
-          "name": "pages/club_work/club_work",
-          "pathName": "pages/club_work/club_work",
+          "name": "pages/personal_stuff_borrow_apply/personal_stuff_borrow_apply",
+          "pathName": "pages/personal_stuff_borrow_apply/personal_stuff_borrow_apply",
           "query": "",
           "launchMode": "default",
           "scene": null
         },
         {
-          "name": "pages/base_management_work_page/base_management_work_page",
-          "pathName": "pages/base_management_work_page/base_management_work_page",
+          "name": "components/auth-modal/auth-modal",
+          "pathName": "components/auth-modal/auth-modal",
           "query": "",
           "launchMode": "default",
           "scene": null
@@ -123,15 +73,8 @@
           "scene": null
         },
         {
-          "name": "pages/project_work_page/project_work_page",
-          "pathName": "pages/project_work_page/project_work_page",
-          "query": "",
-          "launchMode": "default",
-          "scene": null
-        },
-        {
-          "name": "pages/publicity_work_page/publicity_work_page",
-          "pathName": "pages/publicity_work_page/publicity_work_page",
+          "name": "pages/me/me",
+          "pathName": "pages/me/me",
           "query": "",
           "launchMode": "default",
           "scene": null
@@ -144,29 +87,57 @@
           "scene": null
         },
         {
-          "name": "pages/3D/3D",
-          "pathName": "pages/3D/3D",
+          "name": "pages/object_borrow_list/object_borrow_list",
+          "pathName": "pages/object_borrow_list/object_borrow_list",
           "query": "",
           "launchMode": "default",
           "scene": null
         },
         {
-          "name": "pages/me/me",
-          "pathName": "pages/me/me",
+          "name": "pages/object_borrow/object_borrow",
+          "pathName": "pages/object_borrow/object_borrow",
           "query": "",
           "launchMode": "default",
           "scene": null
         },
         {
-          "name": "pages/activitydetail/activitydetail",
-          "pathName": "pages/activitydetail/activitydetail",
+          "name": "pages/site_borrow_list/site_borrow_list",
+          "pathName": "pages/site_borrow_list/site_borrow_list",
           "query": "",
           "launchMode": "default",
           "scene": null
         },
         {
-          "name": "pages/activity_list/activity_list",
-          "pathName": "pages/activity_list/activity_list",
+          "name": "pages/remote_control/remote_control",
+          "pathName": "pages/remote_control/remote_control",
+          "query": "",
+          "launchMode": "default",
+          "scene": null
+        },
+        {
+          "name": "pages/site_borrow_list/site_borrow_list",
+          "pathName": "pages/site_borrow_list/site_borrow_list",
+          "query": "",
+          "launchMode": "default",
+          "scene": null
+        },
+        {
+          "name": "pages/site_borrow_permit/site_borrow_permit",
+          "pathName": "pages/site_borrow_permit/site_borrow_permit",
+          "query": "",
+          "launchMode": "default",
+          "scene": null
+        },
+        {
+          "name": "pages/duty_application/duty_application",
+          "pathName": "pages/duty_application/duty_application",
+          "query": "",
+          "launchMode": "default",
+          "scene": null
+        },
+        {
+          "name": "pages/club_work/club_work",
+          "pathName": "pages/club_work/club_work",
           "query": "",
           "launchMode": "default",
           "scene": null

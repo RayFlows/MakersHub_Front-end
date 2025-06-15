@@ -1,0 +1,89 @@
+<!-- 值班申请页面 WXML 文件 -->
+<view class="container">
+  <!-- 顶部标题 -->
+  <view class="header">
+    <text class="title">值班申请</text>
+  </view>
+
+  <!-- 表单容器 -->
+  <view class="form-container">
+
+    <!-- 选择时段1 -->
+    <view class="time-section">
+      <text class="section-title">选择时段1</text>
+      <view class="picker-row">
+        <picker class="picker-item week" mode="selector" range="{{weekArray}}" value="{{timeSlot1.weekIndex}}" bindchange="onWeekChange1">
+          <view class="picker-content">
+            <text class="picker-text">
+              {{ timeSlot1.weekIndex === -1 ? '星期' : weekArray[timeSlot1.weekIndex] }}
+            </text>
+            <text class="picker-arrow">▼</text>
+          </view>
+        </picker>
+        <picker class="picker-item time" mode="selector" range="{{timeArray}}" value="{{timeSlot1.timeIndex}}" bindchange="onTimeChange1">
+          <view class="picker-content">
+            <text class="picker-text">
+              {{ timeSlot1.timeIndex === -1 ? '时段' : timeArray[timeSlot1.timeIndex] }}
+            </text>
+            <text class="picker-arrow">▼</text>
+          </view>
+        </picker>
+      </view>
+    </view>
+
+    <!-- 选择时段2 -->
+    <view class="time-section">
+      <text class="section-title">选择时段2</text>
+      <view class="picker-row">
+        <picker class="picker-item week" mode="selector" range="{{weekArray}}" value="{{timeSlot2.weekIndex}}" bindchange="onWeekChange2">
+          <view class="picker-content">
+            <text class="picker-text">
+              {{ timeSlot2.weekIndex === -1 ? '星期' : weekArray[timeSlot2.weekIndex] }}
+            </text>
+            <text class="picker-arrow">▼</text>
+          </view>
+        </picker>
+        <picker class="picker-item time" mode="selector" range="{{timeArray}}" value="{{timeSlot2.timeIndex}}" bindchange="onTimeChange2">
+          <view class="picker-content">
+            <text class="picker-text">
+              {{ timeSlot2.timeIndex === -1 ? '时段' : timeArray[timeSlot2.timeIndex] }}
+            </text>
+            <text class="picker-arrow">▼</text>
+          </view>
+        </picker>
+      </view>
+    </view>
+
+    <!-- 选择时段3 -->
+    <view class="time-section">
+      <text class="section-title">选择时段3</text>
+      <view class="picker-row">
+        <picker class="picker-item week" mode="selector" range="{{weekArray}}" value="{{timeSlot3.weekIndex}}" bindchange="onWeekChange3">
+          <view class="picker-content">
+            <text class="picker-text">
+              {{ timeSlot3.weekIndex === -1 ? '星期' : weekArray[timeSlot3.weekIndex] }}
+            </text>
+            <text class="picker-arrow">▼</text>
+          </view>
+        </picker>
+        <picker class="picker-item time" mode="selector" range="{{timeArray}}" value="{{timeSlot3.timeIndex}}" bindchange="onTimeChange3">
+          <view class="picker-content">
+            <text class="picker-text">
+              {{ timeSlot3.timeIndex === -1 ? '时段' : timeArray[timeSlot3.timeIndex] }}
+            </text>
+            <text class="picker-arrow">▼</text>
+          </view>
+        </picker>
+      </view>
+    </view>
+
+  </view>
+
+  <!-- 提交按钮 -->
+  <view class="submit-container">
+    <button class="submit-btn" bindtap="onSubmit">提交</button>
+  </view>
+
+  <!-- 底部装饰图 -->
+  <image class="bottom-image" src="/images/object_borrow_list/white_cat.svg" mode="widthFix" />
+</view>

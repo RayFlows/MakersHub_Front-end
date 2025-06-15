@@ -1,20 +1,33 @@
 // pages/activity_list/activity_list.js
-const UtilJS = require("../../utils/util.js");
+const config = {
+  list: 'http://example.com/api/events' // TODO: 替换为真实接口地址
+};
+
+// 模拟 util.js 中的安全导入
+const UtilJS = {
+  // 如果你之前有 formatDate 工具函数，也可以从 util.js 引入
+  formatDate: function (timestamp) {
+    if (!timestamp) return '';
+    const date = new Date(timestamp);
+    const yyyy = date.getFullYear();
+    const mm = String(date.getMonth() + 1).padStart(2, '0');
+    const dd = String(date.getDate()).padStart(2, '0');
+    return `${yyyy}-${mm}-${dd}`;
+  }
+};
 
 Page({
   data: {
     events: [],
-    posters:[], // 海报
+    items: [],
+    posters: [],
+    sortText: '默认',
+    currentSort: 'default',
+    isFolded: true
   },
 
-  onLoad: function(options) {
-    // 设置默认的初始信息
+  onLoad: function (options) {
     this.loadEvents();
-      
-    const posters = this.data.items.slice(0, 3).map(item => ({
-      id: item.event_id,
-      image: item.poster
-    }))
   },
 
   handlerGobackClick() {
@@ -25,126 +38,107 @@ Page({
         if (e.confirm) {
           const pages = getCurrentPages();
           if (pages.length >= 2) {
-            wx.navigateBack({
-              delta: 1
-            });
+            wx.navigateBack({ delta: 1 });
           } else {
-            wx.reLaunch({
-              url: '/pages/index/index'
-            });
+            wx.reLaunch({ url: '/pages/index/index' });
           }
         }
       }
     });
   },
+
   handlerGohomeClick() {
-    wx.reLaunch({
-      url: '/pages/index/index'
+    wx.reLaunch({ url: '/pages/index/index' });
+  },
+
+  toggleSortDropdown() {
+    this.setData({
+      isFolded: !this.data.isFolded
     });
   },
 
-  // 修改后的切换方法（使用箭头函数绑定this）
-  toggleSortDropdown: function() {
-    this.setData({
-      isFolded: !this.data.isFolded // 取反当前状态
-    }, () => {
-      console.log('isFolded 状态已更新:', this.data.isFolded)
-    })
-  },
-
-  // 选择排序方式
   selectSort(e) {
     const value = e.currentTarget.dataset.value;
     let sortText = '默认';
-    
     if (value === 'asc') sortText = '正序';
     if (value === 'desc') sortText = '逆序';
 
     this.setData({
       currentSort: value,
-      sortText: sortText,
+      sortText,
       isFolded: true
     });
 
-    // 这里触发排序逻辑
     this.doSort(value);
   },
 
-  // 实际排序方法
   doSort(mode) {
     let sortedItems = [...this.data.items];
-  
-    switch(mode) {
+
+    switch (mode) {
       case 'asc':
-        sortedItems.sort((a, b) => 
-          new Date(a.start_time.replace(/-/g, '/')) - 
+        sortedItems.sort((a, b) =>
+          new Date(a.start_time.replace(/-/g, '/')) -
           new Date(b.start_time.replace(/-/g, '/'))
         );
         break;
-  
       case 'desc':
-        sortedItems.sort((a, b) => 
-          new Date(b.start_time.replace(/-/g, '/')) - 
+        sortedItems.sort((a, b) =>
+          new Date(b.start_time.replace(/-/g, '/')) -
           new Date(a.start_time.replace(/-/g, '/'))
         );
         break;
-  
       case 'default':
-        // 恢复初始化顺序
-        sortedItems = this.data.items.sort((a, b) => a.event_id - b.event_id);
+        sortedItems.sort((a, b) => a.event_id - b.event_id);
         break;
     }
-  
-    this.setData({ 
-      items: sortedItems 
-    }, () => {
-      console.log('当前排序结果:', this.data.items.map(i => i.start_time));
-    });
+
+    this.setData({ items: sortedItems });
   },
-  
+
   navigateToDetail(e) {
-    const event_id = e.currentTarget.dataset.eventId;  
+    const event_id = e.currentTarget.dataset.eventId;
     if (!event_id) {
-      console.log(event_id);
       wx.showToast({ title: '活动参数错误', icon: 'error' });
       return;
     }
     wx.navigateTo({
-      url: `/pages/activitydetail/activitydetail?event_id`+event_id,
-      success: () => {
-        console.log('成功跳转至活动详情页');
-      },
-      fail: (err) => {
-        console.error('跳转失败:', err);
-        wx.showToast({ title: '页面跳转失败', icon: 'none' });
-      }
+      url: `/pages/activitydetail/activitydetail?event_id=${event_id}`
     });
   },
 
-  // 获取事件列表数据
   loadEvents() {
     wx.showLoading({ title: '加载中...' });
 
     wx.request({
       url: config.list,
       success: (res) => {
-        if (res.statusCode === 200) {
+        if (res.statusCode === 200 && Array.isArray(res.data)) {
+          const formatted = res.data.map(item => ({
+            ...item,
+            start_time: UtilJS.formatDate(item.start_time),
+            end_time: UtilJS.formatDate(item.end_time),
+            registration_deadline: UtilJS.formatDate(item.registration_deadline)
+          }));
+
           this.setData({
-            events: res.data.map(item => ({
-              ...item,
-              // 转换时间戳（假设API返回的是时间戳）
-              start_time: this.formatDate(item.start_time),
-              end_time: this.formatDate(item.end_time),
-              registration_deadline: this.formatDate(item.registration_deadline)
+            events: formatted,
+            items: formatted,
+            posters: formatted.slice(0, 3).map(item => ({
+              id: item.event_id,
+              image: item.poster
             }))
           });
+        } else {
+          wx.showToast({ title: '数据格式错误', icon: 'none' });
         }
       },
-      fail: (err) => {
+      fail: () => {
         wx.showToast({ title: '加载失败', icon: 'none' });
       },
-      complete: () => wx.hideLoading()
+      complete: () => {
+        wx.hideLoading();
+      }
     });
-  },
-
+  }
 });
