@@ -5,7 +5,6 @@ const token = wx.getStorageSync(TOKEN_KEY);
 Page({
   data: {
     // 表单数据
-    // task_name: '',
     name: '',
     student_id: '',
     leaderPhone: '', 
@@ -67,9 +66,9 @@ Page({
   // 初始化物资选择器选项
   initMaterialOptions() {
     const materialOptions = [
-      ['电子设备', '办公用品', '体育用品'],
-      ['笔记本电脑', '投影仪', '音响'],
-      ['1', '2', '3', '4', '5']
+      ['电子设备', '办公用品', '体育用品', '工具', '开发板'],
+      ['笔记本电脑', '投影仪', '音响', '打印机', '扫描仪'],
+      ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10']
     ];
     this.setData({
       'multiArrayList[0]': materialOptions
@@ -115,7 +114,7 @@ Page({
   },
 
   bindMultiPickerColumnChange(e) {
-    // 处理级联选择逻辑
+    // 处理级联选择逻辑（如果需要的话）
   },
 
   addInput() {
@@ -150,8 +149,10 @@ Page({
     wx.navigateBack({
       delta: 1,
       fail: () => {
-        wx.switchTab({ url: '/pages/base_management_work_page/base_management_work_page', fail: () => wx.navigateTo({ url: '/pages/index/index' }) });
-        wx.switchTab({ url: '/pages/base_management_work_page/base_management_work_page', fail: () => wx.navigateTo({ url: '/pages/index/index' }) });
+        wx.switchTab({ 
+          url: '/pages/base_management_work_page/base_management_work_page', 
+          fail: () => wx.navigateTo({ url: '/pages/index/index' }) 
+        });
       }
     });
   },
@@ -160,31 +161,58 @@ Page({
     wx.switchTab({
       url: '/pages/index/index',
       fail: () => {
-        wx.navigateTo({ url: '/pages/index/index', fail: () => wx.showToast({ title: '跳转失败', icon: 'none' }) });
+        wx.navigateTo({ 
+          url: '/pages/index/index', 
+          fail: () => wx.showToast({ title: '跳转失败', icon: 'none' }) 
+        });
       }
     });
   },
 
   onSubmit(e) {
     const { name, student_id, leaderPhone, email, grade, major, content, selectedYear, selectedMonth, selectedDay, selectedTextList } = this.data;
+    
+    // 验证必填字段
     if (!name || !student_id || !leaderPhone || !email || !grade || !major || !content) {
       wx.showToast({ title: '请填写完整信息', icon: 'none' });
       return;
     }
+    
     if (!selectedYear || !selectedMonth || !selectedDay) {
       wx.showToast({ title: '请选择归还日期', icon: 'none' });
       return;
     }
+    
     if (selectedTextList.filter(item => item).length === 0) {
       wx.showToast({ title: '请至少选择一项物资', icon: 'none' });
       return;
     }
+
+    // 构建截止日期
     const deadline = `${selectedYear.replace('年', '')}-${selectedMonth.replace('月', '').padStart(2, '0')}-${selectedDay.replace('日', '').padStart(2, '0')} 00:00:00`;
+    
+    // 过滤有效的物资选择
     const materials = selectedTextList.filter(item => item);
-    const submitData = { name, student_id, phone: leaderPhone, email, grade, major, content, deadline, materials , type:0};
+    
+    // 构建提交数据
+    const submitData = {
+      name,
+      student_id,
+      phone: leaderPhone,
+      email,
+      grade,
+      major,
+      content,
+      deadline,
+      materials,
+      type: 0  // 0表示个人借物
+    };
+
     wx.showLoading({ title: '提交中...' });
+    
+    // 调用新的API接口
     wx.request({
-      url: `${API_BASE}/borrow/apply`,
+      url: `${API_BASE}/stuff-borrow/apply`,
       method: 'POST',
       data: submitData,
       header: {
@@ -193,23 +221,39 @@ Page({
       },
       success: (res) => {
         wx.hideLoading();
-        if (res.statusCode === 200 || res.statusCode === 201) {
-          wx.showToast({ title: '提交成功', icon: 'success' });
-          this.resetForm();
+        console.log('提交响应:', res);
+        
+        if (res.statusCode === 200 && res.data.code === 200) {
+          wx.showToast({ 
+            title: '提交成功', 
+            icon: 'success',
+            duration: 2000
+          });
+          setTimeout(() => {
+            this.resetForm();
+          }, 2000);
         } else {
-          wx.showToast({ title: res.data.detail || '提交失败，请稍后重试', icon: 'none' });
+          wx.showToast({ 
+            title: res.data.message || '提交失败，请稍后重试', 
+            icon: 'none',
+            duration: 3000
+          });
         }
       },
       fail: (err) => {
         wx.hideLoading();
-        wx.showToast({ title: '网络错误，请检查网络连接', icon: 'none' });
+        console.error('提交失败:', err);
+        wx.showToast({ 
+          title: '网络错误，请检查网络连接', 
+          icon: 'none',
+          duration: 3000
+        });
       }
     });
   },
 
   resetForm() {
     this.setData({ 
-      // task_name: '',
       name: '',
       student_id: '',
       leaderPhone: '',
