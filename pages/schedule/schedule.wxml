@@ -44,16 +44,16 @@
   </view>
 
   <!-- 提交/取消按钮 -->
-  <view class="edit-container btn" wx:if="{{isEditing}}">
+  <!-- <view class="edit-container btn" wx:if="{{isEditing}}">
     <button style="width: 186.6rpx;" bindtap="submitEdit">提交</button>
     <button style="width: 186.6rpx;" bindtap="cancelEdit">取消</button>
-  </view>
+  </view> -->
 
 
   <!-- 编辑按钮（非编辑状态显示） -->
-  <view class="edit-container edit" wx:if="{{!isEditing || level == 3}}" bindtap="toggleEdit">
+  <!-- <view class="edit-container edit" wx:if="{{!isEditing || level == 3}}" bindtap="toggleEdit">
     <image class="icon-edit" src="/images/schedule/edit.svg"></image>
-  </view>
+  </view> -->
 
   <image class="bottom-image" src="/images/schedule/white_cat.svg" mode="widthFix" />
 </view>

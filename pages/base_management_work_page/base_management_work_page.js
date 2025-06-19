@@ -12,20 +12,12 @@ Page({
   },
 
   handlerGobackClick() {
-    wx.showModal({
-      title: '你点击了返回',
-      content: '是否确认返回',
-      success: e => {
-        if (e.confirm) {
-          const pages = getCurrentPages();
-          if (pages.length >= 2) {
-            wx.navigateBack({ delta: 1 });
-          } else {
-            wx.reLaunch({ url: '/pages/index/index' });
-          }
-        }
-      }
-    });
+    const pages = getCurrentPages();
+    if (pages.length >= 2) {
+      wx.navigateBack({ delta: 1 });
+    } else {
+      wx.reLaunch({ url: '/pages/index/index' });
+    }
   },
 
   handlerGohomeClick() {
