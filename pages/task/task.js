@@ -1,10 +1,10 @@
-const API_BASE = 'http://146.56.227.73:8000'
-const TOKEN_KEY = 'auth_token'
-const token = wx.getStorageSync(TOKEN_KEY)
+const API_BASE = 'http://146.56.227.73:8000';
+const TOKEN_KEY = 'auth_token';
+const token = wx.getStorageSync(TOKEN_KEY);
 
 Page({
-  data: {  
-    apiData: { // 统一存储要提交到API的数据
+  data: {
+    apiData: {
       task_type: null,
       name: '',
       department: null,
@@ -26,66 +26,113 @@ Page({
       { label: '副会', value: 4 },
       { label: '会长', value: 5 }
     ],
-    makersData: [], // 存储从接口获取的完整部门成员数据
-    currentMakersData: [], // 存储当前负责人数据
-    currentMakers: [], // 当前选中部门的负责人列表
+    makersData: [],
+    currentMakersData: [],
+    currentMakers: [],
     selectedTaskType: '',
+    selectedTaskTypeIndex: null,
     selectedDepartment: '',
     selectedMaker: '',
-    years: Array.from({ length: 10 }, (_, i) => 2024 + i + '年'),
-    months: ['1月', '2月', '3月', '4月', '5月', '6月', '7月', '8月', '9月', '10月', '11月', '12月'],
-    days: Array.from({ length: 31 }, (_, i) => i + 1 + '日'),
-    hours: Array.from({ length: 24 }, (_, i) => i + '时'),
-    minutes: Array.from({ length: 60 }, (_, i) => i + '分'),
-    selectedYear: null,
-    selectedMonth: null,
-    selectedDay: null,
-    selectedHour: null,
-    selectedMinute: null,
+    years: Array.from({ length: 10 }, (_, i) => `${2024 + i}年`),
+    months: Array.from({ length: 12 }, (_, i) => `${i + 1}月`),
+    days: Array.from({ length: 31 }, (_, i) => `${i + 1}日`),
+    hours: Array.from({ length: 24 }, (_, i) => `${i}时`),
+    minutes: Array.from({ length: 60 }, (_, i) => `${i}分`),
+    selectedYear: '',
+    selectedMonth: '',
+    selectedDay: '',
+    selectedHour: '',
+    selectedMinute: '',
     isDescriptionFocused: false,
     isDirectorFocused: false,
-    task_id: null, // 存储任务ID
-    isEditMode: false // 标识是否为编辑模式
+    task_id: null,
+    isEditMode: false,
+    optionsCache: null
+  },
+
+  handlerGobackClick() {
+    wx.showModal({
+      title: '你点击了返回',
+      content: '是否确认返回',
+      success: e => {
+        if (e.confirm) {
+          const pages = getCurrentPages();
+          if (pages.length >= 2) {
+            wx.navigateBack({ delta: 1 });
+          } else {
+            wx.reLaunch({ url: '/pages/index/index' });
+          }
+        }
+      }
+    });
+  },
+
+  handlerGohomeClick() {
+    wx.reLaunch({ url: '/pages/index/index' });
   },
 
   onLoad(options) {
-    console.log('页面加载，options:', options);
-    
-    // 检查是否有taskId参数传递
-    if (options.taskId) {
-      this.setData({
-        task_id: options.taskId,
-        isEditMode: true
-      });
-    }
-    
-    // 初始化数据加载
+    this.setData({ optionsCache: options });
     this.initializeData();
   },
 
-  // 初始化数据加载
   async initializeData() {
     try {
-      // 并行获取所有部门成员和当前负责人数据
-      await Promise.all([
-        this.getMakersData(),
-        this.getCurrentMakersData()
-      ]);
-      
-      // 如果是编辑模式，获取任务详情
-      if (this.data.isEditMode) {
-        await this.getTaskDetail(this.data.task_id);
+      await Promise.all([this.getMakersData(), this.getCurrentMakersData()]);
+      const options = this.data.optionsCache;
+      console.log("options: ", options);
+      if (!options) return;
+
+      if (options.taskData) {
+        const parsed = JSON.parse(decodeURIComponent(options.taskData));
+        if (parsed.code === 200 && parsed.data) {
+          this.setData({
+            task_id: parsed.data.task_id,
+            isEditMode: true
+          });
+          this.populateFormData(parsed.data);
+        }
+      } else if (options.task_id) {
+        const task_type = parseInt(decodeURIComponent(options.task_type || ''));
+        const department = parseInt(decodeURIComponent(options.department || ''));
+        const maker_id = decodeURIComponent(options.maker_id || '');
+        const name = decodeURIComponent(options.name || '');
+        const content = decodeURIComponent(options.content || '');
+        const deadlineStr = decodeURIComponent(options.deadline || '');
+        const deadline = new Date(deadlineStr);
+
+        const isValidDate = d => d instanceof Date && !isNaN(d);
+
+        this.setData({
+          task_id: decodeURIComponent(options.task_id),
+          isEditMode: true,
+          // taskTypeIndex = this.data.taskTypes.findIndex(t => t.value === task_type) || '',
+          selectedTaskType: this.data.taskTypes.find(t => t.value === task_type)?.label || '',
+          selectedDepartment: this.data.departments.find(d => d.value === department)?.label || '',
+          selectedMaker: name,
+          selectedYear: isValidDate(deadline) ? `${deadline.getFullYear()}年` : '',
+          selectedMonth: isValidDate(deadline) ? `${deadline.getMonth() + 1}月` : '',
+          selectedDay: isValidDate(deadline) ? `${deadline.getDate()}日` : '',
+          selectedHour: isValidDate(deadline) ? `${deadline.getHours()}时` : '',
+          selectedMinute: isValidDate(deadline) ? `${deadline.getMinutes()}分` : '',
+          apiData: {
+            task_type,
+            department,
+            maker_id,
+            name,
+            content,
+            deadline: deadlineStr
+          }
+        });
+
+        this.updateCurrentMakersByDepartment(department);
       }
     } catch (error) {
       console.error('初始化数据失败:', error);
-      wx.showToast({
-        title: '数据加载失败',
-        icon: 'none'
-      });
+      wx.showToast({ title: '数据加载失败', icon: 'none' });
     }
   },
 
-  // 获取所有部门成员数据
   getMakersData() {
     return new Promise((resolve, reject) => {
       wx.request({
@@ -95,26 +142,19 @@ Page({
           'Content-Type': 'application/json',
           'Authorization': `Bearer ${token}`
         },
-        success: (res) => {
-          console.log('获取部门成员数据成功:', res.data);
+        success: res => {
           if (res.data.code === 200 && res.data.list) {
-            this.setData({
-              makersData: res.data.list
-            });
+            this.setData({ makersData: res.data.list });
             resolve(res.data.list);
           } else {
-            reject(new Error('获取部门成员数据失败'));
+            reject('获取部门成员数据失败');
           }
         },
-        fail: (err) => {
-          console.error('获取部门成员数据失败:', err);
-          reject(err);
-        }
+        fail: reject
       });
     });
   },
 
-  // 获取当前负责人数据
   getCurrentMakersData() {
     return new Promise((resolve, reject) => {
       wx.request({
@@ -124,26 +164,19 @@ Page({
           'Content-Type': 'application/json',
           'Authorization': `Bearer ${token}`
         },
-        success: (res) => {
-          console.log('获取当前负责人数据成功:', res.data);
+        success: res => {
           if (res.data.code === 200 && res.data.data) {
-            this.setData({
-              currentMakersData: res.data.data
-            });
+            this.setData({ currentMakersData: res.data.data });
             resolve(res.data.data);
           } else {
-            reject(new Error('获取当前负责人数据失败'));
+            reject('获取当前负责人数据失败');
           }
         },
-        fail: (err) => {
-          console.error('获取当前负责人数据失败:', err);
-          reject(err);
-        }
+        fail: reject
       });
     });
   },
 
-  // 获取任务详情
   getTaskDetail(taskId) {
     return new Promise((resolve, reject) => {
       wx.request({
@@ -153,102 +186,76 @@ Page({
           'Content-Type': 'application/json',
           'Authorization': `Bearer ${token}`
         },
-        success: (res) => {
-          console.log('获取任务详情成功:', res.data);
+        success: res => {
           if (res.data) {
             this.populateFormData(res.data);
             resolve(res.data);
           } else {
-            reject(new Error('获取任务详情失败'));
+            reject('获取任务详情失败');
           }
         },
-        fail: (err) => {
-          console.error('获取任务详情失败:', err);
-          reject(err);
-        }
+        fail: reject
       });
     });
   },
 
-  // 预填充表单数据
-  populateFormData(taskData) {
-    const { task_id, task_type, department, maker_id, name, content, deadline } = taskData;
-    
-    // 解析deadline时间
+  populateFormData(data) {
+    let { task_type, department, maker_id, name, content, deadline } = data;
+  
+    // ✅ 补充兼容处理：如果 task_type 是字符串如 “其他”，转换为数字
+    if (typeof task_type === 'string') {
+      const matched = this.data.taskTypes.find(t => t.label === task_type);
+      task_type = matched?.value ?? null;
+    }
+  
+    const taskTypeIndex = this.data.taskTypes.findIndex(t => t.value === task_type);
     const deadlineDate = new Date(deadline);
-    const year = deadlineDate.getFullYear() + '年';
-    const month = (deadlineDate.getMonth() + 1) + '月';
-    const day = deadlineDate.getDate() + '日';
-    const hour = deadlineDate.getHours() + '时';
-    const minute = deadlineDate.getMinutes() + '分';
-    
-    // 获取任务类型标签
-    const taskTypeObj = this.data.taskTypes.find(type => type.value === task_type);
-    const taskTypeLabel = taskTypeObj ? taskTypeObj.label : '';
-    
-    // 获取部门标签
-    const departmentObj = this.data.departments.find(dept => dept.value === department);
-    const departmentLabel = departmentObj ? departmentObj.label : '';
-    
-    // 更新页面数据和apiData
+    const isValidDate = d => d instanceof Date && !isNaN(d);
+  
     this.setData({
-      selectedTaskType: taskTypeLabel,
-      selectedDepartment: departmentLabel,
+      selectedTaskType: this.data.taskTypes[taskTypeIndex]?.label || '',
+      selectedTaskTypeIndex: taskTypeIndex,
+      selectedDepartment: this.data.departments.find(d => d.value === department)?.label || '',
       selectedMaker: name,
-      selectedYear: year,
-      selectedMonth: month,
-      selectedDay: day,
-      selectedHour: hour,
-      selectedMinute: minute,
+      selectedYear: isValidDate(deadlineDate) ? `${deadlineDate.getFullYear()}年` : '',
+      selectedMonth: isValidDate(deadlineDate) ? `${deadlineDate.getMonth() + 1}月` : '',
+      selectedDay: isValidDate(deadlineDate) ? `${deadlineDate.getDate()}日` : '',
+      selectedHour: isValidDate(deadlineDate) ? `${deadlineDate.getHours()}时` : '',
+      selectedMinute: isValidDate(deadlineDate) ? `${deadlineDate.getMinutes()}分` : '',
       apiData: {
-        task_type: task_type,
-        name: name,
-        department: department,
-        maker_id: maker_id,
-        content: content,
-        deadline: deadline
+        task_type,
+        department,
+        maker_id,
+        name,
+        content,
+        deadline
       }
     });
-    
-    // 根据部门更新当前负责人列表
+  
     this.updateCurrentMakersByDepartment(department);
-    
-    console.log('表单数据预填充完成');
-  },
+  },  
 
-  // 任务类型选择改变
   onTaskTypeChange(e) {
     const taskTypeIndex = parseInt(e.detail.value);
     const taskType = this.data.taskTypes[taskTypeIndex];
-    
     this.setData({
       selectedTaskType: taskType.label,
-      apiData: {
-        ...this.data.apiData,
-        task_type: taskType.value
-      }
+      selectedTaskTypeIndex: taskTypeIndex,
+      apiData: { ...this.data.apiData, task_type: taskType.value }
     });
-    
-    // 自动加载对应的当前负责人
     this.loadCurrentMakerByTaskType(taskType.value);
-    
-    console.log('选中任务类型:', taskType);
   },
+  
 
-  // 根据任务类型加载当前负责人
   loadCurrentMakerByTaskType(taskType) {
-    const currentMaker = this.data.currentMakersData.find(maker => maker.task_type === taskType);
-    
+    const currentMaker = this.data.currentMakersData.find(m => m.task_type === taskType);
     if (currentMaker) {
-      // 找到对应的部门信息
-      const departmentObj = this.data.departments.find(dept => {
-        // 需要根据maker_id在makersData中查找对应的部门
-        return this.data.makersData.some(deptData => 
-          deptData.department === dept.value && 
-          deptData.makers.some(maker => maker.maker_id === currentMaker.maker_id)
-        );
-      });
-      
+      const departmentObj = this.data.departments.find(dept =>
+        this.data.makersData.some(d =>
+          d.department === dept.value &&
+          d.makers.some(m => m.maker_id === currentMaker.maker_id)
+        )
+      );
       if (departmentObj) {
         this.setData({
           selectedDepartment: departmentObj.label,
@@ -260,191 +267,95 @@ Page({
             maker_id: currentMaker.maker_id
           }
         });
-        
-        // 更新当前部门的负责人列表
         this.updateCurrentMakersByDepartment(departmentObj.value);
       }
-      
-      console.log('自动加载当前负责人:', currentMaker);
     }
   },
 
-  // 部门选择改变
   onDepartmentChange(e) {
-    const departmentIndex = parseInt(e.detail.value);
-    const department = this.data.departments[departmentIndex];
-    
+    const index = parseInt(e.detail.value);
+    const dept = this.data.departments[index];
     this.setData({
-      selectedDepartment: department.label,
-      selectedMaker: '', // 重置负责人选择
+      selectedDepartment: dept.label,
+      selectedMaker: '',
       apiData: {
         ...this.data.apiData,
-        department: department.value,
+        department: dept.value,
         name: '',
         maker_id: ''
       }
     });
-    
-    // 更新当前部门的负责人列表
-    this.updateCurrentMakersByDepartment(department.value);
-    
-    console.log('选中部门:', department);
+    this.updateCurrentMakersByDepartment(dept.value);
   },
 
-  // 根据部门更新当前负责人列表
-  updateCurrentMakersByDepartment(departmentValue) {
-    const departmentData = this.data.makersData.find(item => item.department === departmentValue);
-    
-    let currentMakers = [];
-    if (departmentData && departmentData.makers) {
-      currentMakers = departmentData.makers;
-    }
-    
+  updateCurrentMakersByDepartment(deptValue) {
+    const deptData = this.data.makersData.find(item => item.department === deptValue);
     this.setData({
-      currentMakers: currentMakers
+      currentMakers: deptData?.makers || []
     });
-    
-    console.log('更新部门负责人列表:', currentMakers);
   },
 
-  // 负责人选择改变
   onMakerChange(e) {
-    const makerIndex = parseInt(e.detail.value);
-    const selectedMaker = this.data.currentMakers[makerIndex];
-    
-    if (selectedMaker) {
+    const index = parseInt(e.detail.value);
+    const selected = this.data.currentMakers[index];
+    if (selected) {
       this.setData({
-        selectedMaker: selectedMaker.name,
+        selectedMaker: selected.name,
         apiData: {
           ...this.data.apiData,
-          name: selectedMaker.name,
-          maker_id: selectedMaker.maker_id
+          name: selected.name,
+          maker_id: selected.maker_id
         }
       });
-      
-      console.log('选中负责人:', selectedMaker);
     }
   },
 
-  // 通用输入处理
   onInput(e) {
     const field = e.currentTarget.dataset.field;
-    const value = e.detail.value;
-    
     this.setData({
-      apiData: {
-        ...this.data.apiData,
-        [field]: value
-      }
+      apiData: { ...this.data.apiData, [field]: e.detail.value }
     });
   },
 
-  // 时间选择器事件处理
-  onYearChange(e) {
-    this.setData({
-      selectedYear: this.data.years[e.detail.value]
-    });
-  },
+  onYearChange(e) { this.setData({ selectedYear: this.data.years[e.detail.value] }); },
+  onMonthChange(e) { this.setData({ selectedMonth: this.data.months[e.detail.value] }); },
+  onDayChange(e) { this.setData({ selectedDay: this.data.days[e.detail.value] }); },
+  onHourChange(e) { this.setData({ selectedHour: this.data.hours[e.detail.value] }); },
+  onMinuteChange(e) { this.setData({ selectedMinute: this.data.minutes[e.detail.value] }); },
 
-  onMonthChange(e) {
-    this.setData({
-      selectedMonth: this.data.months[e.detail.value]
-    });
-  },
-
-  onDayChange(e) {
-    this.setData({
-      selectedDay: this.data.days[e.detail.value]
-    });
-  },
-
-  onHourChange(e) {
-    this.setData({
-      selectedHour: this.data.hours[e.detail.value]
-    });
-  },
-
-  onMinuteChange(e) {
-    this.setData({
-      selectedMinute: this.data.minutes[e.detail.value]
-    });
-  },
-
-  // 焦点处理事件
-  onDescriptionFocused() {
-    this.setData({
-      isDescriptionFocused: true
-    });
-  },
-
-  onDescriptionBlur() {
-    this.setData({
-      isDescriptionFocused: false
-    });
-  },
+  onDescriptionFocused() { this.setData({ isDescriptionFocused: true }); },
+  onDescriptionBlur() { this.setData({ isDescriptionFocused: false }); },
 
   onSubmit() {
-    console.log('调试信息 - 当前数据状态:');
-    console.log('apiData:', this.data.apiData);
-    console.log('编辑模式:', this.data.isEditMode);
-    
-    const { task_name, name, maker_id, content, deadline } = this.data.apiData;
+    const { name, maker_id, content } = this.data.apiData;
     const { selectedYear, selectedMonth, selectedDay, selectedHour, selectedMinute } = this.data;
-    
-    if (!task_name || !name || !maker_id || !content || !selectedYear || !selectedMonth || !selectedDay || !selectedHour || !selectedMinute) {
-      wx.showToast({
-        title: '请填写完整信息',
-        icon: 'none',
-      });
+
+    if (!name || !maker_id || !content || !selectedYear || !selectedMonth || !selectedDay || !selectedHour || !selectedMinute) {
+      wx.showToast({ title: '请填写完整信息', icon: 'none' });
       return;
     }
-    
-    // 格式化 deadline
-    const formattedDeadline = `${selectedYear}-${selectedMonth}-${selectedDay} ${selectedHour}:${selectedMinute}`;
-    
-    // 更新 apiData 中的 deadline
-    this.setData({
-      apiData: {
-        ...this.data.apiData,
-        deadline: formattedDeadline
-      }
-    });
-    
-    console.log('任务信息:', this.data.apiData);
-    
-    // 根据是否为编辑模式选择不同的接口
-    const apiUrl = this.data.isEditMode 
-      ? `${API_BASE}/api/tasks/${this.data.task_id}` 
-      : `${API_BASE}/api/tasks`;
-    const method = this.data.isEditMode ? 'PUT' : 'POST';
-    
+
+    const strip = s => s.replace(/[^\d]/g, '').padStart(2, '0');
+    const deadline = `${selectedYear.replace('年', '')}-${strip(selectedMonth)}-${strip(selectedDay)} ${strip(selectedHour)}:${strip(selectedMinute)}`;
+    const finalData = { ...this.data.apiData, deadline };
+
+    this.setData({ apiData: finalData });
+
     wx.request({
-      url: apiUrl,
-      method: method,
+      url: `${API_BASE}/tasks/post`,
+      method: 'POST',
       header: {
         'Content-Type': 'application/json',
         'Authorization': `Bearer ${token}`
       },
-      data: {
-        ...this.data.apiData,
-        priority: 2 // 添加优先级字段
+      data: { ...finalData, priority: 2 },
+      success: res => {
+        wx.showToast({ title: '任务创建成功', icon: 'success' });
+        setTimeout(() => wx.navigateBack(), 1500);
       },
-      success: (res) => {
-        console.log(`任务${this.data.isEditMode ? '更新' : '创建'}成功:`, res.data);
-        wx.showToast({
-          title: `任务${this.data.isEditMode ? '更新' : '创建'}成功`,
-          icon: 'success'
-        });
-        setTimeout(() => {
-          wx.navigateBack();
-        }, 1500);
-      },
-      fail: (err) => {
-        console.error(`任务${this.data.isEditMode ? '更新' : '创建'}失败:`, err);
-        wx.showToast({
-          title: `${this.data.isEditMode ? '更新' : '创建'}失败,请稍后重试`,
-          icon: 'none'
-        });
+      fail: err => {
+        console.error('任务提交失败:', err);
+        wx.showToast({ title: '提交失败，请稍后重试', icon: 'none' });
       }
     });
   }

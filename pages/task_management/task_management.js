@@ -1,7 +1,7 @@
 // pages/task_management/task_management.js
-const API_BASE = "https://mini.makershub.cn";
+const API_BASE = "http://146.56.227.73:8000";
 const token = wx.getStorageSync('auth_token');
-const DEBUG = true;
+const DEBUG = false;
 // 引入外部utils工具
 const utils = require("../../utils/util")
 
@@ -135,7 +135,7 @@ Page({
       ...item,
       task_name: this.data.taskName[item.task_type] || '未知任务类型', // 映射 task_type 到任务名称
       formatted_deadline: utils.formatDateTime(new Date(item.deadline)),
-      formatted_create_time: utils.formatDateTime(new Date(item.create_time))
+      formatted_create_time: utils.formatDateTime(new Date(item.created_at))
     }));
     
     this.setData({
@@ -259,22 +259,30 @@ Page({
 
   // 重新委派任务（跳转到任务页面并传递参数）
   postAgain(e) {
-    const taskId = e.currentTarget.dataset.taskId;
-    const taskName = e.currentTarget.dataset.taskName; // 使用映射后的 task_name
-    const department = e.currentTarget.dataset.department;
-    const content = e.currentTarget.dataset.content;
-    const state = e.currentTarget.dataset.state;
-    
-    if (!taskId) {
+    const item = e.currentTarget.dataset;
+  
+    if (!item.taskId) {
       wx.showToast({ title: '任务ID不能为空', icon: 'none' });
       return;
     }
+  
+    const taskDetail = {
+      task_id: item.taskId,
+      task_type: item.taskType, // ✔ 这里应为 0/1/2/3 之类的数字
+      department: item.department,
+      maker_id: item.makerId,
+      name: item.name,
+      content: item.content,
+      deadline: item.deadline
+    };
     
-    console.log("重新委派任务: ", { taskId, taskName, department, content, state });
+    const query = encodeURIComponent(JSON.stringify({ code: 200, data: taskDetail }));
     wx.navigateTo({
-      url: `/pages/task/task?task_id=${taskId}`
+      url: `/pages/task/task?taskData=${query}`
     });
+    
   },
+  
 
   // 返回处理
   handlerGobackClick() {

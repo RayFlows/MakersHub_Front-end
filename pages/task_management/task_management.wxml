@@ -150,17 +150,17 @@
                 <text class="label">截止时间：</text>
                 <text class="content">{{item.formatted_deadline}}</text>
               </view>
-              <view
-                class="detail-btn"
-                data-task-name="{{item.task_name}}"
-                data-task-id="{{item.task_id}}"
-                data-department="{{item.department}}"
-                data-maker-id="{{item.maker_id}}"
-                data-name="{{item.name}}"
-                data-content="{{item.content}}"
-                data-state="{{item.state}}"
-                bindtap="postAgain"
-              >重新委派</view>
+              <view bindtap="postAgain"
+                    data-task-id="{{item.task_id}}"
+                    data-task-type="{{item.task_type}}"
+                    data-department="{{item.department}}"
+                    data-maker-id="{{item.maker_id}}"
+                    data-name="{{item.name}}"
+                    data-content="{{item.content}}"
+                    data-deadline="{{item.deadline}}">
+                重新委派
+              </view>
+
             </view>
           </block>
         </block>

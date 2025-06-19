@@ -18,6 +18,7 @@
       mode="selector"
       range="{{taskTypes}}"
       range-key="label"
+      value="{{selectedTaskTypeIndex}}"
       bindchange="onTaskTypeChange">
       <view>{{selectedTaskType || '选择任务类型'}}</view>
     </picker>
