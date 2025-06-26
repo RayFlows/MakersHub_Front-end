@@ -104,7 +104,7 @@ Page({
   fetchList() {
     this.setData({ loading: true });
     wx.request({
-      url: `${API_BASE}/tasks/view-all`,
+      url: `${API_BASE}/tasks/view-my`,
       method: 'GET',
       header: {
         'Authorization': `Bearer ${token}`,
@@ -116,6 +116,7 @@ Page({
           // 获取数据后立即处理并分组
           this.processList(res.data.data.list || []);
           this.setData({ loading: false });
+          console.log("后端返回: ", res.data);
         } else {
           wx.showToast({ title: res.data.message || '加载失败', icon: 'none' });
           this.setData({ loading: false });

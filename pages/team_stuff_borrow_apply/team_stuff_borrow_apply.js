@@ -4,6 +4,8 @@ const TOKEN_KEY = "auth_token";
 Page({
   data: {
     // 表单数据
+    isEditMode: false,
+    sb_id: '',
     name: '',
     student_id: '',
     leaderPhone: '', 
@@ -45,9 +47,99 @@ Page({
     selectedDay: ''
   },
 
-  onLoad() {
+  onLoad(options) {
     this.initDatePickers();
-    this.fetchStuffOptions();
+
+    // 先设置编辑标记
+    if (options.edit === 'true' && options.sb_id) {
+      this.setData({
+        isEditMode: true,
+        sb_id: options.sb_id
+      })
+    }
+    // 拉取可选项
+    this.fetchStuffOptions()
+  },
+
+  loadFormDetail(sb_id) {
+    const token = wx.getStorageSync(TOKEN_KEY);
+    wx.request({
+      url: `${API_BASE}/stuff-borrow/detail/${sb_id}`,
+      method: 'GET',
+      header: {
+        'Authorization': token ? `Bearer ${token}` : '',
+        'Content-Type': 'application/json'
+      },
+      success: (res) => {
+        if (res.statusCode === 200 && res.data.code === 200) {
+          const detail = res.data.data;
+          console.log("[loadFormDetail]", detail);
+          // 解析日期
+          const deadline = new Date(detail.deadline);
+          const selectedYear = `${deadline.getFullYear()}年`;
+          const selectedMonth = `${deadline.getMonth() + 1}月`;
+          const selectedDay = `${deadline.getDate()}日`;
+  
+          // 设置基本字段
+          this.setData({
+            name: detail.name,
+            student_id: detail.student_id,
+            leaderPhone: detail.phone_num,
+            email: detail.email,
+            grade: detail.grade,
+            major: detail.major,
+            content: detail.reason,
+            project_number: detail.project_number,
+            supervisor_name: detail.supervisor_name,
+            supervisor_phone: detail.supervisor_phone,
+            selectedYear,
+            selectedMonth,
+            selectedDay
+          });
+  
+          // 构造物资借用条目
+          const stuffList = detail.stuff_list || [];
+          const array = stuffList.map(() => ({}));
+          const multiArrayList = [];
+          const multiIndexList = [];
+          const selectedTextList = [];
+  
+          for (let item of stuffList) {
+            const catIndex = this.data.categories.indexOf(item.category);
+            const nameList = this.data.namesMap[item.category] || [];
+            const nameIndex = nameList.indexOf(item.stuff);
+            const quantityList = this.data.quantitiesMap[item.stuff] || [];
+            const quantityIndex = 0; // 默认数量索引为0（可根据业务调整）
+  
+            const arrayItem = [
+              this.data.categories,
+              nameList,
+              quantityList
+            ];
+  
+            multiArrayList.push(arrayItem);
+            multiIndexList.push([
+              catIndex >= 0 ? catIndex : 0,
+              nameIndex >= 0 ? nameIndex : 0,
+              quantityIndex
+            ]);
+            selectedTextList.push(
+              `${item.stuff}`
+            );
+          }
+  
+          this.setData({
+            array,
+            selectedTextList
+          });
+        } else {
+          wx.showToast({ title: '加载表单失败', icon: 'none' });
+        }
+      },
+      fail: () => {
+        wx.showToast({ title: '无法连接服务器', icon: 'none' });
+      }
+    });
   },
 
   fetchStuffOptions() {
@@ -83,6 +175,10 @@ Page({
             quantitiesMap
           }, () => {
             this.initMaterialOptions();
+            if (this.data.isEditMode && this.data.sb_id) {
+              // 这时 categories 等已经就绪，loadFormDetail 能正确地映射 index
+              this.loadFormDetail(this.data.sb_id)
+            }
           });
         } else {
           wx.showToast({ title: '物资加载失败', icon: 'none' });
@@ -223,6 +319,7 @@ Page({
     wx.showModal({
       title: '确认返回',
       content: '是否确认返回？未保存的数据将丢失',
+      cancelColor:'#00adb5',
       success: e => {
         if (e.confirm) {
           const pages = getCurrentPages();

@@ -133,6 +133,33 @@ Page({
     });
   },
 
+  // 复制链接
+  copy(e) {
+    const link = e.currentTarget.dataset.link; // 获取点击的链接
+    if (!link) {
+      wx.showToast({
+        title: '链接为空',
+        icon: 'none'
+      });
+      return;
+    }
+    wx.setClipboardData({
+      data: link,
+      success: () => {
+        wx.showToast({
+          title: '复制成功',
+          icon: 'none'
+        });
+      },
+      fail: (err) => {
+        console.error('复制失败：', err);
+        wx.showToast({
+          title: '复制失败',
+          icon: 'none'
+        });
+      }
+    });
+  },
 
   // 点击“修改”，跳转到编辑页
   navigateToDetail(e) {
@@ -169,11 +196,11 @@ Page({
 
   // 监听 xiumi_submit 页面的事件
   onReady() {
-    const eventChannel = this.getOpenerEventChannel();
-    eventChannel.on('refreshLinks', (data) => {
-      console.log('收到刷新事件：', data);
-      this.fetchLinks(); // 收到事件后刷新数据
-    });
+    // const eventChannel = this.getOpenerEventChannel();
+    // eventChannel.on('refreshLinks', (data) => {
+    //   console.log('收到刷新事件：', data);
+    //   this.fetchLinks(); // 收到事件后刷新数据
+    // });
   },
 
   /**

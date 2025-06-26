@@ -33,8 +33,8 @@ Page({
         if (res.statusCode === 200 && res.data && res.data.data && res.data.data.events) {
           const events = res.data.data.events.map(event => ({
             ...event,
-            // 格式化日期显示
-            start_time: utils.formatDateTime(event.start_time)
+            start_time_raw: event.start_time,  // 保留原始时间
+            start_time: utils.formatDateTime(event.start_time)  // 显示用
           }));
 
           // 提取轮播图数据 (使用所有活动或最多4个)
@@ -125,31 +125,20 @@ Page({
   },
 
   doSort(mode) {
-    let sortedItems = [...this.data.items];
-    
-    // 根据选择的排序方式处理数据
+    let sortedItems = [...this.data.events]; // 从原始数据重新排序，确保不会越排越乱
+  
     switch (mode) {
       case 'asc':
-        sortedItems.sort((a, b) => {
-          // 将格式化后的日期字符串转换回日期对象再比较
-          const dateA = this.parseFormattedDate(a.start_time);
-          const dateB = this.parseFormattedDate(b.start_time);
-          return dateA - dateB;
-        });
+        sortedItems.sort((a, b) => new Date(a.start_time_raw) - new Date(b.start_time_raw));
         break;
       case 'desc':
-        sortedItems.sort((a, b) => {
-          const dateA = this.parseFormattedDate(a.start_time);
-          const dateB = this.parseFormattedDate(b.start_time);
-          return dateB - dateA;
-        });
+        sortedItems.sort((a, b) => new Date(b.start_time_raw) - new Date(a.start_time_raw));
         break;
       case 'default':
-        // 保持原始添加顺序
-        sortedItems = [...this.data.events]; 
+        // 默认保持后端返回顺序
         break;
     }
-    
+  
     this.setData({ items: sortedItems });
   },
 

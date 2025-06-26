@@ -4,26 +4,43 @@ const DEBUG = false;
 function parseStuff(data) {
   console.log('[parseStuff] 解析 stuff_list:', data.stuff_list);
   if (data.stuff_list && Array.isArray(data.stuff_list)) {
-    const firstStuffStr = data.stuff_list[0]?.stuff || "";
-    const parts = firstStuffStr.split(" - ");
-    if (parts.length === 3) {
-      data.stuff = {
-        type: parts[0],
-        name: parts[1],
-        number: parts[2]
-      };
-    } else {
-      data.stuff = {
-        type: '未知',
-        name: '未知',
-        number: '未知'
-      };
+    // 解析所有物资，而不只是第一个
+    data.stuffList = data.stuff_list.map(item => {
+      const stuffStr = item.stuff || "";
+      const parts = stuffStr.split(" - ");
+      if (parts.length === 3) {
+        return {
+          type: parts[0],
+          name: parts[1],
+          number: parts[2]
+        };
+      } else {
+        return {
+          type: '未知',
+          name: '未知',
+          number: '未知'
+        };
+      }
+    });
+    
+    // 保持原有的 stuff 属性用于兼容性（如果其他地方有用到）
+    if (data.stuffList.length > 0) {
+      data.stuff = data.stuffList[0];
     }
+  } else {
+    data.stuffList = [];
+    data.stuff = {
+      type: '未知',
+      name: '未知',
+      number: '未知'
+    };
   }
-  console.log('[parseStuff] 处理结果:', data.stuff);
-  console.log('[parseStuff] 处理结果data:', data);
+  
+  console.log('[parseStuff] 处理结果 stuffList:', data.stuffList);
+  console.log('[parseStuff] 处理结果 data:', data);
   return data;
 }
+
 
 Page({
   data: {

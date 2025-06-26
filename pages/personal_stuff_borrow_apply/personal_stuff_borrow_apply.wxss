@@ -24,6 +24,7 @@
   box-shadow: 0 8rpx 24rpx rgba(0, 0, 0, 0.1);
   width: 95%;
   margin-bottom: 30rpx;
+  color: #4E5969;
 }
 
 /* 统一输入框样式 */

@@ -160,8 +160,6 @@ swiper-item {
   font-weight: 600;
   color: #393E46; 
   max-width: 100%; /* 最大宽度为100%，防止溢出 */
-  overflow: hidden; /* 隐藏溢出部分 */
-  text-overflow: ellipsis; /* 使用省略号表示溢出部分 */
   text-align: left; /* 设置文本左对齐 */
 }
 

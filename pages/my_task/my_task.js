@@ -1,7 +1,7 @@
 // pages/my_task/my_task.js
 const API_BASE = "https://mini.makershub.cn";
 const token = wx.getStorageSync('auth_token');
-const DEBUG = true;
+const DEBUG = false;
 // 引入外部utils工具
 const utils = require("../../utils/util")
 

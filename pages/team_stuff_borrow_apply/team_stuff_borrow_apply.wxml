@@ -27,6 +27,7 @@
     <input
       class="input-field {{ isLeaderNameFocused ? 'focused' : '' }}"
       placeholder="负责人姓名"
+      value="{{name}}"
       data-field="name"
       bindinput="onInput"
       bindfocus="onLeaderNameFocus"
@@ -46,6 +47,7 @@
     <input
       class="input-field {{ isLeaderPhoneFocused ? 'focused' : '' }}"
       placeholder="负责人电话"
+      value="{{leaderPhone}}"
       data-field="leaderPhone"
       bindinput="onInput"
       bindfocus="onLeaderPhoneFocus"
@@ -55,6 +57,7 @@
     <input
       class="input-field {{ isEmailFocused ? 'focused' : '' }}"
       placeholder="邮箱地址"
+      value="{{email}}"
       data-field="email"
       bindinput="onInput"
       bindfocus="onEmailFocus"
@@ -64,6 +67,7 @@
     <input
       class="input-field {{ isGradeFocused ? 'focused' : '' }}"
       placeholder="年级（例如：2023级）"
+      value="{{grade}}"
       data-field="grade"
       bindinput="onInput"
       bindfocus="onGradeFocus"
@@ -73,6 +77,7 @@
     <input
       class="input-field {{ isMajorFocused ? 'focused' : '' }}"
       placeholder="专业（例如：计算机科学）"
+      value="{{major}}"
       data-field="major"
       bindinput="onInput"
       bindfocus="onMajorFocus"
@@ -82,6 +87,7 @@
       <input
         class="input-field {{ isProjectIdFocused ? 'focused' : '' }}"
         placeholder="项目编号"
+        value="{{project_number}}"
         data-field="project_number"
         bindinput="onInput"
         bindfocus="onProjectIdFocus"
@@ -91,6 +97,7 @@
       <input
         class="input-field {{ isAdvisorNameFocused ? 'focused' : '' }}"
         placeholder="指导老师姓名"
+        value="{{supervisor_name}}"
         data-field="supervisor_name"
         bindinput="onInput"
         bindfocus="onAdvisorNameFocus"
@@ -100,6 +107,7 @@
       <input
         class="input-field {{ isAdvisorPhoneFocused ? 'focused' : '' }}"
         placeholder="指导老师电话"
+        value="{{supervisor_phone}}"
         data-field="supervisor_phone"
         bindinput="onInput"
         bindfocus="onAdvisorPhoneFocus"
@@ -160,12 +168,16 @@
   <textarea 
     class="input-field textarea-field {{isDescriptionFocused ? 'focused' : ''}}" 
     placeholder="请输入借用理由" 
+    value="{{content}}"
     data-field="content" 
     bindinput="onInput"
     bindfocus="onDescriptionFocus" 
     bindblur="onDescriptionBlur"/>
 
-  <button class="submit-btn" bindtap="onSubmit" style="width: 227rpx;">提交</button>
+  <!-- 在按钮部分 -->
+  <button class="submit-btn" bindtap="onSubmit" style="width: 227rpx;">
+    {{isEditMode ? '更新申请' : '提交申请'}}
+  </button>
 
   <image class="decorative-image" src="/images/activity/white_cat.svg"/>
 </view>

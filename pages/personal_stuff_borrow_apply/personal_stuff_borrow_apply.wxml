@@ -23,7 +23,7 @@
     <text class="form-label">借用人姓名</text>
     <input
       class="input-field {{ isLeaderNameFocused ? 'focused' : '' }}"
-      placeholder="负责人姓名"
+      placeholder="借用人姓名"
       value="{{name}}"
       data-field="name"
       bindinput="onInput"
@@ -33,7 +33,7 @@
       <text class="form-label">借用人学号</text>
     <input
       class="input-field {{ isLeaderNameFocused ? 'focused' : '' }}"
-      placeholder="负责人学号"
+      placeholder="借用人学号"
       value="{{student_id}}"
       data-field="student_id"
       bindinput="onInput"
@@ -43,7 +43,7 @@
     <text class="form-label">借用人电话</text>
     <input
       class="input-field {{ isLeaderPhoneFocused ? 'focused' : '' }}"
-      placeholder="负责人电话"
+      placeholder="借用人电话"
       data-field="leaderPhone"
       bindinput="onInput"
       bindfocus="onLeaderPhoneFocus"

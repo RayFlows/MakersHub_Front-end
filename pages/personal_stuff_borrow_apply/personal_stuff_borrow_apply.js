@@ -241,6 +241,21 @@ Page({
     });
   },  
   
+  handlerGobackClick() {
+    wx.showModal({
+      title: '确认返回',
+      content: '是否确认返回？未保存的数据将丢失',
+      cancelColor:'#00adb5',
+      success: e => {
+        if (e.confirm) {
+          const pages = getCurrentPages();
+          if (pages.length >= 2) wx.navigateBack({ delta: 1 });
+          else wx.reLaunch({ url: '/pages/index/index' });
+        }
+      }
+    });
+  },
+
   handlerGohomeClick() {
     wx.switchTab({
       url: '/pages/index/index',

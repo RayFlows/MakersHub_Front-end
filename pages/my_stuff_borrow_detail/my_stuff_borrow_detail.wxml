@@ -25,9 +25,11 @@
 
       <view class="section">
         <text class="sub-title">借用详情</text>
-        <view class="info">借物类别：{{apiData.stuff.type}}</view>
-        <view class="info">借物名称：{{apiData.stuff.name}}</view>
-        <view class="info">借物数量：{{apiData.stuff.number}}</view>
+        <view class="stuff-list">
+          <view class="info" wx:for="{{apiData.stuffList}}" wx:key="index">
+            {{item.type}} - {{item.name}} - {{item.number}}
+          </view>
+        </view>
       </view>
 
       <view class="section" wx:if="{{apiData.type === 1}}">
@@ -57,7 +59,7 @@
         </view>
       </view>
 
-      <view class="action-buttons">
+      <view wx:if="{{apiData.state != 2}}" class="action-buttons">
         <view class="action-btn cancel-btn" bindtap="cancelApplication">取消申请</view>
         <view class="action-btn modify-btn" bindtap="modifyApplication">修改申请</view>
       </view>

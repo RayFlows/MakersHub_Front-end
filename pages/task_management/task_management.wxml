@@ -71,7 +71,7 @@
                   data-content="{{item.content}}"
                   data-state="{{item.state}}"
                   bindtap="finishTask"
-                >结束</view>
+                >完成</view>
               </view>
             </view>
           </block>
