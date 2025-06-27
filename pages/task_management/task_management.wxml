@@ -150,7 +150,9 @@
                 <text class="label">截止时间：</text>
                 <text class="content">{{item.formatted_deadline}}</text>
               </view>
-              <view bindtap="postAgain"
+              <view 
+                    class="detail-btn"
+                    bindtap="postAgain"
                     data-task-id="{{item.task_id}}"
                     data-task-type="{{item.task_type}}"
                     data-department="{{item.department}}"

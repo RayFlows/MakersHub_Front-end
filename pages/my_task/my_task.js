@@ -76,9 +76,23 @@ Page({
   changeItem(e) {
     const index = parseInt(e.currentTarget.dataset.item);
     this.setData({ tab: index });
+    
+    // 每次切换tab时重新请求数据
+    if (DEBUG) {
+      this.loadMockData();
+    } else {
+      this.fetchList();
+    }
   },
   onSwiperChange(e) {
     this.setData({ tab: e.detail.current });
+  
+    // 滑动切换tab时也重新请求数据
+    if (DEBUG) {
+      this.loadMockData();
+    } else {
+      this.fetchList();
+    }
   },
 
   // 使用本地 mockData 调试的方法
@@ -126,7 +140,7 @@ Page({
       ...item,
       task_name: this.data.taskName[item.task_type] || '未知任务类型', // 映射 task_type 到任务名称
       formatted_deadline: utils.formatDateTime(new Date(item.deadline)),
-      formatted_create_time: utils.formatDateTime(new Date(item.create_time))
+      formatted_create_time: utils.formatDateTime(new Date(item.created_at))
     }));
     
     this.setData({

@@ -85,9 +85,23 @@ Page({
   changeItem(e) {
     const index = parseInt(e.currentTarget.dataset.item);
     this.setData({ tab: index });
+    
+    // 每次切换tab时重新请求数据
+    if (DEBUG) {
+      this.loadMockData();
+    } else {
+      this.fetchList();
+    }
   },
   onSwiperChange(e) {
     this.setData({ tab: e.detail.current });
+  
+    // 滑动切换tab时也重新请求数据
+    if (DEBUG) {
+      this.loadMockData();
+    } else {
+      this.fetchList();
+    }
   },
 
   // 使用本地 mockData 调试的方法
