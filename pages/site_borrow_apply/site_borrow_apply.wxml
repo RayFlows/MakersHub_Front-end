@@ -173,7 +173,10 @@
     </picker>
   </view>
 
-  <button class="submit-btn" bindtap="onSubmit" style="width: 227rpx;">{{isEdit ? '保存修改' : '提交'}}</button>
+  <!-- 在按钮部分 -->
+  <button class="submit-btn" bindtap="onSubmit" style="width: 227rpx;">
+    {{isEditMode ? '更新' : '提交'}}
+  </button>
 
   <image class="decorative-image" src="/images/activity/white_cat.svg"/>
 </view>

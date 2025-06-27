@@ -104,7 +104,7 @@ Page({
   fetchList() {
     this.setData({ loading: true });
     wx.request({
-      url: `${API_BASE}/tasks/view-my`,
+      url: `${API_BASE}/tasks/view-all`,
       method: 'GET',
       header: {
         'Authorization': `Bearer ${token}`,

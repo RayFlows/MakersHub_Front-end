@@ -44,6 +44,7 @@
     <input
       class="input-field {{ isLeaderPhoneFocused ? 'focused' : '' }}"
       placeholder="借用人电话"
+      value="{{leaderPhone}}"
       data-field="leaderPhone"
       bindinput="onInput"
       bindfocus="onLeaderPhoneFocus"
@@ -53,6 +54,7 @@
     <input
       class="input-field {{ isEmailFocused ? 'focused' : '' }}"
       placeholder="邮箱地址"
+      value="{{email}}"
       data-field="email"
       bindinput="onInput"
       bindfocus="onEmailFocus"
@@ -62,6 +64,7 @@
     <input
       class="input-field {{ isGradeFocused ? 'focused' : '' }}"
       placeholder="年级（例如：2023级）"
+      value="{{grade}}"
       data-field="grade"
       bindinput="onInput"
       bindfocus="onGradeFocus"
@@ -71,6 +74,7 @@
     <input
       class="input-field {{ isMajorFocused ? 'focused' : '' }}"
       placeholder="专业（例如：计算机科学）"
+      value="{{major}}"
       data-field="major"
       bindinput="onInput"
       bindfocus="onMajorFocus"
@@ -128,14 +132,17 @@
   <textarea
     class="input-field textarea-field {{isDescriptionFocused ? 'focused' : ''}}"
     placeholder="请输入借用理由"
-    value="{{content}}"
-    data-field="content"
+    value="{{reason}}"
+    data-field="reason"
     bindinput="onInput"
     bindtap="onDescriptionFocused"
     bindblur="onDescriptionBlur">
   </textarea>
 
-  <button class="submit-btn" bindtap="onSubmit" style="width: 227rpx;">提交</button>
+    <!-- 在按钮部分 -->
+  <button class="submit-btn" bindtap="onSubmit" style="width: 227rpx;">
+    {{isEditMode ? '更新' : '提交'}}
+  </button>
 
   <image class="decorative-image" src="/images/activity/white_cat.svg"/>
 </view>

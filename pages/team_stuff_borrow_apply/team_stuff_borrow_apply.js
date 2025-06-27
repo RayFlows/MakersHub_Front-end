@@ -15,7 +15,7 @@ Page({
     project_number: '',
     supervisor_name: '',
     supervisor_phone: '',
-    content: '',
+    reason: '',
 
     // 焦点状态
     isLeaderNameFocused: false,
@@ -88,7 +88,7 @@ Page({
             email: detail.email,
             grade: detail.grade,
             major: detail.major,
-            content: detail.reason,
+            reason: detail.reason,
             project_number: detail.project_number,
             supervisor_name: detail.supervisor_name,
             supervisor_phone: detail.supervisor_phone,
@@ -352,10 +352,11 @@ Page({
     const {
       name, student_id, leaderPhone, email, grade, major,
       project_number, supervisor_name, supervisor_phone,
-      content, selectedYear, selectedMonth, selectedDay, selectedTextList
+      reason, selectedYear, selectedMonth, selectedDay, selectedTextList,
+      isEditMode, sb_id
     } = this.data;
-
-    if (!student_id || !name || !leaderPhone || !email || !grade || !major || !content) {
+  
+    if (!student_id || !name || !leaderPhone || !email || !grade || !major || !reason) {
       wx.showToast({ title: '请填写完整基本信息', icon: 'none' }); return;
     }
     if (!project_number || !supervisor_name || !supervisor_phone) {
@@ -364,25 +365,41 @@ Page({
     if (!selectedYear || !selectedMonth || !selectedDay) {
       wx.showToast({ title: '请选择归还日期', icon: 'none' }); return;
     }
-
+  
     const validMaterials = selectedTextList.filter(item => item && item.trim() !== '');
     if (validMaterials.length === 0) {
       wx.showToast({ title: '请至少选择一项物资', icon: 'none' }); return;
     }
-
+  
     const deadline = `${selectedYear.replace('年', '')}-${selectedMonth.replace('月', '').padStart(2, '0')}-${selectedDay.replace('日', '').padStart(2, '0')} 00:00:00`;
+  
+    // 构造提交数据
     const submitData = {
-      name, student_id, phone: leaderPhone, email, grade, major,
-      content, deadline, materials: validMaterials, type: 1,
-      supervisor_name, supervisor_phone, project_number
+      name,
+      student_id,
+      phone: leaderPhone,  // 注意：后端期望的字段名是 phone
+      email,
+      grade,
+      major,
+      reason,
+      deadline,
+      materials: validMaterials,
+      type: 1,  // 根据你的数据格式，这里固定为1（团队借用）
+      supervisor_name,
+      supervisor_phone,
+      project_number
     };
-
+  
     const token = wx.getStorageSync(TOKEN_KEY);
-    wx.showLoading({ title: '提交中...' });
-
+    wx.showLoading({ title: isEditMode ? '更新提交中...' : '提交中...' });
+  
+    // 根据编辑模式选择不同的接口和方法
+    const apiUrl = isEditMode ? `${API_BASE}/stuff-borrow/update/${sb_id}` : `${API_BASE}/stuff-borrow/apply`;
+    const httpMethod = isEditMode ? 'PATCH' : 'POST';
+  
     wx.request({
-      url: `${API_BASE}/stuff-borrow/apply`,
-      method: 'POST',
+      url: apiUrl,
+      method: httpMethod,
       data: submitData,
       header: {
         'Content-Type': 'application/json',
@@ -391,9 +408,14 @@ Page({
       success: (res) => {
         wx.hideLoading();
         if (res.statusCode === 200 || res.statusCode === 201) {
-          wx.showToast({ title: '提交成功', icon: 'success' });
+          wx.showToast({ 
+            title: isEditMode ? '更新成功' : '提交成功', 
+            icon: 'success' 
+          });
           setTimeout(() => {
-            this.resetForm();
+            if (!isEditMode) {
+              this.resetForm();
+            }
             wx.switchTab({
               url: '/pages/index/index',
               fail: () => {
@@ -403,9 +425,11 @@ Page({
               }
             });
           }, 1500);
-        }
-         else {
-          wx.showToast({ title: res.data?.detail || '提交失败', icon: 'none' });
+        } else {
+          wx.showToast({ 
+            title: res.data?.detail || (isEditMode ? '更新失败' : '提交失败'), 
+            icon: 'none' 
+          });
         }
       },
       fail: () => {
@@ -419,7 +443,7 @@ Page({
     this.setData({
       name: '', student_id: '', leaderPhone: '', email: '', grade: '',
       major: '', project_number: '', supervisor_name: '', supervisor_phone: '',
-      content: '', selectedYear: '', selectedMonth: '', selectedDay: '',
+      reason: '', selectedYear: '', selectedMonth: '', selectedDay: '',
       array: [{}], multiIndexList: [[0, 0, 0]], selectedTextList: [''],
       isLeaderNameFocused: false, isLeaderIdFocused: false,
       isLeaderPhoneFocused: false, isEmailFocused: false,

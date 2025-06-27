@@ -168,15 +168,15 @@
   <textarea 
     class="input-field textarea-field {{isDescriptionFocused ? 'focused' : ''}}" 
     placeholder="请输入借用理由" 
-    value="{{content}}"
-    data-field="content" 
+    value="{{reason}}"
+    data-field="reason" 
     bindinput="onInput"
     bindfocus="onDescriptionFocus" 
     bindblur="onDescriptionBlur"/>
 
   <!-- 在按钮部分 -->
   <button class="submit-btn" bindtap="onSubmit" style="width: 227rpx;">
-    {{isEditMode ? '更新申请' : '提交申请'}}
+    {{isEditMode ? '更新' : '提交'}}
   </button>
 
   <image class="decorative-image" src="/images/activity/white_cat.svg"/>

@@ -3,13 +3,15 @@ const TOKEN_KEY = "auth_token";
 
 Page({
   data: {
+    isEditMode:false,
+    sb_id: '',
     name: '',
     student_id: '',
     leaderPhone: '',
     email: '',
     grade: '',
     major: '',
-    content: '',
+    reason: '',
 
     isLeaderNameFocused: false,
     isLeaderIdFocused: false,
@@ -36,8 +38,16 @@ Page({
     selectedDay: ''
   },
 
-  onLoad() {
+  onLoad(options) {
     this.initDatePickers();
+
+    if(options.edit === 'true' && options.sb_id) {
+      this.setData({
+        isEditMode: true,
+        sb_id: options.sb_id
+      })
+    }
+
     this.fetchStuffOptions();
   },
 
@@ -74,6 +84,136 @@ Page({
             quantitiesMap
           }, () => {
             this.initMaterialOptions();
+            if (this.data.isEditMode && this.data.sb_id) {
+              // 这时 categories 等已经就绪，loadFormDetail 能正确地映射 index
+              this.loadFormDetail(this.data.sb_id)
+            }
+          });
+        } else {
+          wx.showToast({ title: '物资加载失败', icon: 'none' });
+        }
+      },
+      fail: () => {
+        wx.showToast({ title: '物资加载失败', icon: 'none' });
+      }
+    });
+  },
+
+  loadFormDetail(sb_id) {
+    const token = wx.getStorageSync(TOKEN_KEY);
+    wx.request({
+      url: `${API_BASE}/stuff-borrow/detail/${sb_id}`,
+      method: 'GET',
+      header: {
+        'Authorization': token ? `Bearer ${token}` : '',
+        'Content-Type': 'application/json'
+      },
+      success: (res) => {
+        if (res.statusCode === 200 && res.data.code === 200) {
+          const detail = res.data.data;
+          console.log("[loadFormDetail]", detail);
+          // 解析日期
+          const deadline = new Date(detail.deadline);
+          const selectedYear = `${deadline.getFullYear()}年`;
+          const selectedMonth = `${deadline.getMonth() + 1}月`;
+          const selectedDay = `${deadline.getDate()}日`;
+  
+          // 设置基本字段
+          this.setData({
+            name: detail.name,
+            student_id: detail.student_id,
+            leaderPhone: detail.phone_num,
+            email: detail.email,
+            grade: detail.grade,
+            major: detail.major,
+            reason: detail.reason,
+            selectedYear,
+            selectedMonth,
+            selectedDay
+          });
+  
+          // 构造物资借用条目
+          const stuffList = detail.stuff_list || [];
+          const array = stuffList.map(() => ({}));
+          const multiArrayList = [];
+          const multiIndexList = [];
+          const selectedTextList = [];
+  
+          for (let item of stuffList) {
+            const catIndex = this.data.categories.indexOf(item.category);
+            const nameList = this.data.namesMap[item.category] || [];
+            const nameIndex = nameList.indexOf(item.stuff);
+            const quantityList = this.data.quantitiesMap[item.stuff] || [];
+            const quantityIndex = 0; // 默认数量索引为0（可根据业务调整）
+  
+            const arrayItem = [
+              this.data.categories,
+              nameList,
+              quantityList
+            ];
+  
+            multiArrayList.push(arrayItem);
+            multiIndexList.push([
+              catIndex >= 0 ? catIndex : 0,
+              nameIndex >= 0 ? nameIndex : 0,
+              quantityIndex
+            ]);
+            selectedTextList.push(
+              `${item.stuff}`
+            );
+          }
+  
+          this.setData({
+            array,
+            selectedTextList
+          });
+        } else {
+          wx.showToast({ title: '加载表单失败', icon: 'none' });
+        }
+      },
+      fail: () => {
+        wx.showToast({ title: '无法连接服务器', icon: 'none' });
+      }
+    });
+  },
+
+  fetchStuffOptions() {
+    const token = wx.getStorageSync(TOKEN_KEY);
+    wx.request({
+      url: `${API_BASE}/stuff/get-all`,
+      method: 'GET',
+      header: {
+        'Authorization': token ? `Bearer ${token}` : '',
+        'Content-Type': 'application/json'
+      },
+      success: (res) => {
+        console.log('[fetchStuffOptions] 接口响应:', res);
+        if (res.statusCode === 200 && res.data) {
+          console.log('[后端接口数据]', res.data);
+          const grouped = res.data.types;
+          const categories = grouped.map(item => item.type);
+          const namesMap = {};
+          const quantitiesMap = {};
+
+          for (const typeObj of grouped) {
+            const type = typeObj.type;
+            const details = typeObj.details || [];
+            namesMap[type] = details.map(d => d.stuff_name);
+            for (const item of details) {
+              quantitiesMap[item.stuff_name] = Array.from({ length: item.number_remain }, (_, i) => `${i + 1}`);
+            }
+          }
+
+          this.setData({
+            categories,
+            namesMap,
+            quantitiesMap
+          }, () => {
+            this.initMaterialOptions();
+            if (this.data.isEditMode && this.data.sb_id) {
+              // 这时 categories 等已经就绪，loadFormDetail 能正确地映射 index
+              this.loadFormDetail(this.data.sb_id)
+            }
           });
         } else {
           wx.showToast({ title: '物资加载失败', icon: 'none' });
@@ -190,53 +330,82 @@ Page({
   },
 
   onSubmit() {
-    const { name, student_id, leaderPhone, email, grade, major, content,
-      selectedYear, selectedMonth, selectedDay, selectedTextList } = this.data;
+    const { name, student_id, leaderPhone, email, grade, major, reason,
+      selectedYear, selectedMonth, selectedDay, selectedTextList, isEditMode, sb_id 
+    } = this.data;
   
-    if (!name || !student_id || !leaderPhone || !email || !grade || !major || !content) {
+    if (!name || !student_id || !leaderPhone || !email || !grade || !major || !reason) {
       wx.showToast({ title: '请填写完整信息', icon: 'none' }); return;
     }
     if (!selectedYear || !selectedMonth || !selectedDay) {
       wx.showToast({ title: '请选择归还日期', icon: 'none' }); return;
     }
-    if (!selectedTextList.filter(item => item).length) {
+    const validMaterials = selectedTextList.filter(item => item && item.trim() !== '');
+    if (validMaterials.length === 0) {
       wx.showToast({ title: '请至少选择一项物资', icon: 'none' }); return;
     }
   
     const deadline = `${selectedYear.replace('年', '')}-${selectedMonth.replace('月', '').padStart(2, '0')}-${selectedDay.replace('日', '').padStart(2, '0')} 00:00:00`;
-    const materials = selectedTextList.filter(item => item);
   
+    // 构造提交数据
+    const submitData = {
+      name,
+      student_id,
+      phone: leaderPhone,  // 注意：后端期望的字段名是 phone
+      email,
+      grade,
+      major,
+      reason,
+      deadline,
+      materials: validMaterials,
+      type: 0,  // (个人借用）
+    };
+
     const token = wx.getStorageSync(TOKEN_KEY);
     wx.showLoading({ title: '提交中...' });
   
+    // 根据编辑模式选择不同的接口和方法
+    const apiUrl = isEditMode ? `${API_BASE}/stuff-borrow/update/${sb_id}` : `${API_BASE}/stuff-borrow/apply`;
+    const httpMethod = isEditMode ? 'PATCH' : 'POST';
+  
     wx.request({
-      url: `${API_BASE}/stuff-borrow/apply`,
-      method: 'POST',
-      data: {
-        name, student_id, phone: leaderPhone, email, grade, major, content,
-        deadline, materials, type: 0
-      },
+      url: apiUrl,
+      method: httpMethod,
+      data: submitData,
       header: {
         'Content-Type': 'application/json',
         'Authorization': token ? `Bearer ${token}` : ''
       },
       success: (res) => {
         wx.hideLoading();
-        if (res.statusCode === 200 && res.data.code === 200) {
-          wx.showToast({ title: '提交成功', icon: 'success' });
+        if (res.statusCode === 200 || res.statusCode === 201) {
+          wx.showToast({ 
+            title: isEditMode ? '更新成功' : '提交成功', 
+            icon: 'success' 
+          });
           setTimeout(() => {
-            this.resetForm();
-            wx.redirectTo({
-              url: '/pages/index/index'
-            });            
-          }, 2000);
+            if (!isEditMode) {
+              this.resetForm();
+            }
+            wx.switchTab({
+              url: '/pages/index/index',
+              fail: () => {
+                wx.redirectTo({
+                  url: '/pages/index/index'
+                });
+              }
+            });
+          }, 1500);
         } else {
-          wx.showToast({ title: res.data.message || '提交失败', icon: 'none' });
+          wx.showToast({ 
+            title: res.data?.detail || (isEditMode ? '更新失败' : '提交失败'), 
+            icon: 'none' 
+          });
         }
       },
       fail: () => {
         wx.hideLoading();
-        wx.showToast({ title: '网络错误', icon: 'none' });
+        wx.showToast({ title: '网络错误，请检查网络连接', icon: 'none' });
       }
     });
   },  
@@ -270,7 +439,7 @@ Page({
   resetForm() {
     this.setData({
       name: '', student_id: '', leaderPhone: '', email: '', grade: '',
-      major: '', content: '', selectedYear: '', selectedMonth: '',
+      major: '', reason: '', selectedYear: '', selectedMonth: '',
       selectedDay: '', array: [{}], multiArrayList: [],
       multiIndexList: [], selectedTextList: [],
       isLeaderNameFocused: false, isLeaderIdFocused: false,

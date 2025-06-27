@@ -173,11 +173,11 @@
     </swiper-item>
   </swiper>
   <!-- 底部装饰 -->
-  <view class="cat-container">
+  <!-- <view class="cat-container">
     <image
       class="bottom-image"
       src="/images/site_borrow_list/white_cat.svg"
       mode="aspectFit"
     />
-  </view>
+  </view> -->
 </view>
