@@ -371,7 +371,7 @@ Page({
       wx.showToast({ title: '请至少选择一项物资', icon: 'none' }); return;
     }
   
-    const deadline = `${selectedYear.replace('年', '')}-${selectedMonth.replace('月', '').padStart(2, '0')}-${selectedDay.replace('日', '').padStart(2, '0')} 00:00:00`;
+    const deadline = `${selectedYear.replace('年', '')}-${selectedMonth.replace('月', '').padStart(2, '0')}-${selectedDay.replace('日', '').padStart(2, '0')}`;
   
     // 构造提交数据
     const submitData = {
@@ -413,17 +413,34 @@ Page({
             icon: 'success' 
           });
           setTimeout(() => {
-            if (!isEditMode) {
-              this.resetForm();
-            }
-            wx.switchTab({
-              url: '/pages/index/index',
-              fail: () => {
-                wx.redirectTo({
-                  url: '/pages/index/index'
+            if (isEditMode) {
+              // 编辑模式：返回上一个页面
+              const pages = getCurrentPages();
+              if (pages.length >= 2) {
+                wx.navigateBack({ delta: 1 });
+              } else {
+                // 如果没有上一个页面，跳转到首页
+                wx.switchTab({
+                  url: '/pages/index/index',
+                  fail: () => {
+                    wx.redirectTo({
+                      url: '/pages/index/index'
+                    });
+                  }
                 });
               }
-            });
+            } else {
+              // 新建模式：重置表单并跳转到首页
+              this.resetForm();
+              wx.switchTab({
+                url: '/pages/index/index',
+                fail: () => {
+                  wx.redirectTo({
+                    url: '/pages/index/index'
+                  });
+                }
+              });
+            }
           }, 1500);
         } else {
           wx.showToast({ 

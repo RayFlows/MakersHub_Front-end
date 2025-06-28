@@ -25,6 +25,7 @@ Page({
     loading: false,   // 加载状态
     // 任务类型名称映射
     taskName: ['其他', '活动文案', '推文', '新闻稿'],
+    department: ['基管部', '宣传部', '运维部', '项目部', '副会', '会长'],
     // DEBUG = TRUE加载的数据
     mockData: {
       "code": 200,

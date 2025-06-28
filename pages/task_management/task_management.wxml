@@ -40,7 +40,7 @@
                   </view>
                 </view>
                 <text class="label">负责人：</text>
-                <text class="content">{{item.department}}-{{item.name}}-{{item.maker_id}}</text>
+                <text class="content">{{department[item.department]}}-{{item.name}}-{{item.maker_id}}</text>
                 <text class="label">任务内容：</text>
                 <text class="content">{{item.content}}</text>
                 <text class="label">发布时间：</text>
@@ -101,7 +101,7 @@
                   </view>
                 </view>
                 <text class="label">负责人：</text>
-                <text class="content">{{item.department}}-{{item.name}}-{{item.maker_id}}</text>
+                <text class="content">{{department[item.department]}}-{{item.name}}-{{item.maker_id}}</text>
                 <text class="label">任务内容：</text>
                 <text class="content">{{item.content}}</text>
                 <text class="label">发布时间：</text>
@@ -142,7 +142,7 @@
                   </view>
                 </view>
                 <text class="label">负责人：</text>
-                <text class="content">{{item.department}}-{{item.name}}-{{item.maker_id}}</text>
+                <text class="content">{{department[item.department]}}-{{item.name}}-{{item.maker_id}}</text>
                 <text class="label">任务内容：</text>
                 <text class="content">{{item.content}}</text>
                 <text class="label">发布时间：</text>
