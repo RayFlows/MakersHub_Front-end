@@ -284,12 +284,29 @@ Page({
       const site = this.data.siteData[siteIndex];
       
       // 生成带状态的编号选项
-      const numberOptions = site.details.map(detail => ({
-        number: detail.number,
-        isOccupied: detail.is_occupied === true,
-        displayText: detail.is_occupied === true ? `${detail.number} (已占用)` : `${detail.number}`
-      }));
-      
+      // const numberOptions = site.details.map(detail => ({
+      //   number: detail.number,
+      //   isOccupied: detail.is_occupied === true,
+      //   displayText: detail.is_occupied === true ? `${detail.number} (已占用)` : `${detail.number}`
+      // }));
+          // 关键修复：生成带状态的编号选项时排除自身占用
+      const numberOptions = site.details.map(detail => {
+        // 检查是否是当前申请占用的工位
+        const isSelfOccupied = this.data.isEdit && 
+                              this.data.apply_id === applyData.apply_id && 
+                              detail.number === applyData.number;
+        
+        // 如果是自身占用的工位，不标记为已占用
+        const isOccupied = detail.is_occupied && !isSelfOccupied;
+        
+        return {
+          number: detail.number,
+          isOccupied: isOccupied,
+          displayText: isOccupied ? 
+            `${detail.number} (已占用)` : 
+            `${detail.number}`
+        };
+      });
       // 筛选可用编号
       const availableNumbers = numberOptions
         .filter(opt => !opt.isOccupied)
@@ -486,11 +503,24 @@ Page({
     const site = this.data.siteData[siteIndex];
     
     // 生成带状态的编号选项
-    const numberOptions = site.details.map(detail => ({
-      number: detail.number,
-      isOccupied: detail.is_occupied === true,
-      displayText: detail.is_occupied === true ? `${detail.number} (已占用)` : `${detail.number}`
-    }));
+    const numberOptions = site.details.map(detail => {
+      // number: detail.number,
+      // isOccupied: detail.is_occupied === true,
+      // displayText: detail.is_occupied === true ? `${detail.number} (已占用)` : `${detail.number}
+      const isSelfOccupied = this.data.isEdit && 
+                          this.data.apply_id && 
+                          detail.number === this.data.formData.number;
+      
+      const isOccupied = detail.is_occupied && !isSelfOccupied;
+      
+      return {
+        number: detail.number,
+        isOccupied: isOccupied,
+        displayText: isOccupied ? 
+          `${detail.number} (已占用)` : 
+          `${detail.number}`
+      };
+    });
     
     // 筛选可用编号
     const availableNumbers = numberOptions
@@ -858,7 +888,11 @@ Page({
               wx.showModal({
                 content: '所选场地已被他人申请，请重新选择并提交',
                 showCancel: false,
-                confirmColor: '#00ADB5'
+                confirmColor: '#00ADB5',
+                success: () => {
+                  // 重新加载场地状态
+                  this.fetchSites();
+                }
               });
               this.fetchSites();
             } else {
