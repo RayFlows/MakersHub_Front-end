@@ -130,6 +130,8 @@ Page({
   
           this.setData({
             array,
+            multiArrayList,     // 添加这行
+          multiIndexList,     // 添加这行
             selectedTextList
           });
         } else {
@@ -291,29 +293,23 @@ Page({
   },
 
   addInput() {
-    const first = this.data.multiArrayList[0];
+    const { categories, namesMap, quantitiesMap } = this.data;
+    
+    // 创建新条目的默认选择器数据
+    const defaultFirstCol = categories;
+    const defaultSecondCol = namesMap[defaultFirstCol[0]] || [];
+    const defaultThirdCol = defaultSecondCol.length ? (quantitiesMap[defaultSecondCol[0]] || []) : [];
+    
+    const newArrayItem = [defaultFirstCol, defaultSecondCol, defaultThirdCol];
+    
     this.setData({
       array: [...this.data.array, {}],
-      multiArrayList: [...this.data.multiArrayList, JSON.parse(JSON.stringify(first))],
+      multiArrayList: [...this.data.multiArrayList, newArrayItem],
       multiIndexList: [...this.data.multiIndexList, [0, 0, 0]],
       selectedTextList: [...this.data.selectedTextList, '']
     });
   },
-
-  delInput(e) {
-    const idx = e.currentTarget.dataset.idx;
-    if (this.data.array.length <= 1) {
-      wx.showToast({ title: '至少保留一个借用条目', icon: 'none' });
-      return;
-    }
-
-    this.setData({
-      array: this.data.array.filter((_, i) => i !== idx),
-      multiArrayList: this.data.multiArrayList.filter((_, i) => i !== idx),
-      multiIndexList: this.data.multiIndexList.filter((_, i) => i !== idx),
-      selectedTextList: this.data.selectedTextList.filter((_, i) => i !== idx)
-    });
-  },
+  
 
   handlerGobackClick() {
     wx.showModal({

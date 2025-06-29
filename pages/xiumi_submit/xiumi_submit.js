@@ -26,6 +26,7 @@ Page({
         'formData.name': decodeURIComponent(options.name || ''),
         'formData.link': decodeURIComponent(options.link || '')
       });
+      console.log("[LINK ID]: ", options.link_id);
     }
     console.log("link_id: ", options.link_id);
     console.log("formData passed: ", JSON.stringify(this.data.formData, null, 2));

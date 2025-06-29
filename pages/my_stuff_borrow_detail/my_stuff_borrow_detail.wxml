@@ -52,6 +52,11 @@
         <view class="info">{{apiData.deadline}}</view>
       </view>
 
+      <view class="section">
+        <text class="sub-title">借用理由</text>
+        <view class="info">{{apiData.reason}}</view>
+      </view>
+
       <view wx:if="{{apiData.state === 1}}" class="rejected-section">
         <view class="feedback-container">
           <view class="feedback-title">审核反馈</view>

@@ -341,16 +341,21 @@ Page({
 
     this.setData({ apiData: finalData });
 
+    const url = this.data.isEditMode
+    ? `${API_BASE}/tasks/update/${this.data.task_id}`
+    : `${API_BASE}/tasks/post`;
+    const method = this.data.isEditMode ? 'PATCH' : 'POST';
+    
     wx.request({
-      url: `${API_BASE}/tasks/post`,
-      method: 'POST',
+      url: url,
+      method: method,
       header: {
         'Content-Type': 'application/json',
         'Authorization': `Bearer ${token}`
       },
       data: { ...finalData, priority: 2 },
       success: res => {
-        wx.showToast({ title: '任务创建成功', icon: 'success' });
+        wx.showToast({ title: this.data.isEditMode ? '重新委派成功' : '任务创建成功', icon: 'success' });
         setTimeout(() => wx.navigateBack(), 1500);
       },
       fail: err => {
