@@ -51,54 +51,6 @@ Page({
     this.fetchStuffOptions();
   },
 
-  fetchStuffOptions() {
-    const token = wx.getStorageSync(TOKEN_KEY);
-    wx.request({
-      url: `${API_BASE}/stuff/get-all`,
-      method: 'GET',
-      header: {
-        'Authorization': token ? `Bearer ${token}` : '',
-        'Content-Type': 'application/json'
-      },
-      success: (res) => {
-        console.log('[fetchStuffOptions] 接口响应:', res);
-        if (res.statusCode === 200 && res.data) {
-          console.log('[后端接口数据]', res.data);
-          const grouped = res.data.types;
-          const categories = grouped.map(item => item.type);
-          const namesMap = {};
-          const quantitiesMap = {};
-
-          for (const typeObj of grouped) {
-            const type = typeObj.type;
-            const details = typeObj.details || [];
-            namesMap[type] = details.map(d => d.stuff_name);
-            for (const item of details) {
-              quantitiesMap[item.stuff_name] = Array.from({ length: item.number_remain }, (_, i) => `${i + 1}`);
-            }
-          }
-
-          this.setData({
-            categories,
-            namesMap,
-            quantitiesMap
-          }, () => {
-            this.initMaterialOptions();
-            if (this.data.isEditMode && this.data.sb_id) {
-              // 这时 categories 等已经就绪，loadFormDetail 能正确地映射 index
-              this.loadFormDetail(this.data.sb_id)
-            }
-          });
-        } else {
-          wx.showToast({ title: '物资加载失败', icon: 'none' });
-        }
-      },
-      fail: () => {
-        wx.showToast({ title: '物资加载失败', icon: 'none' });
-      }
-    });
-  },
-
   loadFormDetail(sb_id) {
     const token = wx.getStorageSync(TOKEN_KEY);
     wx.request({
