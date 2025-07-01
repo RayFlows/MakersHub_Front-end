@@ -3,6 +3,7 @@
 
   <view class="postercontainer">
     <image class="poster" src="{{apiData.poster}}" />
+    <!-- <image class="poster" src="/images/activitydetail/poster.jpg" mode="widthFix"></image> -->
     <view class="box">
       <text class="boxtext">报名中</text>
     </view>

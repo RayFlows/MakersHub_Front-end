@@ -53,7 +53,7 @@
         </block>
         <block wx:else>
           <view class="empty-hint">
-            <text>(≧∀≦)ゞ\n所有东西了呢</text>
+            <text>(≧∀≦)ゞ\n还没有归还记录呢</text>
           </view>
         </block>
       </view>

@@ -38,11 +38,15 @@ page {
   display: flex;
   position: relative;
   flex-direction: column;
+  align-items: center;
+  width: 100%;
   overflow-x: hidden;
   flex: 1;
   height: auto;
   touch-action: none;
   gap:40rpx;
+  overflow-y: auto;
+  padding-bottom: 50rpx;
 }
 
 swiper {
@@ -61,6 +65,7 @@ swiper-item {
   justify-content: flex-start;
   gap: 30rpx;
   overflow-y: auto;
+
 }
 
 .active {
@@ -94,6 +99,7 @@ swiper-item {
   gap: 10rpx;
   position: relative;
 }
+
 
 .title-and-state {
   width: 100%;

@@ -76,6 +76,6 @@
         <view class="action-btn cancel-btn" bindtap="cancelApplication">取消申请</view>
         <view class="action-btn modify-btn" bindtap="modifyApplication">修改申请</view>
     </view>
+    <image class="bottom-image" src="/images/activitydetail/cat_black.svg" mode="aspectFill"></image>
   </view>
-  <image class="bottom-image" src="/images/activitydetail/cat_black.svg"></image>
 </view>

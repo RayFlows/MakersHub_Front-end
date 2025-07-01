@@ -77,7 +77,7 @@
     <!-- 已归还 tab -->
     <swiper-item>
       <view class="list-container">
-        <block wx:if="{returnedList.length > 0}}">
+        <block wx:if="{{returnedList.length > 0}}">
           <block wx:for="{{returnedList}}" wx:key="apply_id">
             <view class="item-container">
               <view class="item-details">
