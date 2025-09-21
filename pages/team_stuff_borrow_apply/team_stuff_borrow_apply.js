@@ -367,7 +367,7 @@ Page({
       wx.showToast({ title: '请至少选择一项物资', icon: 'none' }); return;
     }
   
-    const deadline = `${selectedYear.replace('年', '')}-${selectedMonth.replace('月', '').padStart(2, '0')}-${selectedDay.replace('日', '').padStart(2, '0')}`;
+    const deadline = isEditMode ? `${selectedYear.replace('年', '')}-${selectedMonth.replace('月', '').padStart(2, '0')}-${selectedDay.replace('日', '').padStart(2, '0')}`:`${selectedYear.replace('年', '')}-${selectedMonth.replace('月', '').padStart(2, '0')}-${selectedDay.replace('日', '').padStart(2, '0')} 00:00:00`;
   
     // 构造提交数据
     const submitData = {
