@@ -10,6 +10,7 @@ const API_BASE = 'http://146.56.227.73:8000';
 let authInProgress = false;
 const TOKEN_KEY = 'auth_token';
 const USER_INFO_KEY = 'userInfo';
+const LAST_CLEAN_TIME_KEY = 'last_clean_time'; // 上次清理时间的存储键
 
 /**
  * 获取本地存储的令牌
@@ -24,6 +25,36 @@ function getAuthToken() {
 function storeAuthToken(token) {
   wx.setStorageSync(TOKEN_KEY, token);
   wx.setStorageSync(USER_INFO_KEY, { logged: true });
+}
+
+/**
+ * 检查并执行24小时缓存清理
+ */
+function checkAndCleanCache() {
+  const now = Date.now();
+  const lastCleanTime = wx.getStorageSync(LAST_CLEAN_TIME_KEY) || 0;
+  const twentyFourHours = 24 * 60 * 60 * 1000; // 24小时的毫秒数
+  
+  // 如果距离上次清理已超过24小时
+  if (now - lastCleanTime > twentyFourHours) {
+    console.log('[Cache] 执行24小时缓存清理');
+    
+    // 获取需要保留的数据（令牌和用户信息）
+    const token = wx.getStorageSync(TOKEN_KEY);
+    const userInfo = wx.getStorageSync(USER_INFO_KEY);
+    
+    // 清理所有缓存
+    wx.clearStorageSync();
+    
+    // 恢复需要保留的数据
+    if (token) wx.setStorageSync(TOKEN_KEY, token);
+    if (userInfo) wx.setStorageSync(USER_INFO_KEY, userInfo);
+    
+    // 更新最后清理时间
+    wx.setStorageSync(LAST_CLEAN_TIME_KEY, now);
+    
+    console.log('[Cache] 缓存清理完成');
+  }
 }
 
 /**
@@ -177,6 +208,9 @@ Page({
 
   onShow: function () {
     console.log("[Page] 初始化令牌检查");
+
+    // 检查并执行24小时缓存清理
+    checkAndCleanCache();
 
     // 使用本文件中的函数，不再需要通过loginJS访问
     checkTokenValidity()
