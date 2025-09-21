@@ -1,6 +1,6 @@
 // pages/xiumi_link_permit/xiumi_link_permit.js
 // const API_BASE = "https://mini.makershub.cn";
-const API_BASE = 'http://146.56.227.73:8000';
+const API_BASE = 'https://mini.makershub.cn';
 const token = wx.getStorageSync('auth_token');
 const DEBUG = false;
 // 引入外部utils工具

@@ -94,7 +94,7 @@ Page({
     }
   
     wx.request({
-      url: 'http://146.56.227.73:8000/duty-apply/post',
+      url: 'https://mini.makershub.cn/duty-apply/post',
       method: 'POST',
       data,
       header: {

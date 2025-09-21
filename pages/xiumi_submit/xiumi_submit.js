@@ -1,7 +1,7 @@
 // pages/xiumi_submit/xiumi_submit.js
 const token = wx.getStorageSync('auth_token');
 // const API_BASE = "https://mini.makershub.cn";
-const API_BASE = 'http://146.56.227.73:8000';
+const API_BASE = 'https://mini.makershub.cn';
 
 Page({
   data: {

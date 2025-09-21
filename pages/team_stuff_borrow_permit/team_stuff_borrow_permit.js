@@ -1,4 +1,4 @@
-const API_BASE = 'http://146.56.227.73:8000';
+const API_BASE = 'https://mini.makershub.cn';
 const TOKEN_KEY = 'auth_token';
 
 function parseDate(dateStr) {

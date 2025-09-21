@@ -1,5 +1,5 @@
 // pages/my_stuff_borrow_list/my_stuff_borrow_list.js
-const API_BASE = "http://146.56.227.73:8000";
+const API_BASE = "https://mini.makershub.cn";
 const TOKEN_KEY = 'auth_token';
 const utils = require("../../utils/util")
 

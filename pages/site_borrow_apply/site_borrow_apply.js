@@ -1,5 +1,5 @@
 // pages/site_borrow_apply/site_borrow_apply.js
-const API_BASE = "http://146.56.227.73:8000";
+const API_BASE = "https://mini.makershub.cn";
 const token = wx.getStorageSync('auth_token');
 const DEBUG = false;
 Page({

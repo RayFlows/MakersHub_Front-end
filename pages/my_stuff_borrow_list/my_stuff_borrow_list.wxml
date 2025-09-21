@@ -46,7 +46,7 @@
         </block>
         <block wx:else>
           <view class="empty-hint">
-            <text>(≧∀≦)ゞ\n所有东西了呢</text>
+            <text>(≧∀≦)ゞ\n没有东西了呢</text>
           </view>
         </block>
       </view>

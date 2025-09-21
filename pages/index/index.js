@@ -5,7 +5,7 @@
 
 // ======== 原 login.js 部分开始 ========
 // const API_BASE = 'https://mini.makershub.cn';
-const API_BASE = 'http://146.56.227.73:8000';
+const API_BASE = 'https://mini.makershub.cn';
 
 let authInProgress = false;
 const TOKEN_KEY = 'auth_token';
