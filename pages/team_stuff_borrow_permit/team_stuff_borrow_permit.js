@@ -1,4 +1,4 @@
-const API_BASE = 'https://mini.makershub.cn';
+var config = (wx.getStorageSync('config'));
 const TOKEN_KEY = 'auth_token';
 
 function parseDate(dateStr) {
@@ -49,7 +49,7 @@ Page({
     this.setData({ loading: true });
 
     wx.request({
-      url: `${API_BASE}/stuff-borrow/detail/${this.data.borrowId}`,
+      url: config.stuff_borrow.detail + `${this.data.borrowId}`,
       method: 'GET',
       header: {
         Authorization: `Bearer ${token}`,
@@ -151,7 +151,7 @@ Page({
     wx.showLoading({ title: '处理中...' });
 
     wx.request({
-      url: `${API_BASE}/stuff-borrow/review`,
+      url: config.stuff_borrow.review,
       method: 'POST',
       data: submitData,
       header: {
@@ -242,7 +242,7 @@ Page({
           wx.showLoading({ title: '处理中...' });
           
           wx.request({
-            url: `${API_BASE}/stuff-borrow/return`,
+            url: config.stuff_borrow.return,
             method: 'POST',
             data: {
               borrow_id: validBorrowId,
@@ -281,7 +281,7 @@ Page({
   updateStuffQuantity() {
     const token = wx.getStorageSync(TOKEN_KEY);
     wx.request({
-      url: `${API_BASE}/stuff-borrow/auto-update-quantity/${this.data.borrowId}`,
+      url: config.stuff_borrow.auto_update_quantity + `${this.data.borrowId}`,
       method: 'POST',
       header: {
         'Authorization': `Bearer ${token}`,

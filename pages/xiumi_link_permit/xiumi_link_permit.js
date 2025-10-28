@@ -1,6 +1,5 @@
 // pages/xiumi_link_permit/xiumi_link_permit.js
-// const API_BASE = "https://mini.makershub.cn";
-const API_BASE = 'https://mini.makershub.cn';
+var config = (wx.getStorageSync('config'));
 const token = wx.getStorageSync('auth_token');
 const DEBUG = false;
 // 引入外部utils工具
@@ -143,7 +142,7 @@ Page({
   // 真正从后端拉数据的方法
   fetchAllLinks() {
     wx.request({
-      url: `${API_BASE}/publicity-link/view-all`,
+      url: config.publicity_link.view_all,
       method: 'GET',
       header: { Authorization: `Bearer ${token}` },
       success: res => {
@@ -199,7 +198,7 @@ Page({
     
         if (res.confirm) {
           wx.request({
-            url: `${API_BASE}/publicity-link/review/${linkId}`,
+            url: config.publicity_link.review + `${linkId}`,
             method: 'PATCH',
             header: {
               'Authorization': `Bearer ${token}`,
@@ -262,7 +261,7 @@ Page({
         if (res.confirm) {
           console.log("Feedback to Back-End: ", feedback);
           wx.request({
-            url: `${API_BASE}/publicity-link/review/${linkId}`,
+            url: config.publicity_link.review + `${linkId}`,
             method: 'PATCH',
             header: {
               'Authorization': `Bearer ${token}`,

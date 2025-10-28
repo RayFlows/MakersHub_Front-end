@@ -1,4 +1,6 @@
-const API_BASE = "https://mini.makershub.cn";
+const config = require("../../config");
+
+var config = (wx.getStorageSync('config'));
 const TOKEN_KEY = 'auth_token';
 
 Page({
@@ -11,7 +13,7 @@ Page({
     const token = wx.getStorageSync(TOKEN_KEY);
 
     wx.request({
-      url: `${API_BASE}/arrange/get-arrangement`,
+      url: config.arrange.get_arrangement,
       method: 'GET',
       header: {
         'Authorization': `Bearer ${token}`,
@@ -101,7 +103,7 @@ Page({
       success: e => {
         if (e.confirm) {
           wx.request({
-            url: `${API_BASE}/arrange/arrangements/batch`,
+            url: config.arrange.batch,
             method: 'POST',
             header: {
               'Authorization': `Bearer ${token}`,

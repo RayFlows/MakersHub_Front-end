@@ -1,5 +1,5 @@
 // index.js
-const API_BASE = "https://mini.makershub.cn";
+var config = (wx.getStorageSync('config'));
 const token = wx.getStorageSync('auth_token');
 
 Page({
@@ -13,7 +13,7 @@ Page({
 
   fetchUserRole() {
     wx.request({
-      url: `${API_BASE}/users/profile`,
+      url: config.users.profile,
       method: 'GET',
       header: {
         'Authorization': `Bearer ${token}`,

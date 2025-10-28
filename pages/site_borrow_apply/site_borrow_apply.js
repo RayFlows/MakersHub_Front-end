@@ -1,5 +1,7 @@
+const { sites_borrow } = require("../../config");
+
 // pages/site_borrow_apply/site_borrow_apply.js
-const API_BASE = "https://mini.makershub.cn";
+var config = (wx.getStorageSync('config'));
 const token = wx.getStorageSync('auth_token');
 const DEBUG = false;
 Page({
@@ -132,7 +134,7 @@ Page({
       }, 500);
     } else {
       wx.request({
-        url: `${API_BASE}/site/get-all`,
+        url: config.site.get_all,
         method: 'GET',
         header: {
           'content-type': 'application/json',
@@ -227,7 +229,7 @@ Page({
       }, 500); // 模拟网络延迟
     } else {
       wx.request({
-        url: `${API_BASE}/sites-borrow/detail/${apply_id}`,
+        url: config.sites_borrow.detail + `${apply_id}`,
         method:'GET',
         header: {
           'content-type': 'application/json',
@@ -864,7 +866,7 @@ Page({
         }, 1000); // 模拟网络延迟
       } else {
         wx.request({
-          url: `${API_BASE}/sites-borrow/update/${this.data.apply_id}`,
+          url: config.sites_borrow.update + `${this.data.apply_id}`,
           method: 'PATCH',
           header: {
             'content-type': 'application/json',

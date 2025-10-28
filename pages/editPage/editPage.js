@@ -1,6 +1,6 @@
 // pages/editPage/editPage.js
 
-const API_BASE = "https://mini.makershub.cn";
+var config = (wx.getStorageSync('config'));
 const token = wx.getStorageSync("auth_token");
 
 Page({
@@ -190,7 +190,7 @@ Page({
 
       // 将更新好的用户除头像外的数据从/users/profile发出
       wx.request({
-        url: `${API_BASE}/users/profile`,
+        url: config.users.profile,
         method: "PATCH",
         header: {
           "Content-Type": "application/json",
@@ -220,7 +220,7 @@ Page({
       wx.uploadFile({
         filePath: this.data.tempAvatar,
         name: "file",
-        url: `${API_BASE}/users/profile-photo`,
+        url: config.users.profile_photo,
         header: {
           "Content-Type": "multipart/form-data",
           Authorization: `Bearer ${token}`,

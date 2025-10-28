@@ -1,6 +1,6 @@
 // pages/activity/activity.js
 const token = wx.getStorageSync('auth_token');
-const API_BASE = "https://mini.makershub.cn";
+var config = (wx.getStorageSync('config'));
 // 导入外部util工具
 const utils = require('../../utils/util')
 
@@ -120,7 +120,7 @@ Page({
       }
 
       wx.uploadFile({
-        url: `${API_BASE}/events/poster`,
+        url: config.events.poster,
         filePath: filePath,
         name: 'file',
         header: {
@@ -370,7 +370,7 @@ Page({
   
     // 1. 获取event_id
     wx.request({
-      url: `${API_BASE}/events/precreate-event`,
+      url: config.events.precreate_event,
       method: 'GET',
       header: {
         'Authorization': `Bearer ${token}`
@@ -382,7 +382,7 @@ Page({
           
           // 2. 上传海报
           wx.uploadFile({
-            url: `${API_BASE}/events/poster/${event_id}`,
+            url: config.events.precreate_event+ `${event_id}`,
             filePath: filePath,
             name: 'file',
             header: {
@@ -412,7 +412,7 @@ Page({
               };
               
               wx.request({
-                url: `${API_BASE}/events/post/${event_id}`,
+                url: config.events.post + `${event_id}`,
                 method: 'POST',
                 header: {
                   'Authorization': `Bearer ${token}`,

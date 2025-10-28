@@ -1,6 +1,5 @@
 // pages/my_xiumi_list/my_xiumi_link.js
-// const API_BASE = "https://mini.makershub.cn";
-const API_BASE = "https://mini.makershub.cn";
+var config = (wx.getStorageSync('config'));
 const token = wx.getStorageSync('auth_token');
 const DEBUG = false;
 // 引入外部utils工具
@@ -96,7 +95,7 @@ Page({
   fetchLinks() {
     this.setData({ loading: true });
     wx.request({
-      url: `${API_BASE}/publicity-link/view-my`,
+      url: config.publicity_link.view_my,
       method: 'GET',
       header: {
         'Authorization': `Bearer ${token}`,

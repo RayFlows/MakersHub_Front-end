@@ -1,5 +1,5 @@
 // pages/task_management/task_management.js
-const API_BASE = "https://mini.makershub.cn";
+var config = (wx.getStorageSync('config'));
 const token = wx.getStorageSync('auth_token');
 const DEBUG = false;
 // 引入外部utils工具
@@ -119,7 +119,7 @@ Page({
   fetchList() {
     this.setData({ loading: true });
     wx.request({
-      url: `${API_BASE}/tasks/view-all`,
+      url: config.tasks.view_all,
       method: 'GET',
       header: {
         'Authorization': `Bearer ${token}`,
@@ -187,7 +187,7 @@ Page({
           } else {
             // 实际调用接口
             wx.request({
-              url: `${API_BASE}/tasks/cancel/${taskId}`,
+              url: config.tasks.cancel + `${taskId}`,
               method: 'PATCH',
               header: {
                 'Authorization': `Bearer ${token}`,
@@ -239,7 +239,7 @@ Page({
           } else {
             // 实际调用接口
             wx.request({
-              url: `${API_BASE}/tasks/finish/${taskId}`,
+              url: config.tasks.finish + `${taskId}`,
               method: 'PATCH',
               header: {
                 'Authorization': `Bearer ${token}`,

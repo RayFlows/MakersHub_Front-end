@@ -1,7 +1,7 @@
 // pages/me/me.js
 
-// const API_BASE = "https://mini.makershub.cn";
-const API_BASE = 'https://mini.makershub.cn';
+
+var config = (wx.getStorageSync('config'));
 const TOKEN_KEY = "auth_token";
 const token = wx.getStorageSync(TOKEN_KEY);
 
@@ -33,7 +33,7 @@ Page({
 
   fetchUserProfile() {
     wx.request({
-      url: `${API_BASE}/users/profile`,
+      url: config.users.profile,
       method: "GET",
       header: {
         "Content-Type": "application/json",

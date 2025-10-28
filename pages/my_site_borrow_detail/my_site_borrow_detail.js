@@ -1,6 +1,6 @@
 // pages/my_site_borrow_detail/my_site_borrow_detail.js
-// const API_BASE = "https://mini.makershub.cn";
-const API_BASE = "https://mini.makershub.cn";
+
+var config = (wx.getStorageSync('config'));
 const token = wx.getStorageSync('auth_token');
 const DEBUG = false; // 调试模式标志
 
@@ -81,7 +81,7 @@ Page({
       }, 500);
     } else {
       wx.request({
-        url: `${API_BASE}/sites-borrow/detail/${apply_id}`,
+        url: config.sites_borrow.detail + `/${apply_id}`,
         method: 'GET',
         header: {
           'content-type': 'application/json',
@@ -142,7 +142,7 @@ Page({
           });
           
           wx.request({
-            url: `${API_BASE}/sites-borrow/cancel/${this.data.apply_id}`,
+            url: config.sites_borrow.cancel + `/${this.data.apply_id}`,
             method: 'POST',
             header: {
               'content-type': 'application/json',

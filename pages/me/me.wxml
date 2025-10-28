@@ -34,7 +34,7 @@
         <!-- 包含用户个性签名信息的容器-->
         <view class="box" >
         <!--风格图标-->
-          <image class="style-icon" src="/images/me/style.svg" mode="aspectFill" />
+          <image class="style-icon" src="/images/me/puzzle.svg" mode="aspectFill" />
           <!-- 显示用户个性签名，签名数据从 userInfo 对象的 signiture 属性中获取 -->
           <text class="info-text">{{userInfo.motto}}</text>
           <!--复制图标-->

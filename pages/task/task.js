@@ -1,4 +1,4 @@
-const API_BASE = 'https://mini.makershub.cn';
+var config = (wx.getStorageSync('config'));
 const TOKEN_KEY = 'auth_token';
 const token = wx.getStorageSync(TOKEN_KEY);
 
@@ -136,7 +136,7 @@ Page({
   getMakersData() {
     return new Promise((resolve, reject) => {
       wx.request({
-        url: `${API_BASE}/users/get-makers`,
+        url: config.users.get_makers,
         method: 'GET',
         header: {
           'Content-Type': 'application/json',
@@ -158,7 +158,7 @@ Page({
   getCurrentMakersData() {
     return new Promise((resolve, reject) => {
       wx.request({
-        url: `${API_BASE}/arrange/get-current`,
+        url: config.arrange.get_current,
         method: 'GET',
         header: {
           'Content-Type': 'application/json',
@@ -180,7 +180,7 @@ Page({
   getTaskDetail(taskId) {
     return new Promise((resolve, reject) => {
       wx.request({
-        url: `${API_BASE}/tasks/detail/${taskId}`,
+        url: config.tasks.detail + `${taskId}`,
         method: 'GET',
         header: {
           'Content-Type': 'application/json',
@@ -342,8 +342,8 @@ Page({
     this.setData({ apiData: finalData });
 
     const url = this.data.isEditMode
-    ? `${API_BASE}/tasks/update/${this.data.task_id}`
-    : `${API_BASE}/tasks/post`;
+    ? config.tasks.update + `${this.data.task_id}`
+    : config.tasks.post;
     const method = this.data.isEditMode ? 'PATCH' : 'POST';
     
     wx.request({

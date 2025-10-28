@@ -1,6 +1,5 @@
 // pages/FieldApply/FieldApply.js
-// const API_BASE = "https://mini.makershub.cn"; // 更新为新域名
-const API_BASE = "https://mini.makershub.cn";
+var config = (wx.getStorageSync('config'));
 const token = wx.getStorageSync('auth_token');
 const utils = require("../../utils/util");
 
@@ -111,7 +110,7 @@ Page({
   loadData() {
     wx.showLoading({ title: '加载中...' });
     wx.request({
-      url: `${API_BASE}/sites-borrow/view-all`,
+      url: config.sites_borrow.view_all,
       method: 'GET',
       header: {
         'Authorization': `Bearer ${token}`,

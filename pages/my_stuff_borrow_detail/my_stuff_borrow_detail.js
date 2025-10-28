@@ -1,4 +1,4 @@
-const API_BASE = "https://mini.makershub.cn";
+var config = (wx.getStorageSync('config'));
 const token = wx.getStorageSync('auth_token');
 const DEBUG = false;
 function parseStuff(data) {
@@ -114,7 +114,7 @@ Page({
       }, 500);
     } else {
       wx.request({
-        url: `${API_BASE}/stuff-borrow/detail/${sb_id}`,
+        url: config.stuff_borrow.detail + `${sb_id}`,
         method: 'GET',
         header: {
           'content-type': 'application/json',
@@ -200,7 +200,7 @@ Page({
           wx.showLoading({ title: '取消中...' });
 
           wx.request({
-            url: `${API_BASE}/stuff-borrow/cancel/${this.data.sb_id}`,
+            url: config.stuff_borrow.cancel + `${this.data.sb_id}`,
             method: 'POST',
             header: {
               'content-type': 'application/json',

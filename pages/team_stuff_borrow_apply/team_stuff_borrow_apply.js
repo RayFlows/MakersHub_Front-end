@@ -1,4 +1,4 @@
-const API_BASE = "https://mini.makershub.cn";
+var config = (wx.getStorageSync('config'));
 const TOKEN_KEY = "auth_token";
 
 Page({
@@ -64,7 +64,7 @@ Page({
   loadFormDetail(sb_id) {
     const token = wx.getStorageSync(TOKEN_KEY);
     wx.request({
-      url: `${API_BASE}/stuff-borrow/detail/${sb_id}`,
+      url: config.stuff_borrow.detail + `${sb_id}`,
       method: 'GET',
       header: {
         'Authorization': token ? `Bearer ${token}` : '',
@@ -147,7 +147,7 @@ Page({
   fetchStuffOptions() {
     const token = wx.getStorageSync(TOKEN_KEY);
     wx.request({
-      url: `${API_BASE}/stuff/get-all`,
+      url: config.stuff.get_all,
       method: 'GET',
       header: {
         'Authorization': token ? `Bearer ${token}` : '',
@@ -390,7 +390,7 @@ Page({
     wx.showLoading({ title: isEditMode ? '更新提交中...' : '提交中...' });
   
     // 根据编辑模式选择不同的接口和方法
-    const apiUrl = isEditMode ? `${API_BASE}/stuff-borrow/update/${sb_id}` : `${API_BASE}/stuff-borrow/apply`;
+    const apiUrl = isEditMode ? config.stuff_borrow.update + `${sb_id}` : config.stuff_borrow.apply;
     const httpMethod = isEditMode ? 'PATCH' : 'POST';
   
     wx.request({

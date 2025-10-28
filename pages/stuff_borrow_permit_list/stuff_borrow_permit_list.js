@@ -1,4 +1,4 @@
-const API_BASE = 'https://mini.makershub.cn';
+var config = (wx.getStorageSync('config'));
 const TOKEN_KEY = 'auth_token';
 
 Page({
@@ -40,7 +40,7 @@ Page({
     this.setData({ loading: true });
 
     wx.request({
-      url: `${API_BASE}/stuff-borrow/view-all`,
+      url: config.stuff_borrow.view_all,
       method: 'GET',
       header: {
         'Authorization': `Bearer ${token}`,
@@ -206,7 +206,7 @@ Page({
           wx.showLoading({ title: '处理中...' });
           
           wx.request({
-            url: `${API_BASE}/stuff-borrow/return`,
+            url: config.stuff_borrow.return,
             method: 'POST',
             data: {
               borrow_id: validBorrowId,
@@ -271,7 +271,7 @@ Page({
     });
   
     wx.request({
-      url: `${API_BASE}/stuff-borrow/return`,
+      url: config.stuff_borrow.return,
       method: 'POST',
       data: requestData,
       header: {

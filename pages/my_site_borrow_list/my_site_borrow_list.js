@@ -1,6 +1,5 @@
 // pages/my_site_borrow_list/my_site_borrow_list.js
-// const API_BASE = "https://mini.makershub.cn";
-const API_BASE = "https://mini.makershub.cn";
+var config = (wx.getStorageSync('config'));
 const token = wx.getStorageSync('auth_token');
 const utils = require("../../utils/util");
 
@@ -107,7 +106,7 @@ Page({
   loadData() {
     wx.showLoading({ title: '加载中...' });
     wx.request({
-      url: `${API_BASE}/sites-borrow/view`,
+      url: config.sites_borrow.view,
       method: 'GET',
       header: {
         'Authorization': `Bearer ${token}`,

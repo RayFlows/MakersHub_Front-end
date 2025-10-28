@@ -1,17 +1,8 @@
-// ========================================
-// 合并后的 index.js 文件
-// 包含原 login.js 和 index.js 的功能
-// ========================================
-
-// ======== 原 login.js 部分开始 ========
-// const API_BASE = 'https://mini.makershub.cn';
-const API_BASE = 'https://mini.makershub.cn';
-
 let authInProgress = false;
 const TOKEN_KEY = 'auth_token';
 const USER_INFO_KEY = 'userInfo';
 const LAST_CLEAN_TIME_KEY = 'last_clean_time'; // 上次清理时间的存储键
-
+var config = (wx.getStorageSync('config'));
 /**
  * 获取本地存储的令牌
  */
@@ -144,7 +135,7 @@ const handleUserAuth = (confirmed) => {
       }
       console.log('[Auth] 获取 code 成功:', res.code);
       wx.request({
-        url: `${API_BASE}/users/wx-login`,
+        url: config.users.login,
         method: 'POST',
         data: { code: res.code },
         success: (response) => {

@@ -1,8 +1,8 @@
 // pages/activity_list/activity_list.js
-const API_BASE = "https://mini.makershub.cn";
 const token = wx.getStorageSync('auth_token');
 // 导入外部utils工具函数
-const utils = require('../../utils/util')
+const utils = require('../../utils/util');
+var config = (wx.getStorageSync('config'));
 
 Page({
   data: {
@@ -24,7 +24,7 @@ Page({
     });
 
     wx.request({
-      url: `${API_BASE}/events/view`,
+      url: config.events.view,
       method: 'GET',
       header: {
         'Authorization': `Bearer ${token}`

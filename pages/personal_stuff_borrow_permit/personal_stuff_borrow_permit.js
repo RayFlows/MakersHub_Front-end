@@ -1,4 +1,4 @@
-const API_BASE = 'https://mini.makershub.cn';
+var config = (wx.getStorageSync('config'));
 const TOKEN_KEY = 'auth_token';
 //
 Page({
@@ -94,7 +94,7 @@ Page({
           wx.showLoading({ title: '处理中...' });
           
           wx.request({
-            url: `${API_BASE}/stuff-borrow/return`,
+            url: config.stuff_borrow.return,
             method: 'POST',
             data: {
               borrow_id: validBorrowId,
@@ -141,7 +141,7 @@ Page({
     console.log('[loadApplyDetail] 请求开始，borrowId:', borrowId);
 
     wx.request({
-      url: `${API_BASE}/stuff-borrow/detail/${borrowId}`,
+      url: config.stuff_borrow.detail + `${borrowId}`,
       method: 'GET',
       header: {
         'Authorization': `Bearer ${token}`,
@@ -314,7 +314,7 @@ Page({
     wx.showLoading({ title: '处理中...' });
 
     wx.request({
-      url: `${API_BASE}/stuff-borrow/review`,
+      url: config.stuff_borrow.review,
       method: 'POST',
       data: submitData,
       header: {
@@ -357,7 +357,7 @@ Page({
     console.log('[updateStuffQuantity] 开始更新物资余量');
 
     wx.request({
-      url: `${API_BASE}/stuff-borrow/auto-update-quantity/${this.data.borrowId}`,
+      url: config.stuff_borrow.auto_update_quantity + `${this.data.borrowId}`,
       method: 'POST',
       header: {
         'Authorization': `Bearer ${token}`,

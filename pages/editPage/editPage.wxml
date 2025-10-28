@@ -22,7 +22,7 @@
       <view class="avatar-section">
         <image class="avatar" src="{{userInfo.avatar}}" mode="aspectFit" bindtap = "editAvatar"/>
         <!--头像的编辑图标-->
-        <image class="edit-icon" src="/images/editPage/edit picture.svg" bindtap="editAvatar" />
+        <image class="edit-icon" src="/images/editPage/edit.svg" bindtap="editAvatar" />
       </view>
     </view>
     <!-- 真实姓名部分 -->

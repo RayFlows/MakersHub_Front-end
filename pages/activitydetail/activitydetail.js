@@ -1,5 +1,5 @@
 const token = wx.getStorageSync('auth_token');
-const API_BASE = "https://mini.makershub.cn";
+var config = (wx.getStorageSync('config'));
 
 // 导入外部utils工具函数
 const utils = require('../../utils/util')
@@ -50,7 +50,7 @@ Page({
     });
     
     wx.request({
-      url: `${API_BASE}/events/details/${event_id}`,  // 正确的路径格式
+      url: config.events.details + `${event_id}`,  // 正确的路径格式
       method: "GET",
       header: {
         'Authorization': `Bearer ${token}`,

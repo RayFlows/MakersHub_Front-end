@@ -1,7 +1,6 @@
 // pages/xiumi_submit/xiumi_submit.js
 const token = wx.getStorageSync('auth_token');
-// const API_BASE = "https://mini.makershub.cn";
-const API_BASE = 'https://mini.makershub.cn';
+var config = (wx.getStorageSync('config'));
 
 Page({
   data: {
@@ -48,8 +47,8 @@ Page({
     }
 
     const url = this.data.isEdited
-      ? `${API_BASE}/publicity-link/update/${this.data.formData.link_id}`
-      : `${API_BASE}/publicity-link/post`;
+      ? config.publicity_link.update + `${this.data.formData.link_id}`
+      : config.publicity_link.post;
     const method = this.data.isEdited ? 'PATCH' : 'POST';
 
     wx.request({
