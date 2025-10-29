@@ -1,5 +1,4 @@
 const token = wx.getStorageSync('auth_token');
-const config = require('../../config'); // 若你使用 config.profile_url，需要导入配置文件
 var config = (wx.getStorageSync('config'));
 const TOKEN_KEY = "auth_token";
 Page({
