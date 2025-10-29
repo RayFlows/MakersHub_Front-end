@@ -36,7 +36,7 @@ var config = {
     auto_update_quantity: host + "stuff-this.sites_borrow/auto-update-quantity/"
   },
   stuff: {
-    get_all: host + "stuff-borrow/get-all/"
+    get_all: host + "stuff/get-all/"
   },
   site: {
     get_all: host + "site/get-all/"
