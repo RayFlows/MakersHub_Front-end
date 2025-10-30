@@ -198,7 +198,7 @@ Page({
     
         if (res.confirm) {
           wx.request({
-            url: config.publicity_link.review + `${linkId}`,
+            url: config.publicity_link.review + `/${linkId}`,
             method: 'PATCH',
             header: {
               'Authorization': `Bearer ${token}`,
@@ -261,7 +261,7 @@ Page({
         if (res.confirm) {
           console.log("Feedback to Back-End: ", feedback);
           wx.request({
-            url: config.publicity_link.review + `${linkId}`,
+            url: config.publicity_link.review + `/${linkId}`,
             method: 'PATCH',
             header: {
               'Authorization': `Bearer ${token}`,

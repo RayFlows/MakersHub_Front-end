@@ -141,7 +141,7 @@ Page({
     console.log('[loadApplyDetail] 请求开始，borrowId:', borrowId);
 
     wx.request({
-      url: config.stuff_borrow.detail + `${borrowId}`,
+      url: config.stuff_borrow.detail + `/${borrowId}`,
       method: 'GET',
       header: {
         'Authorization': `Bearer ${token}`,
@@ -323,111 +323,35 @@ Page({
       },
       success: res => {
         console.log('[submitReview] 审核响应:', res);
-        if (res.statusCode === 200 || res.statusCode === 201) {
-          if (isApprove) {
-            // 如果是审核通过，自动更新物资余量
-            console.log('[submitReview] 审核通过，开始更新物资余量');
-            this.updateStuffQuantity();
-          } else {
-            wx.hideLoading();
-            wx.showToast({
-              title: '已打回',
-              icon: 'success'
-            });
-            setTimeout(() => wx.navigateBack(), 1500);
-          }
-        } else {
-          wx.hideLoading();
+        // --- 处理后端返回的各种情况 ---
+        if (res.statusCode === 200) {
+          // --- 后端业务处理成功 ---
           wx.showToast({
-            title: res.data?.message || '操作失败',
-            icon: 'none'
-          });
-        }
-      },
-      fail: err => {
-        wx.hideLoading();
-        console.error('[submitReview] 请求失败:', err);
-        wx.showToast({ title: '网络错误', icon: 'none' });
-      }
-    });
-  },
-
-  updateStuffQuantity() {
-    const token = wx.getStorageSync(TOKEN_KEY);
-    console.log('[updateStuffQuantity] 开始更新物资余量');
-
-    wx.request({
-      url: config.stuff_borrow.auto_update_quantity + `${this.data.borrowId}`,
-      method: 'POST',
-      header: {
-        'Authorization': `Bearer ${token}`,
-        'Content-Type': 'application/json'
-      },
-      success: res => {
-        wx.hideLoading();
-        console.log('[updateStuffQuantity] 更新物资余量响应:', res);
-        
-        if (res.statusCode === 200 && res.data && res.data.code === 200) {
-          const updateData = res.data.data;
-          console.log('[updateStuffQuantity] 更新结果:', updateData);
-          
-          let successMessage = '审核通过';
-          
-          if (updateData.failed_count > 0) {
-            successMessage += `，${updateData.failed_count}个物资更新失败`;
-            console.warn('[updateStuffQuantity] 部分物资更新失败:', updateData.failed_updates);
-          }
-          
-          wx.showToast({
-            title: successMessage,
-            icon: updateData.failed_count > 0 ? 'none' : 'success',
+            title: res.data.message || '操作成功',
+            icon: 'success',
             duration: 2000
           });
-          
-          // 显示详细更新信息
-          if (updateData.updated_stuff && updateData.updated_stuff.length > 0) {
-            setTimeout(() => {
-              let detailMessage = '物资余量更新详情:\n';
-              updateData.updated_stuff.forEach(item => {
-                detailMessage += `${item.stuff_name}: ${item.old_remain} → ${item.new_remain}\n`;
-              });
-              
-              wx.showModal({
-                title: '更新详情',
-                content: detailMessage,
-                showCancel: false,
-                success: () => {
-                  wx.navigateBack();
-                }
-              });
-            }, 2000);
-          } else {
-            setTimeout(() => wx.navigateBack(), 2000);
-          }
-          
+          // 成功后延时返回上一页
+          setTimeout(() => wx.navigateBack(), 2000);
+
         } else {
-          console.error('[updateStuffQuantity] 更新物资余量失败:', res.data);
+          // --- 后端返回了业务错误（如400库存不足, 403权限问题等）---
+          // res.data.detail 是 FastAPI HTTPException 返回的错误信息
+          // res.data.message 是我们自定义返回的错误信息
+          const errorMessage = res.data.detail || res.data.message || '操作失败，请稍后重试';
+          console.error(`[submitReview] 审核失败: ${errorMessage}`);
+          
           wx.showModal({
-            title: '提示',
-            content: '审核通过，但物资余量更新失败。请手动检查物资库存。',
-            showCancel: false,
-            success: () => {
-              wx.navigateBack();
-            }
+            title: '操作失败',
+            content: errorMessage,
+            showCancel: false // 只显示一个“确定”按钮
           });
         }
       },
       fail: err => {
         wx.hideLoading();
-        console.error('[updateStuffQuantity] 更新物资余量请求失败:', err);
-        wx.showModal({
-          title: '提示',
-          content: '审核通过，但物资余量更新失败。请手动检查物资库存。',
-          showCancel: false,
-          success: () => {
-            wx.navigateBack();
-          }
-        });
+        console.error('[submitReview] 网络请求失败:', err);
+        wx.showToast({ title: '网络错误，请检查您的网络连接', icon: 'none' });
       }
     });
   },

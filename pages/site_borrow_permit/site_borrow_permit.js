@@ -68,7 +68,7 @@ Page({
 
     // 调用后端接口获取详情
     wx.request({
-      url: config.sites_borrow.detail + `${applyId}`,
+      url: config.sites_borrow.detail + `/${applyId}`,
       method: 'GET',
       header: {
         'Authorization': `Bearer ${token}`
@@ -117,7 +117,7 @@ Page({
   submitReview(newState) {
     const { apply_id, review } = this.data.apiData;
     wx.request({
-      url: config.sites_borrow.review + `${apply_id}`,
+      url: config.sites_borrow.review + `/${apply_id}`,
       method: 'PATCH',
       header: {
         'Authorization': `Bearer ${token}`
@@ -150,7 +150,7 @@ Page({
             title: '归还中...',
           });
           wx.request({
-            url: config.sites_borrow.return + `${this.data.apiData.apply_id}`,
+            url: config.sites_borrow.return + `/${this.data.apiData.apply_id}`,
             method: 'PATCH',
             header: {
               'content-type': 'application/json',

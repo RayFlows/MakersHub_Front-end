@@ -1,4 +1,3 @@
-const config = require("../../config");
 
 var config = (wx.getStorageSync('config'));
 const TOKEN_KEY = 'auth_token';

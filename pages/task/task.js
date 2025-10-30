@@ -180,7 +180,7 @@ Page({
   getTaskDetail(taskId) {
     return new Promise((resolve, reject) => {
       wx.request({
-        url: config.tasks.detail + `${taskId}`,
+        url: config.tasks.detail + `/${taskId}`,
         method: 'GET',
         header: {
           'Content-Type': 'application/json',
@@ -342,7 +342,7 @@ Page({
     this.setData({ apiData: finalData });
 
     const url = this.data.isEditMode
-    ? config.tasks.update + `${this.data.task_id}`
+    ? config.tasks.update + `/${this.data.task_id}`
     : config.tasks.post;
     const method = this.data.isEditMode ? 'PATCH' : 'POST';
     

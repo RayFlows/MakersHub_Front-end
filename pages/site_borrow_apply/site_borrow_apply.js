@@ -229,7 +229,7 @@ Page({
       }, 500); // 模拟网络延迟
     } else {
       wx.request({
-        url: config.sites_borrow.detail + `${apply_id}`,
+        url: config.sites_borrow.detail + `/${apply_id}`,
         method:'GET',
         header: {
           'content-type': 'application/json',
@@ -866,7 +866,7 @@ Page({
         }, 1000); // 模拟网络延迟
       } else {
         wx.request({
-          url: config.sites_borrow.update + `${this.data.apply_id}`,
+          url: config.sites_borrow.update + `/${this.data.apply_id}`,
           method: 'PATCH',
           header: {
             'content-type': 'application/json',

@@ -382,7 +382,7 @@ Page({
           
           // 2. 上传海报
           wx.uploadFile({
-            url: config.events.precreate_event+ `${event_id}`,
+            url: config.events.precreate_event+ `/${event_id}`,
             filePath: filePath,
             name: 'file',
             header: {
@@ -412,7 +412,7 @@ Page({
               };
               
               wx.request({
-                url: config.events.post + `${event_id}`,
+                url: config.events.post + `/${event_id}`,
                 method: 'POST',
                 header: {
                   'Authorization': `Bearer ${token}`,

@@ -50,7 +50,7 @@ Page({
     });
     
     wx.request({
-      url: config.events.details + `${event_id}`,  // 正确的路径格式
+      url: config.events.details + `/${event_id}`,  // 正确的路径格式
       method: "GET",
       header: {
         'Authorization': `Bearer ${token}`,

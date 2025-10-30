@@ -47,7 +47,7 @@ Page({
     }
 
     const url = this.data.isEdited
-      ? config.publicity_link.update + `${this.data.formData.link_id}`
+      ? config.publicity_link.update + `/${this.data.formData.link_id}`
       : config.publicity_link.post;
     const method = this.data.isEdited ? 'PATCH' : 'POST';
 

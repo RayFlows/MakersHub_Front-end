@@ -64,7 +64,7 @@ Page({
   loadFormDetail(sb_id) {
     const token = wx.getStorageSync(TOKEN_KEY);
     wx.request({
-      url: config.stuff_borrow.detail + `${sb_id}`,
+      url: config.stuff_borrow.detail + `/${sb_id}`,
       method: 'GET',
       header: {
         'Authorization': token ? `Bearer ${token}` : '',
@@ -390,7 +390,7 @@ Page({
     wx.showLoading({ title: isEditMode ? '更新提交中...' : '提交中...' });
   
     // 根据编辑模式选择不同的接口和方法
-    const apiUrl = isEditMode ? config.stuff_borrow.update + `${sb_id}` : config.stuff_borrow.apply;
+    const apiUrl = isEditMode ? config.stuff_borrow.update + `/${sb_id}` : config.stuff_borrow.apply;
     const httpMethod = isEditMode ? 'PATCH' : 'POST';
   
     wx.request({

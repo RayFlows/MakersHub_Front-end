@@ -64,7 +64,7 @@ Page({
     wx.showLoading({ title: '加载中...' });
 
     wx.request({
-      url: config.stuff.view,
+      url: config.stuff_borrow.view,
       method: 'GET',
       header: {
         'Authorization': `Bearer ${token}`,

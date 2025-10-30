@@ -187,7 +187,7 @@ Page({
           } else {
             // 实际调用接口
             wx.request({
-              url: config.tasks.cancel + `${taskId}`,
+              url: config.tasks.cancel + `/${taskId}`,
               method: 'PATCH',
               header: {
                 'Authorization': `Bearer ${token}`,
@@ -239,7 +239,7 @@ Page({
           } else {
             // 实际调用接口
             wx.request({
-              url: config.tasks.finish + `${taskId}`,
+              url: config.tasks.finish + `/${taskId}`,
               method: 'PATCH',
               header: {
                 'Authorization': `Bearer ${token}`,

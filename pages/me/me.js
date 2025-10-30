@@ -28,10 +28,14 @@ Page({
   },
 
   onShow() {
+      console.log('[Me] onShow 被调用');
       this.fetchUserProfile();
   },
 
   fetchUserProfile() {
+    console.log('[Me] fetchUserProfile 开始');
+    console.log('[Me] 当前 config:', config);
+    console.log('[Me] 当前 token:', token);
     wx.request({
       url: config.users.profile,
       method: "GET",
@@ -40,6 +44,7 @@ Page({
         'Authorization': `Bearer ${token}`,
       },
       success: (res) => {
+        console.log('[Profile] 完整响应:', res);
         console.log("后端返回个人主页: " + JSON.stringify(res, null, 2));
         if (res.statusCode === 200 && res.data.data) {
           const info = res.data.data;
