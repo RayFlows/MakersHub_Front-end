@@ -1,5 +1,3 @@
-const { sites_borrow } = require("../../config");
-
 // pages/site_borrow_apply/site_borrow_apply.js
 var config = (wx.getStorageSync('config'));
 const token = wx.getStorageSync('auth_token');
@@ -960,7 +958,7 @@ Page({
         }, 1000); // 模拟网络延迟
       } else {
         wx.request({
-          url: `${API_BASE}/sites-borrow/post`,
+          url: config.sites_borrow.post,
           method: 'POST',
           header: {
             'content-type': 'application/json',

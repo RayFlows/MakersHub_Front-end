@@ -382,7 +382,7 @@ Page({
           
           // 2. 上传海报
           wx.uploadFile({
-            url: config.events.precreate_event+ `/${event_id}`,
+            url: config.events.poster+ `/${event_id}`,
             filePath: filePath,
             name: 'file',
             header: {

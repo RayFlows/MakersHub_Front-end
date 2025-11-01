@@ -18,6 +18,7 @@ var config = {
   sites_borrow: {
     view: host + "/sites-borrow/view",
     view_all: host + "/sites-borrow/view-all",
+    post: host + "/sites-borrow/post",
     update: host + "/sites-borrow/update",
     cancel: host + "/sites-borrow/cancel",
     detail: host + "/sites-borrow/detail",
