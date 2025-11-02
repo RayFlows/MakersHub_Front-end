@@ -46,14 +46,14 @@ var config = {
     view_my: host + "/tasks/view-my",
     view_all: host + "/tasks/view-all",
     detail: host + "/tasks/detail",
-    post: host + "/tasks/update",
-    update: host + "/tasks/post",
+    post: host + "/tasks/post",
+    update: host + "/tasks/update",
     cancel: host + "/tasks/cancel",
     finish: host + "/tasks/finish"
   },
   publicity_link: {
     view_my: host + "/publicity-link/view-my",
-    view_all: host + "/pulicity-link/view-all",
+    view_all: host + "/publicity-link/view-all",
     post: host + "/publicity-link/post",
     update: host + "/publicity-link/update",
     review: host + "/publicity-link/review"
