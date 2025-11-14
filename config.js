@@ -59,7 +59,7 @@ var config = {
     review: host + "/publicity-link/review"
   },
   arrange: {
-    get_arrangement: host + "/arrange/get-arragement",
+    get_arrangement: host + "/arrange/get-arrangement",
     get_current: host + "/arrange/get-current",
     batch: host + "/arrange/arrangements/batch"
   }
