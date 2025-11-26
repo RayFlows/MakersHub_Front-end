@@ -1,14 +1,17 @@
 
 var config = (wx.getStorageSync('config'));
 const TOKEN_KEY = 'auth_token';
+const app = getApp();
 
 Page({
   data: {
     isEditing: false,
-    tableData: []
+    tableData: [],
+    icons: {}
   },
 
   onLoad() {
+    this.loadIcons();
     const token = wx.getStorageSync(TOKEN_KEY);
 
     wx.request({
@@ -51,6 +54,18 @@ Page({
         wx.showToast({ title: '加载失败', icon: 'none' });
       }
     });
+  },
+
+  loadIcons: function() {
+    const resources = app.globalData.publicResources;
+
+    if(resources) {
+      this.setData({
+        icons: {
+          whiteCat: resources.whiteCat
+        }
+      })
+    }
   },
 
   onCellInput(e) {

@@ -1,6 +1,29 @@
 // club_work.js
-
+const app = getApp();
 Page({
+  data: {
+    icons: {}
+  },
+  onLoad: function () {
+    console.log('[Club Work] 获取本页图标资源')
+    this.loadIcons();
+  },
+
+  loadIcons: function () {
+    // 获取该页面的公共资源
+    const resources = app.globalData.publicResources;
+
+    if(resources) {
+      this.setData({
+        icons: {
+          whiteCalendar: resources.whiteCalendar,
+          broom: resources.broom,
+          remote: resources.remote,
+          badge: resources.badge
+        }
+      })
+    }
+  },
   handlerGobackClick() {
     const pages = getCurrentPages();
     if (pages.length >= 2) {

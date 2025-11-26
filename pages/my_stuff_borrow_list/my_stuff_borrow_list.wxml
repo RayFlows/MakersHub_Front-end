@@ -55,6 +55,6 @@
   </swiper>
 
   <view class="bottom-image-container">
-    <image class="bottom-image" src="/images/my_stuff_borrow_list/white_cat.svg" mode="widthFix"></image>
+    <image class="bottom-image" src="{{icons.whiteCat}}" mode="widthFix"></image>
   </view>
 </view>

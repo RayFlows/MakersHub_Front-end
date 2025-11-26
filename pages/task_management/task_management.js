@@ -4,6 +4,7 @@ const token = wx.getStorageSync('auth_token');
 const DEBUG = false;
 // 引入外部utils工具
 const utils = require("../../utils/util")
+const app = getApp();
 
 Page({
 
@@ -67,7 +68,8 @@ Page({
             "create_time": "2025-02-23T12:00:21Z"
           }
         ]
-      }
+      },
+      icons: {}
     }
   },
 
@@ -75,10 +77,26 @@ Page({
    * 生命周期函数--监听页面加载
    */
   onLoad(options) {
+    console.log("[Task Management] 获取页面图标资源");
+    this.loadIcons();
+
     if (DEBUG) {
       this.loadMockData();
     } else {
       this.fetchList();
+    }
+  },
+
+  loadIcons() {
+    const resources = app.globalData.publicResources;
+
+    if(resources) {
+      this.setData({
+      icons: {
+        catPattern: resources.catPattern,
+        whiteCat: resources.whiteCat
+      }
+      })
     }
   },
 

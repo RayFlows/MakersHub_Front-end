@@ -2,6 +2,7 @@
 var config = (wx.getStorageSync('config'));
 const token = wx.getStorageSync('auth_token');
 const utils = require("../../utils/util");
+const app = getApp();
 
 Page({
   data: {
@@ -60,10 +61,13 @@ Page({
           }
         ]
       }
-    }
+    },
+    icons: {}
   },
 
   onLoad() {
+    console.log("[Site Borrow Permit List] 获取页面图标资源");
+    this.loadIcons();
     this.loadData();
   },
 
@@ -77,6 +81,18 @@ Page({
       console.log('收到刷新事件：', data);
       this.loadData(); // 收到事件后刷新数据
     });
+  },
+
+  loadIcons() {
+    const resources = app.globalData.publicResources;
+
+    if(resources) {
+      this.setData({
+      icons: {
+        whiteCat: resources.whiteCat
+      }
+      })
+    }
   },
 
   filterData(dataList) {

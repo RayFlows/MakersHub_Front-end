@@ -1,6 +1,7 @@
 var config = (wx.getStorageSync('config'));
 const TOKEN_KEY = 'auth_token';
 const token = wx.getStorageSync(TOKEN_KEY);
+const app = getApp();
 
 Page({
   data: {
@@ -47,7 +48,27 @@ Page({
     isDirectorFocused: false,
     task_id: null,
     isEditMode: false,
-    optionsCache: null
+    optionsCache: null,
+    icons: {}
+  },
+
+  onLoad() {
+    console.log("[Task] 获取页面图标资源");
+    this.loadIcons();
+    this.setData({ optionsCache: options });
+    this.initializeData();
+  },
+
+  loadIcons() {
+    const resources = app.globalData.publicResources;
+
+    if(resources) {
+      this.setData({
+      icons: {
+        whiteCat: resources.whiteCat
+      }
+      })
+    }
   },
 
   handlerGobackClick() {
@@ -71,10 +92,6 @@ Page({
     wx.reLaunch({ url: '/pages/index/index' });
   },
 
-  onLoad(options) {
-    this.setData({ optionsCache: options });
-    this.initializeData();
-  },
 
   async initializeData() {
     try {

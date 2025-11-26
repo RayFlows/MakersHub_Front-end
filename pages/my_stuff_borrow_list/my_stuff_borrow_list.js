@@ -2,6 +2,7 @@
 var config = (wx.getStorageSync('config'));
 const TOKEN_KEY = 'auth_token';
 const utils = require("../../utils/util")
+const app = getApp();
 
 Page({
   data: {
@@ -21,14 +22,29 @@ Page({
     borrowingList: [],
     returnedList: [],
     unpermittedList: [],
+    icons: {}
   },
 
   onLoad() {
+    console.log("[My Stufff Borrow List] 获取页面图标资源");
+    this.loadIcons();
     this.loadData();
   },
 
   onShow() {
     this.loadData();
+  },
+
+  loadIcons() {
+    const resources = app.globalData.publicResources;
+
+    if(resources) {
+      this.setData({
+      icons: {
+        whiteCat: resources.whiteCat
+      }
+      })
+    }
   },
 
   filterData(dataList) {

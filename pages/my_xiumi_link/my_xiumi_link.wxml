@@ -94,7 +94,7 @@
                   <text class="content">{{item.link}}</text>
                   <image 
                   class="copy-icon"
-                  src="/images/activitydetail/copy.svg"
+                  src="{{icons.grayCopy}}"
                   mode="widthFix"
                   bind:tap="copy"
                   data-link="{{item.link}}"
@@ -148,7 +148,7 @@
                   <text class="content">{{item.link}}</text>
                   <image 
                   class="copy-icon"
-                  src="/images/activitydetail/copy.svg"
+                  src="{{icons.grayCopy}}"
                   mode="widthFix"
                   bind:tap="copy"
                   data-link="{{item.link}}"
@@ -157,7 +157,7 @@
               </view>
               <image
                 class="green-cat-pattern"
-                src="/images/pubulicity_work_page/cat_pattern.svg"
+                src="{{icons.catPattern}}"
                 mode="widthFix"
               />
             </view>
@@ -176,7 +176,7 @@
   <!-- <view class="cat-container">
     <image
       class="bottom-image"
-      src="/images/site_borrow_list/white_cat.svg"
+      src="{{icons.whiteCat}}"
       mode="aspectFit"
     />
   </view> -->

@@ -10,7 +10,7 @@
   </view>
 
   <view class="catheadcontainer">
-    <image class="background-image" src="/images/activitydetail/cat_background.png" mode="widthFix" />
+    <image class="background-image" src="{{icons.catBackground}}" mode="widthFix" />
 
     <view class="content-wrapper">
       <view class="content">
@@ -43,7 +43,7 @@
       <view class="section">
         <view class="rectangle"><text class="sub-title">二课报名链接</text></view>
         <view class="info">{{apiData.link}}
-          <image class="copy-icon" bindtap="copyLink" src="/images/activitydetail/copy.svg"></image>
+          <image class="copy-icon" bindtap="copyLink" src="{{icons.grayCopy}}"></image>
         </view>
       </view>
 
@@ -58,5 +58,5 @@
     </view>
   </view>
   
-  <image class="bottom-image" src="/images/activitydetail/cat_black.svg"></image>
+  <image class="bottom-image" src="{{icons.blackWhite}}"></image>
 </view>

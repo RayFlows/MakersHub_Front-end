@@ -6,33 +6,33 @@
   <!-- 第1个容器：监控管理 -->
   <view class="button-container btn1" bindtap="navigate1" wx:if="{{level >= 1}}">
     <view class="left-image-container">
-      <image class="left-image" src="/images/operation_maintenance_work_page/1.svg"  mode="aspectFit"></image>
+      <image class="left-image" src="{{icons.monitor}}"  mode="aspectFit"></image>
     </view>
     <view class="text-container text1">监控管理</view>
     <view class="arrow-container">
-      <image class="arrow-image" src="/images/operation_maintenance_work_page/icon_arrow_chevron-right_black.svg" mode="aspectFit"></image>
+      <image class="arrow-image" src="{{icons.blackArrow}}" mode="aspectFit"></image>
     </view>
   </view>
 
   <!-- 第2个容器：网络管理 -->
   <view class="button-container btn2" bindtap="navigate2" wx:if="{{level >= 1}}">
     <view class="left-image-container">
-      <image class="left-image" src="/images/operation_maintenance_work_page/2.svg" mode="aspectFit"></image>
+      <image class="left-image" src="{{icons.web}}" mode="aspectFit"></image>
     </view>
     <view class="text-container text2">网络管理</view>
     <view class="arrow-container">
-      <image class="arrow-image" src="/images/operation_maintenance_work_page/icon_arrow_chevron-right_white.svg" mode="aspectFit"></image>
+      <image class="arrow-image" src="{{icons.whiteArrow}}" mode="aspectFit"></image>
     </view>
   </view>
 
   <!-- 第3个容器：3D打印审核 -->
   <view class="button-container btn3" bindtap="navigate3" wx:if="{{level >= 2}}">
     <view class="left-image-container">
-      <image class="left-image" src="/images/operation_maintenance_work_page/3.svg" mode="aspectFit"></image>
+      <image class="left-image" src="{{icons.printer}}" mode="aspectFit"></image>
     </view>
     <view class="text-container text3">3D打印审核</view>
     <view class="arrow-container">
-      <image class="arrow-image" src="/images/operation_maintenance_work_page/icon_arrow_chevron-right_black.svg" mode="aspectFit"></image>
+      <image class="arrow-image" src="{{icons.blackArrow}}" mode="aspectFit"></image>
     </view>
   </view>
 
@@ -40,5 +40,5 @@
 
 <!-- 在container外添加底部图片容器 -->
 <view class="bottom-image-container">
-  <image class="bottom-image" src="/images/pubulicity_work_page/cat.svg" mode="widthFix"></image>
+  <image class="bottom-image" src="{{icons.whiteCat}}" mode="widthFix"></image>
 </view>

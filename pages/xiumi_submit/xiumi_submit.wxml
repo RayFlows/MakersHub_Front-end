@@ -34,5 +34,5 @@
     </textarea>
     <view class="submit-btn" bindtap="onSubmit">{{isEdited ? "确认修改" : "提交"}}</view>
   </view>
-  <image class="bottom-image" mode="widthFix" src="/images/pubulicity_work_page/cat.svg"></image>
+  <image class="bottom-image" mode="widthFix" src="{{icons.whiteCat}}"></image>
 </view>

@@ -4,9 +4,9 @@ const token = wx.getStorageSync('auth_token');
 const DEBUG = false;
 // 引入外部utils工具
 const utils = require("../../utils/util")
+const app = getApp();
 
 Page({
-
   /**
    * 页面的初始数据
    */
@@ -58,17 +58,35 @@ Page({
           }
         ]
       }
-    }
+    },
+    icons: {}
   },
 
   /**
    * 生命周期函数--监听页面加载
    */
   onLoad(options) {
+    console.log("[My Xiumi Link] 获取页面图标资源");
+    this.loadIcons();
+
     if (DEBUG) {
       this.loadMockData();
     } else {
       this.fetchLinks();
+    }
+  },
+
+  loadIcons() {
+    const resources = app.globalData.publicResources;
+
+    if(resources) {
+      this.setData({
+      icons: {
+        grayCopy: resources.grayCopy,
+        catPattern: resources.catPattern,
+        whiteCat: resources.whiteCat
+      }
+      })
     }
   },
 

@@ -1,5 +1,6 @@
 var config = (wx.getStorageSync('config'));
 const TOKEN_KEY = 'auth_token';
+const app = getApp()
 
 Page({
   data: {
@@ -19,15 +20,30 @@ Page({
       returned: 0,
       rejected: 0,
       overdue: 0
-    }
+    },
+    icons: {}
   },
 
   onLoad() {
+    this.loadIcons();
     this.loadBorrowApplies();
   },
 
   onShow() {
     this.loadBorrowApplies();
+  },
+
+  loadIcons() {
+    const resources = app.globalData.publicResources;
+
+    if(resources) {
+      this.setData({
+      icons: {
+        whiteCat: resources.whiteCat
+      }
+      })
+    }
+
   },
 
   loadBorrowApplies() {

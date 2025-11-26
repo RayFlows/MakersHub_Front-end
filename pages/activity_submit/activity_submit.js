@@ -3,7 +3,7 @@ const token = wx.getStorageSync('auth_token');
 var config = (wx.getStorageSync('config'));
 // 导入外部util工具
 const utils = require('../../utils/util')
-
+const app = getApp();
 Page({
   data: {
     // 表单数据
@@ -41,7 +41,27 @@ Page({
     isLocationFocused: false,
     isLinkFocused: false,
     isParticipantFocused: false,
-    isValid: true
+    isValid: true,
+    icons: {}
+  },
+
+  onLoad: function() {
+    console.log("[Activity Submit] 获取本页图标资源")
+    this.loadIcons()
+  },
+
+  loadIcons: function () {
+    // 获取该页面的公共资源
+    const resources = app.globalData.publicResources;
+
+    if(resources) {
+      this.setData({
+        icons: {
+          upload: resources.upload, // 上传图标
+          whiteCat: resources.whiteCat // 底部白色猫团
+        }
+      })
+    }
   },
 
   // 输入框处理函数保持不变...

@@ -4,8 +4,8 @@
 <!--上方导航栏-->
   <view class='nav'>
         <navBar 
-        title='' 
-        background='rgba(0,0,0,0)' 
+        title='编辑个人信息' 
+        background='#222831' 
         color='#FFFFFF' 
         back="{{true}}" 
         home="{{false}}" 
@@ -22,21 +22,19 @@
       <view class="avatar-section">
         <image class="avatar" src="{{userInfo.avatar}}" mode="aspectFit" bindtap = "editAvatar"/>
         <!--头像的编辑图标-->
-        <image class="edit-icon" src="/images/editPage/edit.svg" bindtap="editAvatar" />
+        <image class="edit-icon" src="{{icons.greenEdit}}" bindtap="editAvatar" />
       </view>
     </view>
     <!-- 真实姓名部分 -->
     <view class="info-section">
-    <!--我的的图标-->
       <text class="label">真实姓名</text>
       <!--输入容器-->
       <input class="input {{isNameFocused ? 'focused' : ''}}"  type="text" value="{{userInfo.real_name}}" bindtap = "onNameFocused" bindblur = "onNameBlur"bindinput="updateRealName" placeholder="{{userInfo.real_name}}" />
     </view>
 
-    <!-- 联系方式 -->
+    <!-- 个人电话-->
     <view class="info-section">
-    <!--电话的图标-->
-      <text class="label">联系方式</text>
+      <text class="label">个人电话</text>
       <!--输入的容器-->
       <input 
         class="input {{isPhoneFocused ? 'focused' : ''}} {{!isPhoneValid ? 'error' : ''}}" 
@@ -48,6 +46,27 @@
         placeholder="{{userInfo.phone_num}}" 
       />
       <text wx:if="{{!isPhoneValid}}" class="error-text">{{phoneErrorMsg}}</text>
+    </view>
+
+    <!-- QQ号 -->
+    <view class="info-section">
+      <text class="label">QQ号</text>
+      <!--输入容器-->
+      <input class="input {{isQQFocused ? 'focused' : ''}}"  type="text" value="{{userInfo.qq}}" bindtap = "onQQFocused" bindblur = "onQQBlur"bindinput="updateQQ" placeholder="{{userInfo.qq}}" />
+    </view>
+
+    <!-- 学号 -->
+    <view class="info-section">
+      <text class="label">学号</text>
+      <!--输入容器-->
+      <input class="input {{isStudentIDFocused ? 'focused' : ''}}"  type="text" value="{{userInfo.student_id}}" bindtap = "onStudentIDFocused" bindblur = "onStudentIDBlur"bindinput="updateStudentID" placeholder="{{userInfo.student_id}}" />
+    </view>
+
+    <!-- 学院 -->
+    <view class="info-section">
+      <text class="label">学院</text>
+      <!--输入容器-->
+      <input class="input {{isCollegeFocused ? 'focused' : ''}}"  type="text" value="{{userInfo.college}}" bindtap = "onCollegeFocused" bindblur = "onCollegeBlur"bindinput="updateCollege" placeholder="{{userInfo.college}}" />
     </view>
 
     <!-- 个人签名部分 -->
@@ -67,7 +86,7 @@
       </view>
   </view>
 
-  <!--底部的猫猫图标-->
-  <image class="icon-in-bottom" src="/images/editPage/cat_in_bottom.svg" mode="aspectFill" />
+  <!-- 底部的猫猫图标 -->
+  <image class="icon-in-bottom" src="{{icons.whiteCat}}" mode="aspectFill" />
 
 </view>

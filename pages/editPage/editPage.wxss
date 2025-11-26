@@ -26,6 +26,7 @@ button:active {
   justify-content: flex-start;
   padding:0;
   overflow-x: hidden;
+  gap: 60rpx;
 }
 
 .focused{
@@ -132,7 +133,7 @@ textarea.input {
   border-radius: 8rpx;
   text-align: center;
 }
-.icon-in-bottom{
+/* .icon-in-bottom{
   width: 440rpx;
   height: 174rpx;
   position: absolute;
@@ -140,4 +141,14 @@ textarea.input {
   left: 50%;
   transform: translateX(-50%);
   z-index: 99;
+} */
+/* 猫猫图标 - 跟随内容流 */
+.icon-in-bottom{
+  width: 440rpx;
+  height: 174rpx;
+  /* 移除 position: absolute 和 bottom: 0 */
+  /* 改为相对定位或静态定位 */
+  margin: 0 auto; /* 水平居中 */
+  display: block;
+  padding-bottom: 0rpx; /* 底部留白 */
 }

@@ -1,6 +1,6 @@
 const token = wx.getStorageSync('auth_token');
 var config = (wx.getStorageSync('config'));
-
+const app = getApp();
 // 导入外部utils工具函数
 const utils = require('../../utils/util')
 
@@ -17,12 +17,29 @@ Page({
       start_time: '',
       end_time: '',
       registration_deadline: ''
-    }
+    },
+    icons: {}
   },
 
   onLoad(options) {
+    console.log("[Activity Details] 获取页面图标资源");
+    this.loadIcons();
     const event_id = options.event_id;
     this.fetchActivityDetail(event_id);
+  },
+
+  loadIcons() {
+    const resources = app.globalData.publicResources;
+
+    if(resources) {
+      this.setData({
+      icons: {
+        catBackground: resources.catBackground,
+        grayCopy: resources.grayCopy,
+        blackCat: resources.blackCat
+      }
+      })
+    }
   },
 
   handlerGobackClick() {

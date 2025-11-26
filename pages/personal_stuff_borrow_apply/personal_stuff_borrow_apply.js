@@ -1,5 +1,6 @@
 var config = (wx.getStorageSync('config'));
 const TOKEN_KEY = "auth_token";
+const app = getApp();
 
 Page({
   data: {
@@ -35,10 +36,14 @@ Page({
     days: [],
     selectedYear: '',
     selectedMonth: '',
-    selectedDay: ''
+    selectedDay: '',
+    icons: {}
   },
 
   onLoad(options) {
+    console.log("[Personal Stuff Borrow Apply] 获取页面图标资源");
+    this.loadIcons();
+
     this.initDatePickers();
 
     if(options.edit === 'true' && options.sb_id) {
@@ -49,6 +54,18 @@ Page({
     }
 
     this.fetchStuffOptions();
+  },
+
+  loadIcons() {
+    const resources = app.globalData.publicResources;
+
+    if(resources) {
+      this.setData({
+      icons: {
+        whiteCat: resources.whiteCat
+      }
+      })
+    }
   },
 
   loadFormDetail(sb_id) {

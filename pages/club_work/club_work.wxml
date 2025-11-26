@@ -6,19 +6,19 @@
       <text class = "title">常用功能</text>
       <view class = "buttons">
           <button>
-              <image class= "icon" src = "/images/club_work/onDuty.svg"/>
+              <image class= "icon" src = "{{icons.badge}}"/>
               <text>值班签到</text>
           </button>
           <button>
-              <image class= "icon clean" src = "/images/club_work/clean.svg"/>
+              <image class= "icon clean" src = "{{icons.broom}}"/>
               <text>扫除签到</text>
           </button>
           <button>
-              <image class= "icon remote" src = "/images/club_work/remote.svg"/>
+              <image class= "icon remote" src = "{{icons.remote}}"/>
               <text>远程控制</text>
           </button>
           <button bindtap="jumpToDutyApplicationPage">
-            <image class= "icon apply-duty" src = "/images/club_work/applyDuty.svg"/>
+            <image class= "icon apply-duty" src = "{{icons.whiteCalendar}}"/>
             <text>值班申请</text>
           </button>
       </view>

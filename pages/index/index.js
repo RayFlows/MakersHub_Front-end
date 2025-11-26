@@ -3,6 +3,7 @@ const TOKEN_KEY = 'auth_token';
 const USER_INFO_KEY = 'userInfo';
 const LAST_CLEAN_TIME_KEY = 'last_clean_time'; // 上次清理时间的存储键
 var config = (wx.getStorageSync('config'));
+const app = getApp();
 /**
  * 获取本地存储的令牌
  */
@@ -195,11 +196,12 @@ Page({
     activeTab: "index", // 当前页面为首页
     showAuthModal: false,
     hasUserInfo: !!wx.getStorageSync(USER_INFO_KEY), // 使用合并后的常量
+    icons: {}
   },
 
   onShow: function () {
     console.log("[Page] 初始化令牌检查");
-
+    // 一开始就获取所有的minIO公共icon资源，保存到用户的缓存中
     // 检查并执行24小时缓存清理
     checkAndCleanCache();
 
@@ -215,7 +217,32 @@ Page({
         // 如果在 index 页面需要提示用户授权，这里可以增加相应处理逻辑
       });
   },
+  onLoad: function () {
+    console.log('[Index] 获取本页图标资源')
+    this.loadIcons();
+  },
 
+  loadIcons: function () {
+    // 获取该页面的公共资源
+    const resources = app.globalData.publicResources;
+
+    if(resources) {
+      this.setData({
+        icons: {
+          spanner: resources.spanner,
+          peoples: resources.peoples,
+          grayHouse: resources.grayHouse,
+          activity: resources.activity,
+          project: resources.project,
+          lookup: resources.lookup,
+          catIconChosen: resources.catIconChosen,
+          catIconUnChosen: resources.catIconUnChosen,
+          meChosen: resources.meChosen,
+          meUnchosen: resources.meUnchosen
+        }
+      })
+    }
+  },
   /**
    * 用户点击授权按钮时调用，显示授权弹窗
    */

@@ -1,4 +1,5 @@
 const TOKEN_KEY = 'auth_token'; // 登录后保存的 token 的 key
+const app = getApp(); 
 
 Page({
   data: {
@@ -9,14 +10,29 @@ Page({
     timeSlot2: { weekIndex: -1, timeIndex: -1 },
     timeSlot3: { weekIndex: -1, timeIndex: -1 },
 
-    token: '' // 用于存储本地获取的 token
+    token: '', // 用于存储本地获取的 token
+    icons: {}
   },
 
   onLoad() {
+    console.log("[Duty Application] 获取本页图标资源")
+    this.loadIcons();
     console.log('值班申请页面加载完成');
     const token = wx.getStorageSync(TOKEN_KEY);
     console.log('本地获取到的 token:', token);
     this.setData({ token }); // 存入 data 方便后续使用
+  },
+
+  loadIcons() {
+    const resources = app.globalData.publicResources;
+
+    if(resources) {
+      this.setData({
+      icons: {
+        whiteCat: resources.whiteCat
+      }
+      })
+    }
   },
 
   onWeekChange1(e) {

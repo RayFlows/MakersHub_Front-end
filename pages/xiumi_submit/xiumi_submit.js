@@ -1,7 +1,7 @@
 // pages/xiumi_submit/xiumi_submit.js
 const token = wx.getStorageSync('auth_token');
 var config = (wx.getStorageSync('config'));
-
+const app = getApp();
 Page({
   data: {
     formData: {
@@ -14,10 +14,14 @@ Page({
     isValid: true,
     isTitleFocused: false,
     isNameFocused: false,
-    isLinkFocused: false
+    isLinkFocused: false,
+    icons: {}
   },
 
   onLoad(options) {
+    console.log("[Xiumi Submit] 获取页面图标资源");
+    this.loadIcons();
+
     if (options.link_id) {
       this.setData({
         isEdited: true,
@@ -30,6 +34,18 @@ Page({
     }
     console.log("link_id: ", options.link_id);
     console.log("formData passed: ", JSON.stringify(this.data.formData, null, 2));
+  },
+
+  loadIcons() {
+    const resources = app.globalData.publicResources;
+
+    if(resources) {
+      this.setData({
+      icons: {
+        whiteCat: resources.whiteCat
+      }
+      })
+    }
   },
 
   onSubmit() {

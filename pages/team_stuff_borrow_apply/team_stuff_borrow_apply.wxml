@@ -179,5 +179,5 @@
     {{isEditMode ? '更新' : '提交'}}
   </button>
 
-  <image class="decorative-image" src="/images/activity/white_cat.svg"/>
+  <image class="decorative-image" src="{{icons.whiteCat}}"/>
 </view>

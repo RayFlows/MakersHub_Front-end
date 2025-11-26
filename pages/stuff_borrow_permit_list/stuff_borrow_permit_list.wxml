@@ -61,5 +61,5 @@
   </swiper>
 
   <!-- 底部装饰图片 -->
-  <image class="bottom-image" src="/images/stuff_borrow_permit_list/white_cat.svg" mode="widthFix" />
+  <image class="bottom-image" src="{{icons.whiteCat}}" mode="widthFix" />
 </view>

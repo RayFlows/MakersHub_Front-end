@@ -2,33 +2,47 @@
 
 var config = (wx.getStorageSync('config'));
 const token = wx.getStorageSync("auth_token");
+const app = getApp();
 
 Page({
   data: {
     userInfo: {
+      avatar: "",
       real_name: "",
       phone_num: "",
-      avatar: "",
+      qq: "",
+      student_id: "",
+      college: "",
       motto: "",
     },
     tempAvatar: "",
     // oldAvatar: "",
     isNameFocused: false,
     isPhoneFocused: false,
+    isQQFocused: false,
+    isStudentIDFocused: false,
+    isCollegeFocused: false,
     isMottoFocused: false,
     isNameChanged: false,
     isPhoneChanged: false,
+    isQQChanged: false,
+    isStudentIDChaged: false,
+    isCollegeChanged: false,
     isMottoChanged: false,
     isPhoneValid: true, // 电话号码是否有效的标志
     phoneErrorMsg: "", // 电话错误信息
+    icons: {}
   },
 
   onLoad(options) {
+    console.log("[Edit Page] 获取本页图标资源")
+    this.loadIcons();
     // 加载从me页面传来的数据
     this.setData({
       userInfo: {
         real_name: options.real_name ? decodeURIComponent(options.real_name) : "",
         phone_num: options.phone_num ? decodeURIComponent(options.phone_num) : "",
+        qq: options.qq ? decodeURIComponent(options.qq) : "",
         avatar: options.avatar ? decodeURIComponent(options.avatar) : "",
         motto: options.motto ? decodeURIComponent(options.motto) : ""
       }
@@ -37,6 +51,18 @@ Page({
     console.log('接收到的参数:', JSON.stringify(this.data.userInfo, null, 2));
   },
   
+  loadIcons() {
+    const resources = app.globalData.publicResources;
+
+    if(resources) {
+      this.setData({
+      icons: {
+        greenEdit: resources.greenEdit,
+        whiteCat: resources.whiteCat
+      }
+      })
+    }
+  },
 
   onNameFocused() {
     this.setData({ isNameFocused: true });
@@ -49,6 +75,24 @@ Page({
   },
   onPhoneBlur() {
     this.setData({ isPhoneFocused: false });
+  },
+  onQQFocused() {
+    this.setData({ isQQFocused: true });
+  },
+  onQQBlur() {
+    this.setData({ isQQFocused:false });
+  },
+  onStudentIDFocused() {
+    this.setData({ isStudentIDFocused: true });
+  },
+  onStudentIDBlur() {
+    this.setData({ isStudentIDFocused:false });
+  },
+  onCollegeFocused() {
+    this.setData({ isCollegeFocused: true });
+  },
+  onCollegeBlur() {
+    this.setData({ isCollegeFocused:false });
   },
   onMottoFocused() {
     this.setData({ isMottoFocused: true });
@@ -102,6 +146,27 @@ Page({
       isPhoneValid: isValid,
       phoneErrorMsg: errorMsg
     });
+  },
+  // 更改用户qq
+  updateQQ(e) {
+    this.setData(
+      { 'userInfo.qq': e.detail.value,
+      isQQChanged: true }
+    )
+  },
+  // 更改用户学号
+  updateStudentID(e) {
+    this.setData(
+      { 'userInfo.student_id': e.detail.value,
+      isStudentIDChanged: true }
+    )
+  },
+  // 更改用户学院
+  updateCollege(e) {
+    this.setData(
+      { 'userInfo.college': e.detail.value,
+      isCollegeChanged: true }
+    )
   },
   // 更改用户座右铭
   updateMotto(e) {
@@ -179,6 +244,15 @@ Page({
       }
       if (this.data.userInfo.phone_num) {
         updateData.data.phone_num = this.data.userInfo.phone_num;
+      }
+      if(this.data.userInfo.qq) {
+        updateData.data.qq = this.data.userInfo.qq;
+      }
+      if (this.data.userInfo.student_id) {
+        updateData.data.student_id = this.data.userInfo.student_id;
+      }
+      if (this.data.userInfo.college) {
+        updateData.data.college = this.data.userInfo.college;
       }
       if (this.data.userInfo.motto) {
         updateData.data.motto = this.data.userInfo.motto;

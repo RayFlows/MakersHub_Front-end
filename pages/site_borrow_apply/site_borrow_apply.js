@@ -2,6 +2,8 @@
 var config = (wx.getStorageSync('config'));
 const token = wx.getStorageSync('auth_token');
 const DEBUG = false;
+const app = getApp();
+
 Page({
   /**
    * 页面的初始数据
@@ -60,13 +62,17 @@ Page({
     isAdvisorPhoneFocused: false,
 
     // 表单可提交验证
-    isValid: true
+    isValid: true,
+    icons: {}
   },
 
   /**
    * 生命周期函数--监听页面加载
    */
   onLoad(options) {
+    console.log("[Site Borrow Apply] 获取页面图标资源");
+    this.loadIcons();
+
     console.log("token", token);
     // 获取所有场地
     this.fetchSites();
@@ -95,6 +101,18 @@ Page({
       
       this.updateStartDays();
       this.updateStartTimeInFormData();
+    }
+  },
+
+  loadIcons() {
+    const resources = app.globalData.publicResources;
+
+    if(resources) {
+      this.setData({
+      icons: {
+        whiteCat: resources.whiteCat
+      }
+      })
     }
   },
 

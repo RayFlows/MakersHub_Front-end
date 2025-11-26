@@ -37,7 +37,7 @@
     <view class="section" >
       <text class="sub-title">项目信息</text>
       <view class="info">项目编号：{{apiData.project_id}}
-        <image class="copy-icon" bindtap="copyLink" src="/images/activitydetail/copy.svg"></image>
+        <image class="copy-icon" bindtap="copyLink" src="{{icons.grayCopy}}"></image>
       </view>
       <view class="info">指导老师：{{apiData.mentor_name}}</view>
       <view class="info">联系方式：{{apiData.mentor_phone_num}}</view>
@@ -76,6 +76,6 @@
         <view class="action-btn cancel-btn" bindtap="cancelApplication">取消申请</view>
         <view class="action-btn modify-btn" bindtap="modifyApplication">修改申请</view>
     </view>
-    <image class="bottom-image" src="/images/activitydetail/cat_black.svg" mode="aspectFill"></image>
+    <image class="bottom-image" src="{{icons.blackCat}}" mode="aspectFill"></image>
   </view>
 </view>

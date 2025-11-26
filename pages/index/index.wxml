@@ -40,15 +40,15 @@
       <!-- 第一行 -->
       <view class="button-row">
         <button class="func-button" bindtap="navigateToPersonalStuffBorrow">
-          <image src="/images/index/spanner.svg" class="button-icon" />
+          <image src="{{icons.spanner}}" class="button-icon" />
           <text class="text1">个人借物</text>
         </button>
         <button class="func-button" bindtap="navigateToTeamStuffBorrow">
-          <image src="/images/index/peoples.svg" class="button-icon" />
+          <image src="{{icons.peoples}}" class="button-icon" />
           <text class="text6">团队借物</text>
         </button>
         <button class="func-button" bindtap="navigateToVenue">
-          <image src="/images/index/area.svg" class="button-icon" />
+          <image src="{{icons.grayHouse}}" class="button-icon" />
           <text class="text2">场地申请</text>
         </button>
       </view>
@@ -56,15 +56,15 @@
       <!-- 第二行 -->
       <view class="button-row">
         <button class="func-button" bindtap="navigateToActivity">
-          <image src="/images/index/activity.svg" class="button-icon" />
+          <image src="{{icons.activity}}" class="button-icon" />
           <text class="text4">协会活动</text>
         </button>
         <button class="func-button" bindtap="navigateToProject">
-          <image src="/images/index/project.svg" class="button-icon" />
+          <image src="{{icons.project}}" class="button-icon" />
           <text class="text3">项目立项</text>
         </button>
         <button class="func-button" bindtap="navigateToViewProject">
-          <image src="/images/index/lookup.svg" class="button-icon" />
+          <image src="{{icons.lookup}}" class="button-icon" />
           <text class="text5">查看项目</text>
         </button>
         
@@ -83,12 +83,15 @@
     <!-- 首页的按钮 -->
     <view class="circle"data-page="index" bindtap="switchPage">
       <view class="green-circle">
-        <image class="icon-on-green-circle" src="{{ activeTab=='index' ? '/images/index/cat_white.svg' : '/images/index/cat_black.svg' }}" mode="aspectFit"></image>
+        <image class="icon-on-green-circle" 
+          src="{{ activeTab == 'index' ? icons.catIconChosen : icons.catIconUnchosen }}" 
+          mode="aspectFit">
+        </image>
       </view>
     </view>
     <!-- 我的的按钮 -->
     <view class="nav-item" data-page="me" bindtap="switchPage">
-      <image class="me-icon" src="{{ activeTab=='me' ? '/images/index/me_chosen.svg' : '/images/index/me_unchosen.svg' }}" mode="aspectFit" style="color: {{ activeTab=='me' ? '#00ADB5' : '#ffffff' }}"></image>
+      <image class="me-icon" src="{{ activeTab=='me' ? icons.meChosen : icons.meUnchosen }}" mode="aspectFit" style="color: {{ activeTab=='me' ? '#00ADB5' : '#ffffff' }}"></image>
       <text class="nav-item-text2">我的</text>
     </view>
   </view>

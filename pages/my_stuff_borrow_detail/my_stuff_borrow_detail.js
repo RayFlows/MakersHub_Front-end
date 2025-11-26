@@ -1,6 +1,8 @@
 var config = (wx.getStorageSync('config'));
 const token = wx.getStorageSync('auth_token');
 const DEBUG = false;
+const app = getApp();
+
 function parseStuff(data) {
   console.log('[parseStuff] 解析 stuff_list:', data.stuff_list);
   if (data.stuff_list && Array.isArray(data.stuff_list)) {
@@ -53,10 +55,14 @@ Page({
       2: "#ffeaa7",
       3: "#00adb5"
     },
-    sb_id: ''
+    sb_id: '',
+    icons: {}
   },
 
   onLoad(options) {
+    console.log("[My Stuff Borrow Detail] 获取页面图标资源");
+    this.loadIcons();
+
     console.log('[onLoad] 页面参数:', options);
     const sb_id = options.sb_id;
     if (sb_id) {
@@ -74,6 +80,19 @@ Page({
         title: '获取申请ID失败',
         icon: 'error'
       });
+    }
+  },
+
+  loadIcons() {
+    const resources = app.globalData.publicResources;
+
+    if(resources) {
+      this.setData({
+      icons: {
+        grayCopy: resources.grayCopy,
+        blackCat: resources.blackCat
+      }
+      })
     }
   },
 

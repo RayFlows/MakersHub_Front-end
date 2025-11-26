@@ -26,14 +26,14 @@
       <view class="{{event.poster ? 'poster-preview-container' : 'upload-box'}}" bindtap="onUploadPoster">
         <!-- 未选择海报时显示上传提示 -->
         <block wx:if="{{!event.poster}}">
-          <image class="upload-icon" src="/images/activity/upload.svg"></image>
+          <image class="upload-icon" src="{{icons.upload}}"></image>
           <text>点击上传海报</text>
         </block>
         <!-- 已选择海报时显示预览图 -->
         <block wx:else>
           <image class="poster-preview" src="{{event.poster}}" mode="aspectFill"></image>
           <view class="reupload-btn">
-            <image class="reupload-icon" src="/images/activity/upload.svg"></image>
+            <image class="reupload-icon" src="{{icons.upload}}"></image>
             <text>重新选择</text>
           </view>
         </block>
@@ -214,5 +214,5 @@
   </view>
 
   <button class="submit-btn" bindtap="onSubmit">立即发布</button>
-  <image class="bottom-image" src="/images/activity/white_cat.svg" mode="widthFix"></image>
+  <image class="bottom-image" src="{{icons.whiteCat}}" mode="widthFix"></image>
 </view>

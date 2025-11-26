@@ -4,6 +4,7 @@ const token = wx.getStorageSync('auth_token');
 const DEBUG = false;
 // 引入外部utils工具
 const utils = require("../../utils/util")
+const app = getApp(); 
 
 Page({
 
@@ -58,13 +59,16 @@ Page({
           }
         ]
       }
-    }
+    },
+    icons: {}
   },
 
   /**
    * 生命周期函数--监听页面加载
    */
   onLoad(options) {
+    console.log('[My Task] 获取本页图标资源')
+    this.loadIcons()
     if (DEBUG) {
       this.loadMockData();
     } else {
@@ -72,6 +76,17 @@ Page({
     }
   },
 
+  loadIcons: function() {
+    const resources = app.globalData.publicResources;
+    if(resources) {
+      this.setData({
+        icons: {
+          whiteCat: resources.whiteCat,
+          catPattern: resources.catPattern
+        }
+      })
+    }
+  },
   // 切换 tab
   changeItem(e) {
     const index = parseInt(e.currentTarget.dataset.item);

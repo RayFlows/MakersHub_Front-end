@@ -1,13 +1,36 @@
 const token = wx.getStorageSync('auth_token');
 var config = (wx.getStorageSync('config'));
 const TOKEN_KEY = "auth_token";
+const app = getApp();
+
 Page({
   data: {
-    level: 2 // 默认权限级别，需根据接口动态更新
+    level: 2, // 默认权限级别，需根据接口动态更新
+    icons: {}
   },
 
   onLoad() {
+    console.log('[Base Management Work Page] 获取本页图标资源')
+    this.loadIcons();
     this.fetchUserRole();
+  },
+
+  loadIcons() {
+    const resources = app.globalData.publicResources;
+
+    if(resources) {
+      this.setData({
+        icons: {
+          grayCalendar: resources.grayCalendar,
+          broom: resources.broom,
+          spanner: resources.spanner,
+          whiteHouse: resources.whiteHouse,
+          whiteArrow: resources.whiteArrow,
+          blackArrow: resources.blackArrow,
+          whiteCat: resources.whiteCat
+        }
+      })
+    }
   },
 
   handlerGobackClick() {

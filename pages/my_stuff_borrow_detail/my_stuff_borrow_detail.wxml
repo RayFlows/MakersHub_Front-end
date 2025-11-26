@@ -36,7 +36,7 @@
         <text class="sub-title">项目信息</text>
         <view class="info">
           项目编号：{{apiData.project_number || '个人借物无项目信息'}}
-          <image class="copy-icon" bindtap="copyLink" src="/images/activitydetail/copy.svg" />
+          <image class="copy-icon" bindtap="copyLink" src="{{icons.grayCopy}}" />
         </view>
         <view class="info">指导老师：{{apiData.supervisor_name || '个人借物无项目信息'}}</view>
         <view class="info">联系方式：{{apiData.supervisor_phone || '个人借物无项目信息'}}</view>
@@ -73,5 +73,5 @@
   </scroll-view>
 
   <!-- 底部固定黑猫图片 -->
-  <!-- <image class="bottom-image" src="/images/my_stuff_borrow_detail/cat_black.svg" /> -->
+  <!-- <image class="bottom-image" src="{{icons.blackCat}}" /> -->
 </view>

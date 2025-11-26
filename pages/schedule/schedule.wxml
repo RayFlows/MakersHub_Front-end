@@ -55,5 +55,5 @@
     <image class="icon-edit" src="/images/schedule/edit.svg"></image>
   </view> -->
 
-  <image class="bottom-image" src="/images/schedule/white_cat.svg" mode="widthFix" />
+  <image class="bottom-image" src="{{icons.whiteCat}}" mode="widthFix" />
 </view>

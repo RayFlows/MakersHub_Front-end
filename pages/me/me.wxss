@@ -24,73 +24,43 @@ button:active {
 .user-info {
   display: flex;
   flex-direction: row;
-  height: 0vh;
+  width: 80%;
+  justify-content: space-between;
+}
+
+.info-box {
+  display: flex;
+  flex-direction: column;
+  width: 60%;
+  gap: 24rpx;
 }
 
 .user-name {
-  font-size: 42rpx;
+  font-size: 48rpx;
   font-weight: bold;
-  margin-left: 23rpx;
-}
-
-.info {
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  width: 100%;
-  gap: 20rpx;
-}
-
-.box {
-  display: flex;
-  padding: 10rpx;
-  margin-top: 30rpx;
-  border-radius: 25rpx;
-  width: 45%;
-  gap: 10rpx;
-  background-color: #FFE89E;
-  align-items: center;
-  /* border-bottom: 7rpx dotted #FFE89E ; */
-}
-
-.phone-icon, .style-icon {
-  width: 36rpx;
-  height: 36rpx;
-  margin: 10rpx;
 }
 
 .info-text {
-  font-size: 28rpx;
-  color: #333;
+  font-size: 32rpx;
+  color: #ffffff;
   text-align: start;
-  line-height: 36rpx;
-  width: 85%;
+  line-height: 48rpx;
+  display: flex;
+  width: 95%;
 }
 
-.copy-icon {
-  width: 33rpx;
-  height: 33rpx;
-  margin-right:-45rpx;
-}
 /* 用户头像样式 */
 .avatar {
   width: 210rpx;
   height: 210rpx;
   border-radius: 50%;
   overflow: hidden;
-  margin-top:-190rpx;
-  margin-left:410rpx;
 }
 
 /* 头像内图片样式 */
 .avatar image {
   width: 100%;
   height: 100%;
-}
-
-.info-boxes {
-  display: flex;
-  flex-direction: column; /* 让 box1 和 box2 垂直排列 */
 }
 
 .membership {
@@ -157,6 +127,7 @@ button:active {
 .arrow-icon-white{
   width:42rpx;
   height:52rpx;
+  transform: scale(1.5);
 }
 
 /* 功能列表容器样式 */
@@ -204,7 +175,7 @@ button:active {
 .arrow-icon {
   width: 50rpx;
   height: 42rpx;
-  margin-left: -55rpx;
+  transform: scale(1.5);
 }
 
 /* 底部导航栏 */

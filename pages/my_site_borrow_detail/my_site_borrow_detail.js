@@ -3,6 +3,7 @@
 var config = (wx.getStorageSync('config'));
 const token = wx.getStorageSync('auth_token');
 const DEBUG = false; // 调试模式标志
+const app = getApp();
 
 Page({
   /**
@@ -18,13 +19,17 @@ Page({
       2: "#ffeaa7",   // 借用中
       3: "#00adb5"    // 已归还
     },
-    apply_id: ''
+    apply_id: '',
+    icons: {}
   },
 
   /**
    * 生命周期函数--监听页面加载
    */
   onLoad(options) {
+    console.log("[My Site Borrow Details] 获取页面图标资源");
+    this.loadIcons();
+
     if (options.apply_id) {
       this.setData({
         apply_id: options.apply_id
@@ -42,6 +47,19 @@ Page({
         title: '获取申请id失败',
         icon: 'error'
       });
+    }
+  },
+
+  loadIcons() {
+    const resources = app.globalData.publicResources;
+
+    if(resources) {
+      this.setData({
+      icons: {
+        grayCopy: resources.grayCopy,
+        blackCat: resources.blackCat
+      }
+      })
     }
   },
 

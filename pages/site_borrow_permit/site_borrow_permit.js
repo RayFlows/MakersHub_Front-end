@@ -1,7 +1,7 @@
 var config = (wx.getStorageSync('config'));
 const TOKEN_KEY = "auth_token";
 const token = wx.getStorageSync(TOKEN_KEY);
-
+const app = getApp();
 // pages/personal_stuff_borrow_permit.js
 Page({
   /**
@@ -29,6 +29,24 @@ Page({
     // 单独存年月日以供视图渲染
     startYear: '', startMonth: '', startDay: '',
     endYear: '',   endMonth: '',   endDay: '',
+    icons: {}
+  },
+
+  onLoad() {
+    console.log("[Site Borrow Permit] 获取页面图标资源");
+    this.loadIcons();
+  },
+
+  loadIcons() {
+    const resources = app.globalData.publicResources;
+
+    if(resources) {
+      this.setData({
+      icons: {
+        
+      }
+      })
+    }
   },
 
   onReviewFocused : function() {

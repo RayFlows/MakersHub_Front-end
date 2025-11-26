@@ -4,6 +4,7 @@ const token = wx.getStorageSync('auth_token');
 const DEBUG = false;
 // 引入外部utils工具
 const utils = require("../../utils/util")
+const app = getApp();
 
 Page({
 
@@ -58,17 +59,35 @@ Page({
           }
         ]
       }
-    }
+    },
+    icons: {}
   },
 
   /**
    * 生命周期函数--监听页面加载
    */
   onLoad(options) {
+    console.log("[Xiumi Link Permit] 获取页面图标资源");
+    this.loadIcons();
+
     if (DEBUG) {
       this.loadMockData();
     } else {
       this.fetchAllLinks();
+    }
+  },
+
+  loadIcons() {
+    const resources = app.globalData.publicResources;
+
+    if(resources) {
+      this.setData({
+      icons: {
+        grayCopy: resources.grayCopy,
+        catPattern: resources.catPattern,
+        whiteCat: resources.whiteCat
+      }
+      })
     }
   },
 

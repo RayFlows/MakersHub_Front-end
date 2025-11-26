@@ -17,7 +17,7 @@
     <view class="card">
       <text class="room-name">{{item.name}}</text>
       <view class="control-row">
-        <image src="/images/remote_control/push_door.svg" class="icon" />
+        <image src="{{icons.pushDoor}}" class="icon" />
         <text class="word">门</text>
         <button class="open-btn">开门</button>
       </view>
@@ -32,5 +32,5 @@
 
 
   <!-- 底部猫图 -->
-  <image class="bottom-cat" src="/images/activity/white_cat.svg" mode="widthFix" />
+  <image class="bottom-cat" src="{{icons.whiteCat}}" mode="widthFix" />
 </view>
