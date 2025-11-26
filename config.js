@@ -1,7 +1,9 @@
-var host = "https://frp-dog.com:28624"
-var minIO = ""
+var host = "https://dev-api.makershub.cn"
+var minIO = "https://dev-s3.makershub.cn"
 var config = {
   host,
+  minIO,
+  public_resources: minIO + "/makershub-public",
   users: {
     login: host + "/users/wx-login",
     profile: host + "/users/profile",

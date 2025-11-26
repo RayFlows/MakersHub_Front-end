@@ -24,6 +24,27 @@
     "miniprogram": {
       "list": [
         {
+          "name": "pages/project_work_page/project_work_page",
+          "pathName": "pages/project_work_page/project_work_page",
+          "query": "",
+          "launchMode": "default",
+          "scene": null
+        },
+        {
+          "name": "pages/operation_maintenance_work_page/operation_maintenance_work_page",
+          "pathName": "pages/operation_maintenance_work_page/operation_maintenance_work_page",
+          "query": "",
+          "launchMode": "default",
+          "scene": null
+        },
+        {
+          "name": "pages/my_stuff_borrow_detail/my_stuff_borrow_detail",
+          "pathName": "pages/my_stuff_borrow_detail/my_stuff_borrow_detail",
+          "query": "",
+          "launchMode": "default",
+          "scene": null
+        },
+        {
           "name": "pages/my_task/my_task",
           "pathName": "pages/my_task/my_task",
           "query": "",
