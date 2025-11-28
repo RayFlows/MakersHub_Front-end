@@ -35,7 +35,8 @@
     "pages/my_xiumi_link/my_xiumi_link",
     "pages/xiumi_link_permit/xiumi_link_permit",
     "pages/my_task/my_task",
-    "pages/task_management/task_management"
+    "pages/task_management/task_management",
+    "pages/project_detail/project_detail"
   ],
   "window": {
     "backgroundTextStyle": "light",
