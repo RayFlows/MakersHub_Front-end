@@ -36,6 +36,7 @@
     "pages/xiumi_link_permit/xiumi_link_permit",
     "pages/my_task/my_task",
     "pages/task_management/task_management",
+    "pages/project_detail/project_detail",
     "pages/project_create_apply/project_create_apply"
   ],
   "window": {
