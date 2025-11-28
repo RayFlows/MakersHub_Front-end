@@ -110,7 +110,7 @@ Page({
     if(resources) {
       this.setData({
       icons: {
-        whiteCat: resources.whiteCat
+        whiteCat: resources.whiteCat,
       }
       })
     }
