@@ -40,6 +40,10 @@ const ResourceUtils = {
     // 箭头图标
     blackArrow: 'icon_arrow_chevron-right_black.svg',
     whiteArrow: 'icon_arrow_chevron-right_white.svg',
+    // 取消图标
+    cancel: 'cancel.svg',
+    // 搜索图标
+    find: 'find.svg',
     // 分隔图标
     circuitSplit: 'circuit_split.svg',
     separate: 'separate.svg',
