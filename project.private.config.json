@@ -24,6 +24,13 @@
     "miniprogram": {
       "list": [
         {
+          "name": "pages/project_create_apply/project_create_apply",
+          "pathName": "pages/project_create_apply/project_create_apply",
+          "query": "",
+          "launchMode": "default",
+          "scene": null
+        },
+        {
           "name": "pages/project_work_page/project_work_page",
           "pathName": "pages/project_work_page/project_work_page",
           "query": "",
