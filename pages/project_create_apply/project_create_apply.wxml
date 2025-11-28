@@ -1,0 +1,210 @@
+<!--pages/project_create_apply.wxml-->
+
+<view class="container">
+  <navBar 
+    title='{{isEdit ? "修改申请" : "项目立项申请"}}' 
+    background='#222831' 
+    color='#fff' 
+    back="{{true}}" 
+    home="{{true}}" 
+    iconTheme='white' 
+    bindback="handlerGobackClick" 
+    bindhome="handlerGohomeClick">
+  </navBar>
+
+  <view class="form-container">
+    <text class="form-label">项目负责人</text>
+    <view class="input-field">
+      <text>{{formData.personal_info.name}}</text>
+    </view>
+      
+    <text class="form-label">负责人学院</text>
+    <view class="input-field">
+      <text>{{formData.personal_info.college}}</text>
+    </view>
+
+    <text class="form-label">负责人年级</text>
+    <view class="input-field">
+      <text>{{formData.personal_info.grade}}</text>
+    </view>
+
+    <text class="form-label">负责人学号</text>
+    <view class="input-field">
+      <text>{{formData.personal_info.student_id}}</text>
+    </view>
+
+    <text class="form-label">负责人电话</text>
+    <view class="input-field">
+      <text>{{formData.personal_info.phone_num}}</text>
+    </view>
+
+    <text class="form-label">负责人QQ</text>
+    <view class="input-field">
+      <text>{{formData.personal_info.QQ}}</text>
+    </view>
+
+    <text class="form-label">项目名称</text>
+    <input
+      class="input-field {{ isProjectNameFocused ? 'focused' : '' }}"
+      placeholder="请输入项目名称"
+      value="{{formData.project_in.project_name}}"
+      data-field="projectName"
+      bindfocus="onProjectNameFocus"
+      bindblur="onProjectNameBlur" />
+
+    <text class="form-label">项目类型</text>
+    <picker
+      class="input-field"
+      mode="selector"
+      bindchange="bindTypeChange"
+      value="{{projectTypeIndex}}"
+      range="{{projectType}}">
+      <view class="selector-field">{{selectedProjectType || '点击选择项目类型'}}</view>
+    </picker>
+
+
+    <text class="form-label">项目简介</text>
+    <textarea 
+      class="input-field textarea-field {{isDescriptionFocused ? 'focused' : ''}}" 
+      placeholder="请输入项目简介" 
+      value="{{formData.project_in.description}}"
+      data-field="description" 
+      bindtap="onDescriptionFocused" 
+      bindblur="onDescriptionBlur">
+    </textarea>
+
+    <text class="form-label">项目成员</text>
+    <view class="members-container">
+      <view class="members-list" wx:if="{{formData.participants.length > 0}}">
+        <view class="member-item" wx:for="{{formData.participants}}" wx:key="index">
+          <text class="member">{{item.name}} - {{item.college}} - {{item.phone_num}}</text>
+          <image src="{{icons.cancel}}" class="member-delete" bindtap="deleteMember" data-index="{{index}}"></image>
+        </view>
+      </view>
+      <view class="no-members" wx:else>
+        <text>暂无项目成员</text>
+      </view>
+    </view>
+    <button class="add-member-btn" bindtap="showMemberModal">添加成员</button>
+
+    <text class="form-label">是否招募成员</text>
+    <picker
+      class="input-field"
+      mode="selector"
+      bindchange="bindIsRecruitingChange"
+      value="{{isRecruitingIndex}}"
+      range="{{isRecruiting}}">
+      <view class="selector-field">{{selectedIsRecruiting || '点击选择是否招募成员'}}</view>
+    </picker>
+
+    <text class="form-label">指导老师姓名</text>
+    <input
+      class="input-field {{ isMentorNameFocused ? 'focused' : '' }}"
+      placeholder="请输入指导老师姓名"
+      value="{{formData.project_in.mentor_name}}"
+      data-field="mentorName"
+      bindfocus="onMentorNameFocus"
+      bindblur="onMentorNameBlur" />
+
+    <text class="form-label">指导老师电话</text>
+    <input
+      class="input-field {{ isMentorPhoneFocused ? 'focused' : '' }}"
+      placeholder="请输入指导老师电话"
+      value="{{formData.project_in.mentor_phone}}"
+      data-field="mentorPhone"
+      bindfocus="onMentorrPhoneFocus"
+      bindblur="onMentorPhoneBlur" />
+  </view>
+
+  <view class="form-label">开始日期</view>
+<view class="time-picker-group">
+  <picker mode="selector" range="{{startYearOptions}}" bindchange="onYearChange" data-type="start" value="{{startYearOptions.indexOf(startSelectedYear)}}">
+    <view class="selector-field">{{startSelectedYear || '年份'}}</view>
+  </picker>
+  <picker mode="selector" range="{{startMonthOptions}}" bindchange="onMonthChange" data-type="start" value="{{startMonthOptions.indexOf(startSelectedMonth)}}">
+    <view class="selector-field">{{startSelectedMonth || '月份'}}</view>
+  </picker>
+  <picker mode="selector" range="{{startDayOptions}}" bindchange="onDayChange" data-type="start" value="{{startDayOptions.indexOf(startSelectedDay)}}">
+    <view class="selector-field">{{startSelectedDay || '日期'}}</view>
+  </picker>
+</view>
+
+<view class="form-label">结束日期</view>
+<view class="time-picker-group">
+  <picker mode="selector" range="{{endYearOptions}}" bindchange="onYearChange" data-type="end" value="{{endYearOptions.indexOf(endSelectedYear)}}">
+    <view class="selector-field">{{endSelectedYear || '年份'}}</view>
+  </picker>
+  <picker mode="selector" range="{{endMonthOptions}}" bindchange="onMonthChange" data-type="end" value="{{endMonthOptions.indexOf(endSelectedMonth)}}">
+    <view class="selector-field">{{endSelectedMonth || '月份'}}</view>
+  </picker>
+  <picker mode="selector" range="{{endDayOptions}}" bindchange="onDayChange" data-type="end" value="{{endDayOptions.indexOf(endSelectedDay)}}">
+    <view class="selector-field">{{endSelectedDay || '日期'}}</view>
+  </picker>
+</view>
+
+  <!-- 在按钮部分 -->
+  <button class="submit-btn" bindtap="onSubmit" style="width: 227rpx;">
+    {{isEditMode ? '更新' : '提交'}}
+  </button>
+
+  <image class="decorative-image" src="{{icons.whiteCat}}"/>
+  <!-- 添加成员弹窗 -->
+  <view class="modal-mask" wx:if="{{showModal}}" bindtap="hideModal">
+    <view class="modal-content" catchtap="stopPropagation">
+      <text class="modal-title">添加项目成员</text>
+      
+      <!-- 搜索输入框 -->
+      <view class="search-container">
+        <image src="{{icons.find}}" class="member-delete" bindtap="deleteMember" data-index="{{index}}"></image>
+        <input 
+          class="search-input"
+          placeholder="请输入成员电话号码"
+          type="number"
+          value="{{searchPhone}}"
+          bindinput="onSearchInput"
+          bindfocus="onSearchFocus"
+          bindblur="onSearchBlur"
+        />
+        <image src="{{icons.cancel}}" class="member-delete" wx:if="{{searchPhone.length > 0}}" bindtap="clearSearch" data-index="{{index}}"></image>
+      </view>
+
+      <!-- 搜索结果下拉列表 -->
+      <view class="dropdown-results" wx:if="{{searchResults.length > 0 && !selectedMember}}">
+      <view 
+        class="dropdown-item {{searchActiveIndex === index ? 'active' : ''}}"
+        wx:for="{{searchResults}}" 
+        wx:key="phone_num"
+        bindtap="selectMember"
+        data-index="{{index}}"
+        bindtouchstart="onResultTouchStart"
+        bindtouchend="onResultTouchEnd"
+        data-touch-index="{{index}}"
+      >
+        <view class="dropdown-item-content">
+          <text class="dropdown-name">{{item.name}}</text>
+          <text class="dropdown-college">{{item.college}}</text>
+        </view>
+        <text class="dropdown-phone">{{item.phone_num}}</text>
+      </view>
+    </view>
+
+      <!-- 已选择的成员显示 -->
+      <view class="selected-member" wx:if="{{selectedMember}}">
+        <text class="selected-label">已选择:</text>
+        <text class="selected-name">{{selectedMember.name}}</text>
+        <text class="selected-phone">{{selectedMember.phone}}</text>
+      </view>
+
+      <!-- 提示信息 -->
+      <view class="modal-hint" wx:if="{{modalHint}}">
+        <text class="hint-text">{{modalHint}}</text>
+      </view>
+
+      <!-- 按钮组 -->
+      <view class="modal-buttons">
+        <button class="modal-btn cancel-btn" bindtap="hideModal">取消</button>
+        <button class="modal-btn confirm-btn" bindtap="confirmAddMember">确认</button>
+      </view>
+    </view>
+  </view>
+</view>
