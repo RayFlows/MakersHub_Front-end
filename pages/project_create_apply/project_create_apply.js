@@ -3,6 +3,10 @@ const app = getApp();
 var config = (wx.getStorageSync('config'));
 const token = wx.getStorageSync('auth_token');
 
+// ============ 调试模式开关 ============
+const DEBUG_MODE = true; // 设置为 false 时使用真实接口
+// ====================================
+
 Page({
 
   /**
@@ -47,11 +51,8 @@ Page({
     searchPhone: '',
     searchResults: [],
     selectedMember: null,
-    modalHint: '',
-    isSearchFocused: false,
-    searchActiveIndex: -1,
     searchTimer: null,
-
+    hasSearched: false, // 新增:标记是否已执行过搜索
     // 当前日期信息
     currentYear: 0,
     currentMonth: 0,
@@ -166,220 +167,271 @@ Page({
     console.log("更新指导导师电话：", value);
   },
 
-  // 显示添加成员弹窗
-  showMemberModal() {
-    this.setData({
-      showModal: true,
-      searchPhone: '',
-      searchResults: [],
-      selectedMember: null,
-      modalHint: ''
-    });
+  // ========== Mock 数据 ==========
+  getMockSearchResults(phone) {
+    // 模拟后端返回的数据
+    const allMockUsers = [
+      { real_name: "张三", college: "计算机学院", phone_num: "13800138000" },
+      { real_name: "张小明", college: "软件学院", phone_num: "13855556666" },
+      { real_name: "李四", college: "电子信息学院", phone_num: "13912345678" },
+      { real_name: "王五", college: "数学学院", phone_num: "13923456789" },
+      { real_name: "赵六", college: "物理学院", phone_num: "13934567890" },
+      { real_name: "钱七", college: "化学学院", phone_num: "13945678901" },
+      { real_name: "孙八", college: "生物学院", phone_num: "13956789012" }
+    ];
+
+    // 根据输入的 phone 过滤匹配的结果
+    const filtered = allMockUsers.filter(user => 
+      user.phone_num.includes(phone)
+    );
+
+    // 返回前5个结果
+    return filtered.slice(0, 5);
   },
 
-  // 隐藏弹窗
-  hideModal() {
-    this.setData({
-      showModal: false,
-      searchPhone: '',
-      searchResults: [],
-      selectedMember: null,
-      modalHint: ''
-    });
-  },
-
-  // 阻止事件冒泡
-  stopPropagation() {},
-
-  // 搜索输入处理
+  // ========== 搜索输入处理 ==========
   onSearchInput(e) {
     const phone = e.detail.value;
     this.setData({
       searchPhone: phone,
       selectedMember: null,
-      modalHint: ''
+      hasSearched: false // 输入时重置搜索状态
     });
-
+  
     // 清除之前的定时器
     if (this.data.searchTimer) {
       clearTimeout(this.data.searchTimer);
     }
-
+  
     // 如果输入为空,清空结果
     if (!phone || phone.length === 0) {
       this.setData({
-        searchResults: []
+        searchResults: [],
+        hasSearched: false
       });
       return;
     }
-
-    // 防抖搜索
+  
+    // 防抖搜索 - 150ms 后执行
     const timer = setTimeout(() => {
       this.searchMembers(phone);
-    }, 300);
-
+    }, 150);
+  
     this.setData({
       searchTimer: timer
     });
   },
 
-  // 搜索成员(调用后端API)
+  // ========== 搜索成员 ==========
   searchMembers(phone) {
-    // TODO: 替换为实际的后端API调用
-    wx.request({
-      url: config.baseUrl + '/api/search_user',  // 替换为实际API
-      method: 'GET',
-      header: {
-        'Authorization': 'Bearer ' + token
-      },
-      data: {
-        phone: phone
-      },
-      success: (res) => {
-        if (res.statusCode === 200 && res.data.code === 0) {
-          this.setData({
-            searchResults: res.data.data || []
-          });
-        } else {
+    console.log('开始搜索:', phone);
+  
+    if (DEBUG_MODE) {
+      // ====== 调试模式:使用 Mock 数据 ======
+      console.log('[DEBUG] 使用 Mock 数据');
+      
+      setTimeout(() => {
+        const mockResults = this.getMockSearchResults(phone);
+        console.log('[DEBUG] Mock 结果:', mockResults);
+        
+        this.setData({
+          searchResults: mockResults,
+          hasSearched: true // 标记已完成搜索
+        });
+      }, 300); // 模拟网络延迟
+      
+    } else {
+      // ====== 生产模式:调用真实接口 ======
+      wx.request({
+        url: config.users.find-by-phonenum,
+        method: 'GET',
+        header: {
+          'Authorization': 'Bearer ' + token
+        },
+        data: {
+          phone_num: phone
+        },
+        success: (res) => {
+          console.log('接口返回:', res);
+          
+          if (res.statusCode === 200 && res.data.code === 200) {
+            // 取前5个结果
+            const results = (res.data.data || []).slice(0, 5);
+            this.setData({
+              searchResults: results,
+              hasSearched: true // 标记已完成搜索
+            });
+          } else {
+            console.error('接口返回错误:', res.data.msg);
+            this.setData({
+              searchResults: [],
+              hasSearched: true // 标记已完成搜索
+            });
+            wx.showToast({
+              title: res.data.msg || '搜索失败',
+              icon: 'none'
+            });
+          }
+        },
+        fail: (err) => {
+          console.error('搜索失败:', err);
           this.setData({
             searchResults: [],
-            modalHint: '未找到相关用户'
+            hasSearched: true // 标记已完成搜索
+          });
+          wx.showToast({
+            title: '网络错误,请重试',
+            icon: 'none'
           });
         }
-      },
-      fail: (err) => {
-        console.error('搜索失败:', err);
-        this.setData({
-          searchResults: [],
-          modalHint: '搜索失败,请重试'
-        });
-      }
-    });
-
-    // 临时模拟数据(实际使用时删除)
-    
-    setTimeout(() => {
-      const mockResults = [
-        { name: '张三', college: "计算机学院", phone_num: phone},
-        { name: '李四', college: "电子信息学院", phone_num: phone}
-      ];
-      this.setData({
-        searchResults: mockResults
       });
-    }, 300);
-    
+    }
   },
 
-  // 搜索框聚焦
-  onSearchFocus() {
-    this.setData({
-      isSearchFocused: true
-    });
-  },
-
-  // 搜索框失焦
-  onSearchBlur() {
-    // 延迟失焦,避免影响点击结果项
-    setTimeout(() => {
-      this.setData({
-        isSearchFocused: false
-      });
-    }, 200);
-  },
-
-  // 清空搜索
+  // ========== 清空搜索 ==========
   clearSearch() {
     this.setData({
       searchPhone: '',
       searchResults: [],
       selectedMember: null,
-      modalHint: ''
+      hasSearched: false // 清空时重置搜索状态
     });
   },
 
-  // 选择成员
+  // ========== 选择成员 ==========
   selectMember(e) {
     const index = e.currentTarget.dataset.index;
     const member = this.data.searchResults[index];
     
+    console.log('选择成员:', member);
+    
+    // 格式化显示文本
+    const displayText = `${member.real_name} - ${member.phone_num} - ${member.college}`;
+    
     this.setData({
       selectedMember: member,
-      searchPhone: member.phone,
+      searchPhone: displayText,
       searchResults: [],
-      modalHint: ''
+      hasSearched: false // 选择后重置搜索状态
     });
   },
 
-  // 触摸开始
-  onResultTouchStart(e) {
-    const index = e.currentTarget.dataset.touchIndex;
-    this.setData({
-      searchActiveIndex: index
-    });
-  },
-
-  // 触摸结束
-  onResultTouchEnd() {
-    setTimeout(() => {
-      this.setData({
-        searchActiveIndex: -1
-      });
-    }, 150);
-  },
-
-  // 确认添加成员
+  // ========== 确认添加成员 ==========
   confirmAddMember() {
     if (!this.data.selectedMember) {
-      this.setData({
-        modalHint: '请先选择一个搜索结果'
+      wx.showToast({
+        title: '请先选择一个成员',
+        icon: 'none'
       });
       return;
     }
 
-    // 检查是否已存在
+    const selectedMember = this.data.selectedMember;
+    
+    // 检查是否已存在该成员
     const exists = this.data.formData.participants.some(
-      p => p.phone === this.data.selectedMember.phone
+      p => p.phone_num === selectedMember.phone_num
     );
 
     if (exists) {
-      this.setData({
-        modalHint: '该成员已在列表中'
+      wx.showToast({
+        title: '该成员已是成员!',
+        icon: 'none',
+        duration: 2000
       });
       return;
     }
 
     // 添加到成员列表
-    const participants = [...this.data.formData.participants, this.data.selectedMember];
+    const newMember = {
+      real_name: selectedMember.real_name,
+      phone_num: selectedMember.phone_num,
+      college: selectedMember.college
+    };
+
+    const participants = [...this.data.formData.participants, newMember];
     
     this.setData({
       'formData.participants': participants
     });
 
-    console.log('添加成员:', this.data.selectedMember);
+    console.log('添加成员成功:', newMember);
     console.log('当前成员列表:', participants);
+
+    // 显示成功提示
+    // wx.showToast({
+    //   title: '添加成功',
+    //   icon: 'success'
+    // });
 
     // 关闭弹窗
     this.hideModal();
   },
 
-  // 删除成员
+  // ========== 删除成员 ==========
   deleteMember(e) {
     const index = e.currentTarget.dataset.index;
+    const member = this.data.formData.participants[index];
     
     wx.showModal({
       title: '提示',
-      content: '确定要移除该成员吗?',
+      content: `确定移除 ${member.real_name} 吗?`,
       success: (res) => {
         if (res.confirm) {
           const participants = this.data.formData.participants.filter((_, i) => i !== index);
           this.setData({
             'formData.participants': participants
           });
-          console.log('删除后成员列表:', participants);
+          console.log('删除成员后列表:', participants);
+          
+          // wx.showToast({
+          //   title: '已移除',
+          //   icon: 'success'
+          // });
         }
       }
     });
   },
+
+  // ========== 显示/隐藏弹窗 ==========
+  showMemberModal() {
+    console.log('当前项目成员数：', this.data.formData.participants.length)
+    if(this.data.formData.participants.length === 15) {
+      wx.showToast({
+        title:'已达成员人数上限',
+        icon: 'none',
+        duration: 2000
+      })
+    } 
+    else {
+      this.setData({
+        showModal: true,
+        searchPhone: '',
+        searchResults: [],
+        selectedMember: null,
+        hasSearched: false
+      });
+    }
+  },
+
+  hideModal() {
+    this.setData({
+      showModal: false,
+      searchPhone: '',
+      searchResults: [],
+      selectedMember: null,
+      hasSearched: false
+    });
+  },
+
+  // ========== 阻止事件冒泡 ==========
+  stopPropagation() {},
+
+  // ========== 搜索框焦点事件 ==========
+  onSearchFocus() {
+    console.log('搜索框获得焦点');
+  },
+
 
   // 初始化日期选择器
   initDatePickers() {
@@ -654,6 +706,185 @@ Page({
     
     console.log('更新结束日期:', formattedDate);
   },
+
+  // ========== 表单提交 ==========
+onSubmit() {
+  console.log('开始提交表单');
+  
+  // 1. 表单验证
+  const validation = this.validateForm();
+  if (!validation.valid) {
+    wx.showToast({
+      title: validation.message,
+      icon: 'none',
+      duration: 2000
+    });
+    return;
+  }
+
+  // 2. 构造提交数据
+  const submitData = this.buildSubmitData();
+  console.log('提交数据:', submitData);
+
+  // 3. 显示加载提示
+  wx.showLoading({
+    title: '提交中...',
+    mask: true
+  });
+
+  if (DEBUG_MODE) {
+    // ====== 调试模式:模拟提交 ======
+    console.log('[DEBUG] 模拟提交数据:', JSON.stringify(submitData, null, 2));
+    
+    setTimeout(() => {
+      wx.hideLoading();
+      wx.showModal({
+        title: '提交成功',
+        content: '项目申请已提交(调试模式)',
+        showCancel: false,
+        success: () => {
+          // 返回上一页或跳转到项目列表
+          wx.navigateBack();
+        }
+      });
+    }, 1000);
+    
+  } else {
+    // ====== 生产模式:调用真实接口 ======
+    wx.request({
+      url: config.project.create,
+      method: 'POST',
+      header: {
+        'Authorization': 'Bearer ' + token,
+        'Content-Type': 'application/json'
+      },
+      data: submitData,
+      success: (res) => {
+        wx.hideLoading();
+        console.log('提交响应:', res);
+        
+        if (res.statusCode === 200 && res.data.code === 200) {
+          wx.showModal({
+            title: '提交成功',
+            content: '项目申请已提交,请等待审核',
+            showCancel: false,
+            success: () => {
+              // 返回上一页
+              wx.navigateBack();
+            }
+          });
+        } else {
+          wx.showModal({
+            title: '提交失败',
+            content: res.data.msg || '提交失败,请重试',
+            showCancel: false
+          });
+        }
+      },
+      fail: (err) => {
+        wx.hideLoading();
+        console.error('提交失败:', err);
+        wx.showModal({
+          title: '网络错误',
+          content: '提交失败,请检查网络后重试',
+          showCancel: false
+        });
+      }
+    });
+  }
+},
+
+// ========== 表单验证 ==========
+validateForm() {
+  const { project_info, participants } = this.data.formData;
+  
+  // 验证项目名称
+  if (!project_info.project_name || project_info.project_name.trim() === '') {
+    return { valid: false, message: '请输入项目名称' };
+  }
+  
+  // 验证项目类型
+  if (project_info.project_type === '' || project_info.project_type === null) {
+    return { valid: false, message: '请选择项目类型' };
+  }
+  
+  // 验证项目简介
+  if (!project_info.description || project_info.description.trim() === '') {
+    return { valid: false, message: '请输入项目简介' };
+  }
+  
+  // 验证项目简介长度(建议至少20字)
+  if (project_info.description.trim().length < 20) {
+    return { valid: false, message: '项目简介至少需要20字' };
+  }
+  
+  // 验证开始日期
+  if (!project_info.start_time) {
+    return { valid: false, message: '请选择开始日期' };
+  }
+  
+  // 验证结束日期
+  if (!project_info.end_time) {
+    return { valid: false, message: '请选择结束日期' };
+  }
+  
+  // 验证日期逻辑(结束日期必须晚于开始日期)
+  const startDate = new Date(project_info.start_time);
+  const endDate = new Date(project_info.end_time);
+  if (endDate <= startDate) {
+    return { valid: false, message: '结束日期必须晚于开始日期' };
+  }
+  
+  // 验证是否招募成员
+  if (project_info.is_recruiting === '' || project_info.is_recruiting === null) {
+    return { valid: false, message: '请选择是否招募成员' };
+  }
+  
+  // 验证指导老师姓名
+  if (!project_info.mentor_name || project_info.mentor_name.trim() === '') {
+    return { valid: false, message: '请输入指导老师姓名' };
+  }
+  
+  // 验证指导老师电话
+  if (!project_info.mentor_phone || project_info.mentor_phone.trim() === '') {
+    return { valid: false, message: '请输入指导老师电话' };
+  }
+  
+  // 验证电话格式(11位数字)
+  const phoneRegex = /^1[3-9]\d{9}$/;
+  if (!phoneRegex.test(project_info.mentor_phone)) {
+    return { valid: false, message: '指导老师电话格式不正确' };
+  }
+  
+  return { valid: true, message: '验证通过' };
+},
+
+// ========== 构造提交数据 ==========
+buildSubmitData() {
+  const { project_info, participants } = this.data.formData;
+  
+  // 提取成员电话号码列表
+  const member_phones = participants.map(member => member.phone_num);
+  
+  // 转换 is_recruiting 为布尔值
+  const is_recruiting = project_info.is_recruiting === '1' || project_info.is_recruiting === 1;
+  
+  // 转换 project_type 为数字
+  const project_type = parseInt(project_info.project_type);
+  
+  // 构造提交数据(匹配后端接口格式)
+  return {
+    project_name: project_info.project_name.trim(),
+    project_type: project_type,
+    description: project_info.description.trim(),
+    start_time: project_info.start_time + ' 00:00:00', // 添加时间部分
+    end_time: project_info.end_time + ' 00:00:00',     // 添加时间部分
+    mentor_name: project_info.mentor_name.trim(),
+    mentor_phone: project_info.mentor_phone.trim(),
+    is_recruiting: is_recruiting,
+    member_phones: member_phones
+  };
+},
 
   onLoad(options) {
     console.log("[Project Create Apply] 获取页面图标资源");

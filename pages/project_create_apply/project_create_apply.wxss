@@ -293,10 +293,17 @@
   flex: 1;
 }
 
+.find-icon {
+  width: 42rpx;
+  height: 42rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
 
-.member-delete {
-  width: 40rpx;
-  height: 40rpx;
+.delete-icon {
+  width: 32rpx;
+  height: 32rpx;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -346,6 +353,10 @@
   border-radius: 20rpx;
   padding-top: 30rpx;
   position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
 }
 
 .modal-title {
@@ -364,76 +375,33 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  margin-bottom: 20rpx;
+  /* margin-bottom: 20rpx; */
   padding: 0rpx 30rpx 0rpx 30rpx;
   border: 2rpx solid #e5e5e5;   /* 四边 */
   border-left: none;             /* 去掉左右 */
   border-right: none;
+  width: 90%;
 }
 
 .search-input {
   width: 100%;
   height: 80rpx;
-  border-radius: 40rpx;
   padding: 0 80rpx 0 30rpx;
   font-size: 28rpx;
   box-sizing: border-box;
-}
-
-
-/* 搜索结果列表 */
-.search-results {
-  max-height: 400rpx;
-  overflow-y: auto;
-  background: #f9f9f9;
-  border-radius: 20rpx;
-  margin-bottom: 20rpx;
-}
-
-.result-item {
-  padding: 25rpx 30rpx;
-  border-bottom: 1rpx solid #eee;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  transition: all 0.2s;
-}
-
-.result-item:last-child {
-  border-bottom: none;
-}
-
-.result-item.active {
-  background: #00adb5;
-}
-
-.result-item.active .result-name,
-.result-item.active .result-phone {
-  color: #fff;
-}
-
-.result-name {
-  font-size: 28rpx;
-  font-weight: 700;
-  color: #222831;
-}
-
-.result-phone {
-  font-size: 24rpx;
-  color: #666;
+  
 }
 
 .dropdown-results {
   position: absolute;
-  top: 140rpx; /* 标题30rpx高度 + 标题margin-bottom30rpx + 搜索框80rpx高度 */
-  left: 30rpx;
-  right: 30rpx;
+  top: 180rpx;
+  left: 5%;
   max-height: 400rpx;
   background: #fff;
-  border-radius: 20rpx;
   box-shadow: 0 4rpx 16rpx rgba(0, 0, 0, 0.15);
   overflow-y: auto;
-  z-index: 1000;
+  z-index: 1;
+  width: 90%;
 }
 
 .dropdown-item {
@@ -442,7 +410,6 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  transition: background-color 0.2s;
 }
 
 .dropdown-item:last-child {
@@ -459,24 +426,6 @@
   flex-direction: column;
   gap: 8rpx;
 }
-
-.dropdown-name {
-  font-size: 28rpx;
-  font-weight: 700;
-  color: #222831;
-}
-
-.dropdown-college {
-  font-size: 24rpx;
-  color: #00adb5;
-}
-
-.dropdown-phone {
-  font-size: 24rpx;
-  color: #666;
-  margin-left: 20rpx;
-}
-
 
 /* 已选择成员显示 */
 .selected-member {
@@ -529,6 +478,7 @@
   align-items: center;
   margin-top: 30rpx;
   border-top: 2rpx solid #e5e5e5;
+  width: 100%;
 }
 
 .modal-btn {

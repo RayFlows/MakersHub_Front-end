@@ -77,8 +77,8 @@
     <view class="members-container">
       <view class="members-list" wx:if="{{formData.participants.length > 0}}">
         <view class="member-item" wx:for="{{formData.participants}}" wx:key="index">
-          <text class="member">{{item.name}} - {{item.college}} - {{item.phone_num}}</text>
-          <image src="{{icons.cancel}}" class="member-delete" bindtap="deleteMember" data-index="{{index}}"></image>
+          <text class="member">{{item.real_name}} - {{item.phone_num}} - {{item.college}}</text>
+          <image src="{{icons.cancel}}" class="delete-icon" bindtap="deleteMember" data-index="{{index}}"></image>
         </view>
       </view>
       <view class="no-members" wx:else>
@@ -148,6 +148,7 @@
   </button>
 
   <image class="decorative-image" src="{{icons.whiteCat}}"/>
+
   <!-- 添加成员弹窗 -->
   <view class="modal-mask" wx:if="{{showModal}}" bindtap="hideModal">
     <view class="modal-content" catchtap="stopPropagation">
@@ -155,7 +156,7 @@
       
       <!-- 搜索输入框 -->
       <view class="search-container">
-        <image src="{{icons.find}}" class="member-delete" bindtap="deleteMember" data-index="{{index}}"></image>
+        <image src="{{icons.find}}" class="find-icon"></image>
         <input 
           class="search-input"
           placeholder="请输入成员电话号码"
@@ -165,46 +166,33 @@
           bindfocus="onSearchFocus"
           bindblur="onSearchBlur"
         />
-        <image src="{{icons.cancel}}" class="member-delete" wx:if="{{searchPhone.length > 0}}" bindtap="clearSearch" data-index="{{index}}"></image>
+        <image src="{{icons.cancel}}" class="delete-icon" wx:if="{{searchPhone.length > 0}}" bindtap="clearSearch" data-index="{{index}}"></image>
       </view>
-
-      <!-- 搜索结果下拉列表 -->
-      <view class="dropdown-results" wx:if="{{searchResults.length > 0 && !selectedMember}}">
-      <view 
-        class="dropdown-item {{searchActiveIndex === index ? 'active' : ''}}"
-        wx:for="{{searchResults}}" 
-        wx:key="phone_num"
-        bindtap="selectMember"
-        data-index="{{index}}"
-        bindtouchstart="onResultTouchStart"
-        bindtouchend="onResultTouchEnd"
-        data-touch-index="{{index}}"
-      >
-        <view class="dropdown-item-content">
-          <text class="dropdown-name">{{item.name}}</text>
-          <text class="dropdown-college">{{item.college}}</text>
+      <!--下拉结果-->
+      <!-- 下拉结果 -->
+      <view class="dropdown-results" wx:if="{{hasSearched && searchResults.length === 0 && !selectedMember}}">
+        <view class="dropdown-item">
+          <text>该用户不存在QAQ</text>
         </view>
-        <text class="dropdown-phone">{{item.phone_num}}</text>
-      </view>
-    </view>
-
-      <!-- 已选择的成员显示 -->
-      <view class="selected-member" wx:if="{{selectedMember}}">
-        <text class="selected-label">已选择:</text>
-        <text class="selected-name">{{selectedMember.name}}</text>
-        <text class="selected-phone">{{selectedMember.phone}}</text>
       </view>
 
-      <!-- 提示信息 -->
-      <view class="modal-hint" wx:if="{{modalHint}}">
-        <text class="hint-text">{{modalHint}}</text>
+      <view class="dropdown-results" wx:elif="{{searchResults.length > 0 && !selectedMember}}">
+        <view 
+          class="dropdown-item"
+          wx:for="{{searchResults}}" 
+          wx:key="phone_num"
+          bindtap="selectMember"
+          data-index="{{index}}"
+        >
+          <text>{{item.real_name}} - {{item.phone_num}} - {{item.college}}</text>
+        </view>
       </view>
-
       <!-- 按钮组 -->
       <view class="modal-buttons">
         <button class="modal-btn cancel-btn" bindtap="hideModal">取消</button>
         <button class="modal-btn confirm-btn" bindtap="confirmAddMember">确认</button>
       </view>
     </view>
+    
   </view>
 </view>
