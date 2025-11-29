@@ -8,7 +8,8 @@ var config = {
     login: host + "/users/wx-login",
     profile: host + "/users/profile",
     profile_photo: host + "/users/profile-photo",
-    get_makers: host + "/users/get-makers"
+    get_makers: host + "/users/get-makers",
+    fine_by_phonenum: host + "/users/find-by-phonenum"
   },
   events: {
     view: host + "/events/view",
@@ -64,6 +65,9 @@ var config = {
     get_arrangement: host + "/arrange/get-arrangement",
     get_current: host + "/arrange/get-current",
     batch: host + "/arrange/arrangements/batch"
+  },
+  project: {
+    create: host + "/project/create",
   }
 }
 module.exports = config;
