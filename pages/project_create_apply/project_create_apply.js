@@ -171,13 +171,13 @@ Page({
   getMockSearchResults(phone) {
     // 模拟后端返回的数据
     const allMockUsers = [
-      { real_name: "张三", college: "计算机学院", phone_num: "13800138000" },
-      { real_name: "张小明", college: "软件学院", phone_num: "13855556666" },
-      { real_name: "李四", college: "电子信息学院", phone_num: "13912345678" },
-      { real_name: "王五", college: "数学学院", phone_num: "13923456789" },
-      { real_name: "赵六", college: "物理学院", phone_num: "13934567890" },
-      { real_name: "钱七", college: "化学学院", phone_num: "13945678901" },
-      { real_name: "孙八", college: "生物学院", phone_num: "13956789012" }
+      { real_name: "张三", college: "计算机学院", phone_num: "13800138000", maker_id: "MK20251123225706077_863" },
+      { real_name: "张小明", college: "软件学院", phone_num: "13855556666", maker_id: "MK20251123225706077_862" },
+      { real_name: "李四", college: "电子信息学院", phone_num: "13912345678", maker_id: "MK20251123225706077_861" },
+      { real_name: "王五", college: "数学学院", phone_num: "13923456789", maker_id: "MK20251123225706077_860" },
+      { real_name: "赵六", college: "物理学院", phone_num: "13934567890", maker_id: "MK20251123225706077_859" },
+      { real_name: "钱七", college: "化学学院", phone_num: "13945678901", maker_id: "MK20251123225706077_858" },
+      { real_name: "孙八", college: "生物学院", phone_num: "13956789012", maker_id: "MK20251123225706077_857" }
     ];
 
     // 根据输入的 phone 过滤匹配的结果
@@ -346,7 +346,8 @@ Page({
     const newMember = {
       real_name: selectedMember.real_name,
       phone_num: selectedMember.phone_num,
-      college: selectedMember.college
+      college: selectedMember.college,
+      maker_id: selectedMember.maker_id
     };
 
     const participants = [...this.data.formData.participants, newMember];
@@ -864,7 +865,7 @@ buildSubmitData() {
   const { project_info, participants } = this.data.formData;
   
   // 提取成员电话号码列表
-  const member_phones = participants.map(member => member.phone_num);
+  const member_maker_ids = participants.map(member => member.maker_id);
   
   // 转换 is_recruiting 为布尔值
   const is_recruiting = project_info.is_recruiting === '1' || project_info.is_recruiting === 1;
@@ -882,7 +883,7 @@ buildSubmitData() {
     mentor_name: project_info.mentor_name.trim(),
     mentor_phone: project_info.mentor_phone.trim(),
     is_recruiting: is_recruiting,
-    member_phones: member_phones
+    member_maker_ids: member_maker_ids
   };
 },
 
