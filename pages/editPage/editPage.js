@@ -3,6 +3,7 @@
 var config = (wx.getStorageSync('config'));
 const token = wx.getStorageSync("auth_token");
 const app = getApp();
+const { getUserProfile, USER_PROFILE_KEY } = require('../index/index.js');
 
 Page({
   data: {
@@ -17,12 +18,10 @@ Page({
       motto: "",
     },
     tempAvatar: "",
-    // oldAvatar: "",
     isNameFocused: false,
     isPhoneFocused: false,
     isQQFocused: false,
     isStudentIDFocused: false,
-    isCollegeFocused: false,
     isMottoFocused: false,
     isNameChanged: false,
     isPhoneChanged: false,
@@ -36,32 +35,51 @@ Page({
     gradeRange: [],  // 新增:年级选项数组
     gradeIndex: 0,    // 新增:当前选中的年级索引
     displayGrade: "",
+    collegeIndex: 0,
+    collegeNames:[
+      "计算机学院",
+      "网络空间安全学院",
+      "电子信息学院",
+      "经济学院",
+      "外国语学院",
+      "数学学院",
+      "生命科学学院",
+      "机械工程学院",
+      "文学与新闻学院",
+      "法学院",
+      "艺术学院",
+      "历史文化学院",
+      "物理学院",
+      "化学学院"
+    ],
     icons: {}
   },
 
   onLoad(options) {
     console.log("[Edit Page] 获取本页图标资源")
     this.loadIcons();
+    this.loadUserProfileFromCache();
 
     // 初始化年级选项
     console.log("初始化年级选项")
     this.initGradeRange();
   
-    // 加载从me页面传来的数据
-    this.setData({
-      userInfo: {
-        real_name: options.real_name ? decodeURIComponent(options.real_name) : "",
-        phone_num: options.phone_num ? decodeURIComponent(options.phone_num) : "",
-        qq: options.qq ? decodeURIComponent(options.qq) : "",
-        student_id: options.student_id ? decodeURIComponent(options.student_id) : "",
-        college: options.college ? decodeURIComponent(options.college) : "",
-        grade: options.grade ? decodeURIComponent(options.grade) : "",
-        avatar: options.avatar ? decodeURIComponent(options.avatar) : "",
-        motto: options.motto ? decodeURIComponent(options.motto) : ""
-      }
-    });
+    // // 加载从me页面传来的数据
+    // this.setData({
+    //   userInfo: {
+    //     real_name: options.real_name ? decodeURIComponent(options.real_name) : "",
+    //     phone_num: options.phone_num ? decodeURIComponent(options.phone_num) : "",
+    //     qq: options.qq ? decodeURIComponent(options.qq) : "",
+    //     student_id: options.student_id ? decodeURIComponent(options.student_id) : "",
+    //     college: options.college ? decodeURIComponent(options.college) : "",
+    //     grade: options.grade ? decodeURIComponent(options.grade) : "",
+    //     avatar: options.avatar ? decodeURIComponent(options.avatar) : "",
+    //     motto: options.motto ? decodeURIComponent(options.motto) : ""
+    //   }
+    // });
 
     if (this.data.userInfo.grade) {
+      const gradeFromBackend = this.data.userInfo.grade;
       const gradeWithSuffix = `${gradeFromBackend}级`;  // 转换为带"级"字的格式
       const index = this.data.gradeRange.indexOf(gradeWithSuffix);
       if (index !== -1) {
@@ -74,9 +92,16 @@ Page({
         console.warn(`未找到年级 ${gradeWithSuffix} 在选项列表中`);
       }
     }
-
+    // 设置学院选择器的初始索引
+    if (this.data.userInfo.college) {
+      const collegeIndex = this.data.collegeNames.indexOf(this.data.userInfo.college);
+      if (collegeIndex !== -1) {
+        this.setData({ collegeIndex });
+        console.log(`找到学院匹配: ${this.data.userInfo.college}, 索引: ${collegeIndex}`);
+      }
+    }
     // 输出从me页面传送来的数据
-    console.log('接收到的参数:', JSON.stringify(this.data.userInfo, null, 2));
+    console.log('加载的用户信息:', JSON.stringify(this.data.userInfo, null, 2));
   },
   
   loadIcons() {
@@ -89,6 +114,73 @@ Page({
         whiteCat: resources.whiteCat
       }
       })
+    }
+  },
+
+  /**
+   * 从缓存加载用户信息
+   */
+  loadUserProfileFromCache() {
+    console.log('[Me] 从缓存加载用户信息');
+    
+    const cachedProfile = getUserProfile();
+    
+    if (cachedProfile && cachedProfile.real_name) {
+      console.log('[Me] 缓存中的用户信息:', cachedProfile);
+      
+      this.setData({
+        userInfo: {
+          avatar: cachedProfile.profile_photo || this.data.userInfo.profile_photo,
+          real_name: cachedProfile.real_name || this.data.userInfo.real_name,
+          phone_num: cachedProfile.phone_num || this.data.userInfo.phone_num,
+          qq: cachedProfile.qq || this.data.userInfo.qq,
+          student_id: cachedProfile.student_id || this.data.userInfo.student_id,
+          college: cachedProfile.college || this.data.userInfo.college,
+          grade: cachedProfile.grade || this.data.userInfo.grade,
+          motto: cachedProfile.motto || this.data.userInfo.motto,
+          score: cachedProfile.score || this.data.userInfo.score,
+          role: cachedProfile.role || this.data.userInfo.role,
+        },
+        isAssociationMember: cachedProfile.role > 0,
+      });
+      
+      console.log('[Me] 用户信息已加载:', this.data.userInfo);
+    } else {
+      console.warn('[Me] 缓存中没有用户信息,使用默认值');
+      wx.showToast({
+        title: '用户信息加载失败',
+        icon: 'none',
+        duration: 2000
+      });
+    }
+  },
+
+  /**
+   * 更新本地缓存中的用户信息
+   * @param {Object} updatedFields - 需要更新的字段对象
+   */
+  updateLocalCache(updatedFields) {
+    console.log('[EditPage] 开始更新本地缓存', updatedFields);
+    
+    try {
+      // 获取当前缓存的完整用户信息
+      const cachedProfile = getUserProfile() || {};
+      
+      // 合并更新的字段
+      const updatedProfile = {
+        ...cachedProfile,
+        ...updatedFields
+      };
+      
+      // 保存回缓存
+      wx.setStorageSync(USER_PROFILE_KEY, updatedProfile);
+      
+      console.log('[EditPage] 缓存更新成功:', updatedProfile);
+      
+      return true;
+    } catch (error) {
+      console.error('[EditPage] 缓存更新失败:', error);
+      return false;
     }
   },
 
@@ -222,11 +314,16 @@ Page({
     )
   },
   // 更改用户学院
-  updateCollege(e) {
-    this.setData(
-      { 'userInfo.college': e.detail.value,
-      isCollegeChanged: true }
-    )
+  bindCollegeChange(e) {
+    const index = e.detail.value;
+    
+    this.setData({
+      collegeIndex: index,
+      'userInfo.college': this.data.collegeNames[index],
+      isCollegeChanged: true,
+    });
+    
+    console.log('选择的学院:', this.data.collegeNames[index]);
   },
   // 年级选择改变事件
   bindGradeChange(e) {
@@ -236,11 +333,11 @@ Page({
     
     this.setData({
       gradeIndex: index,
-      'userInfo.grade': selectedGradeWithSuffix,
+      'userInfo.grade': gradeNumberOnly,
       isGradeChanged: true,
     });
     
-    console.log('选择的年级:', selectedGradeWithSuffix);
+    console.log('选择的年级:', gradeNumberOnly);
   },
   // 更改用户座右铭
   updateMotto(e) {
@@ -284,31 +381,43 @@ Page({
       const updateData = {
         data: {}
       };
-      if(this.data.userInfo.real_name) {
+      // 收集所有变化的字段
+      const changedFields = {};
+
+      if (this.data.isNameChanged && this.data.userInfo.real_name) {
         updateData.data.real_name = this.data.userInfo.real_name;
+        changedFields.real_name = this.data.userInfo.real_name;
       }
-      if (this.data.userInfo.phone_num) {
+      if (this.data.isPhoneChanged && this.data.userInfo.phone_num) {
         updateData.data.phone_num = this.data.userInfo.phone_num;
+        changedFields.phone_num = this.data.userInfo.phone_num;
       }
-      if(this.data.userInfo.qq) {
+      if (this.data.isQQChanged && this.data.userInfo.qq) {
         updateData.data.qq = this.data.userInfo.qq;
+        changedFields.qq = this.data.userInfo.qq;
       }
-      if (this.data.userInfo.student_id) {
+      if (this.data.isStudentIDChanged && this.data.userInfo.student_id) {
         updateData.data.student_id = this.data.userInfo.student_id;
+        changedFields.student_id = this.data.userInfo.student_id;
       }
-      if (this.data.userInfo.college) {
+      if (this.data.isCollegeChanged && this.data.userInfo.college) {
         updateData.data.college = this.data.userInfo.college;
+        changedFields.college = this.data.userInfo.college;
       }
-      if (this.data.userInfo.grade) {  
+      if (this.data.isGradeChanged && this.data.userInfo.grade) {
         updateData.data.grade = this.data.userInfo.grade;
+        changedFields.grade = this.data.userInfo.grade;
       }
-      if (this.data.userInfo.motto) {
+      if (this.data.isMottoChanged && this.data.userInfo.motto) {
         updateData.data.motto = this.data.userInfo.motto;
+        changedFields.motto = this.data.userInfo.motto;
       }
-      // 图片没有被更改过
-      if(this.data.userInfo.avatar) {
+      if (this.data.userInfo.avatar && !this.data.tempAvatar) {
         updateData.data.profile_photo = this.data.userInfo.avatar;
       }
+
+      console.log('[EditPage] 准备提交的数据:', updateData);
+      console.log('[EditPage] 变化的字段:', changedFields);
 
       // 将更新好的用户除头像外的数据从/users/profile发出
       wx.request({
@@ -322,17 +431,37 @@ Page({
         success: (res) => {
           if (res.statusCode === 200) {
             // 保存成功后的操作
-            wx.showToast({ title: "保存成功" });
-            // 直接返回上一页，让me页面重新获取数据
-            // wx.setStorageSync('UserInfo', updateData);
-            setTimeout(() => {
-              wx.navigateBack({ delta: 1 });
-            }, 1500);
+            // 更新本地缓存
+            const cacheUpdateSuccess = this.updateLocalCache(changedFields);
+            if (cacheUpdateSuccess) {
+              wx.showToast({ 
+                title: "保存成功",
+                icon: "success"
+              });
+              
+              // 延迟返回,让用户看到成功提示
+              setTimeout(() => {
+                wx.navigateBack({ delta: 1 });
+              }, 1500);
+            } else {
+              wx.showToast({ 
+                title: "保存成功但缓存更新失败",
+                icon: "none"
+              });
+              
+              setTimeout(() => {
+                wx.navigateBack({ delta: 1 });
+              }, 1500);
+            }
           } else {
-            wx.showToast({ title: "保存失败", icon: "error" });
+            wx.showToast({ 
+              title: "保存失败", 
+              icon: "error" 
+            });
           }
         },
         fail: () => {
+          console.error('[EditPage] 请求失败:', error);
           wx.showToast({ title: "保存失败", icon: "error" });
         }
       });
@@ -348,19 +477,32 @@ Page({
           Authorization: `Bearer ${token}`,
         },
         success: (upRes) => {
+          console.log('[EditPage] 头像上传响应:', upRes);
           const data = JSON.parse(upRes.data);
-          console.log("后端返回: ", data);
+          console.log('[EditPage] 头像上传返回数据:', data);
+
           if (upRes.statusCode === 200 && data.data.profile_photo) {
             // 更新头像URL并继续更新其他资料
+            const newAvatarUrl = data.data.profile_photo;
             this.setData({ 
-              'userInfo.avatar': data.data.profile_photo 
+              'userInfo.avatar': newAvatarUrl
             });
+            // 更新缓存中的头像
+            this.updateLocalCache({
+              profile_photo: newAvatarUrl
+            });
+            
+            console.log('[EditPage] 头像上传成功,URL:', newAvatarUrl);
+            
+            // 继续更新其他资料
             uploadAndSaveProfile();
           } else {
+            console.error('[EditPage] 头像上传失败:', error);
             wx.showToast({ title: "头像上传失败", icon: "error"});
           }
         },
         fail: () => {
+          console.error('[EditPage] 头像上传失败:', error);
           wx.showToast({ title: "头像上传失败", icon: "error" });
         }
       });

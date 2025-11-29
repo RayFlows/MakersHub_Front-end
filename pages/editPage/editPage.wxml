@@ -66,7 +66,15 @@
     <view class="info-section">
       <text class="label">学院</text>
       <!--输入容器-->
-      <input class="input {{isCollegeFocused ? 'focused' : ''}}"  type="text" value="{{userInfo.college}}" bindtap = "onCollegeFocused" bindblur = "onCollegeBlur"bindinput="updateCollege" placeholder="{{userInfo.college}}" />
+      <picker 
+        class="input"  
+        mode="selector" 
+        bindchange="bindCollegeChange"
+        value="{{collegeIndex}}"
+        range="{{collegeNames}}"
+        >
+        <view>{{userInfo.college || '点击选择学院'}}</view>
+        </picker>
     </view>
 
     <!-- 年级 -->
@@ -80,7 +88,7 @@
         value="{{gradeIndex}}"
         range="{{gradeRange}}"
         >
-        <view>{{userInfo.grade || '点击选择年级'}}</view>
+        <view>{{displayGrade || '点击选择年级'}}</view>
         </picker>
     </view>
 
