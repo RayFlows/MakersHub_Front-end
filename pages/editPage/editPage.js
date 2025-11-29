@@ -13,6 +13,7 @@ Page({
       qq: "",
       student_id: "",
       college: "",
+      grade: "",
       motto: "",
     },
     tempAvatar: "",
@@ -28,25 +29,52 @@ Page({
     isQQChanged: false,
     isStudentIDChaged: false,
     isCollegeChanged: false,
+    isGradeChanged: false,
     isMottoChanged: false,
     isPhoneValid: true, // 电话号码是否有效的标志
     phoneErrorMsg: "", // 电话错误信息
+    gradeRange: [],  // 新增:年级选项数组
+    gradeIndex: 0,    // 新增:当前选中的年级索引
+    displayGrade: "",
     icons: {}
   },
 
   onLoad(options) {
     console.log("[Edit Page] 获取本页图标资源")
     this.loadIcons();
+
+    // 初始化年级选项
+    console.log("初始化年级选项")
+    this.initGradeRange();
+  
     // 加载从me页面传来的数据
     this.setData({
       userInfo: {
         real_name: options.real_name ? decodeURIComponent(options.real_name) : "",
         phone_num: options.phone_num ? decodeURIComponent(options.phone_num) : "",
         qq: options.qq ? decodeURIComponent(options.qq) : "",
+        student_id: options.student_id ? decodeURIComponent(options.student_id) : "",
+        college: options.college ? decodeURIComponent(options.college) : "",
+        grade: options.grade ? decodeURIComponent(options.grade) : "",
         avatar: options.avatar ? decodeURIComponent(options.avatar) : "",
         motto: options.motto ? decodeURIComponent(options.motto) : ""
       }
     });
+
+    if (this.data.userInfo.grade) {
+      const gradeWithSuffix = `${gradeFromBackend}级`;  // 转换为带"级"字的格式
+      const index = this.data.gradeRange.indexOf(gradeWithSuffix);
+      if (index !== -1) {
+        this.setData({ 
+          gradeIndex: index,
+          displayGrade: gradeWithSuffix  // 设置显示用的年级
+        });
+        console.log(`找到年级匹配: ${gradeWithSuffix}, 索引: ${index}`);
+      } else {
+        console.warn(`未找到年级 ${gradeWithSuffix} 在选项列表中`);
+      }
+    }
+
     // 输出从me页面传送来的数据
     console.log('接收到的参数:', JSON.stringify(this.data.userInfo, null, 2));
   },
@@ -62,6 +90,38 @@ Page({
       }
       })
     }
+  },
+
+  // 初始化年级选项范围
+  initGradeRange() {
+    const currentDate = new Date();
+    const currentYear = currentDate.getFullYear();
+    const currentMonth = currentDate.getMonth() + 1; // 月份从0开始,需要+1
+    
+    // 判断当前最近可能的入学年份
+    // 如果当前月份 >= 9月(开学季),则当年可以入学
+    // 如果当前月份 < 9月,则最近入学年份是去年
+    let latestEnrollmentYear = currentYear;
+    if (currentMonth < 9) {
+      latestEnrollmentYear = currentYear - 1;
+    }
+    
+    // 最早年份 = 最近入学年份 - 25
+    const earliestYear = latestEnrollmentYear - 25;
+    
+    // 生成年级数组(从最新到最旧)
+    const grades = [];
+    for (let year = latestEnrollmentYear; year >= earliestYear; year--) {
+      grades.push(`${year}级`);
+    }
+    
+    this.setData({
+      gradeRange: grades
+    });
+    
+    console.log('年级范围:', grades);
+    console.log('最近入学年份:', latestEnrollmentYear);
+    console.log('最早年份:', earliestYear);
   },
 
   onNameFocused() {
@@ -168,6 +228,20 @@ Page({
       isCollegeChanged: true }
     )
   },
+  // 年级选择改变事件
+  bindGradeChange(e) {
+    const index = e.detail.value;
+    const selectedGradeWithSuffix = this.data.gradeRange[index];
+    const gradeNumberOnly = selectedGradeWithSuffix.replace('级', '');  // 提取纯数字 "2024"
+    
+    this.setData({
+      gradeIndex: index,
+      'userInfo.grade': selectedGradeWithSuffix,
+      isGradeChanged: true,
+    });
+    
+    console.log('选择的年级:', selectedGradeWithSuffix);
+  },
   // 更改用户座右铭
   updateMotto(e) {
     this.setData(
@@ -195,36 +269,7 @@ Page({
       },
     });
   },
-  // editAvatar() {
-  //   wx.chooseMedia({
-  //     count: 1,
-  //     mediaType: ["image"],
-  //     sourceType: ["album", "camera"],
-  //     success: (res) => {
-  //       const path = res.tempFiles[0].tempFilePath;
-  //       this.setData({ avatar: path, photoPath: path });
-  //       wx.uploadFile({
-  //         filePath: path,
-  //         name: "file",
-  //         url: `${API_BASE}/users/profile-photo`,
-  //         header: {
-  //           "Content-Type": "multipart/form-data",
-  //           Authorization: `Bearer ${token}`,
-  //         },
-  //         success: (upRes) => {
-  //           const data = JSON.parse(upRes.data);
-  //           if (upRes.statusCode === 200 && data.profile_photo) {
-  //             const date = Date.now();
-  //             this.setData({ avatar: `${data.profile_photo}?t=${date}` });
-  //             wx.showToast({ title: "上传成功" });
-  //           } else {
-  //             wx.showToast({ title: "上传失败", icon: "none" });
-  //           }
-  //         },
-  //       });
-  //     },
-  //   });
-  // },
+
   saveChanges() {
     // 首先验证电话号码
     if (!this.data.isPhoneValid) {
@@ -253,6 +298,9 @@ Page({
       }
       if (this.data.userInfo.college) {
         updateData.data.college = this.data.userInfo.college;
+      }
+      if (this.data.userInfo.grade) {  
+        updateData.data.grade = this.data.userInfo.grade;
       }
       if (this.data.userInfo.motto) {
         updateData.data.motto = this.data.userInfo.motto;
