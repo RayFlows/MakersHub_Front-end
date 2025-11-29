@@ -9,7 +9,7 @@ var config = {
     profile: host + "/users/profile",
     profile_photo: host + "/users/profile-photo",
     get_makers: host + "/users/get-makers",
-    fine_by_phonenum: host + "/users/find-by-phonenum"
+    find_by_phonenum: host + "/users/find-by-phonenum"
   },
   events: {
     view: host + "/events/view",
