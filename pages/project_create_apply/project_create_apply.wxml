@@ -40,7 +40,7 @@
 
     <text class="form-label">负责人QQ</text>
     <view class="input-field">
-      <text>{{formData.personal_info.QQ}}</text>
+      <text>{{formData.personal_info.qq}}</text>
     </view>
 
     <text class="form-label">项目名称</text>

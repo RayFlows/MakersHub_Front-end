@@ -37,6 +37,8 @@
   margin-bottom: 30rpx;
   transition: all 0.3s;
   color: #666;
+  display: flex;
+  align-items: center;
 }
 
 .selector-field {
@@ -96,22 +98,6 @@
   align-items: center;
 }
 
-
-.del {
-  flex: none;
-  width: 40rpx;
-  height: 40rpx;
-  margin-right: 20rpx;
-  text-align: center;
-  font-weight: 700;
-  border: 4rpx solid white;
-  color: white;
-  border-radius: 50rpx;
-  cursor: pointer;
-  display: flex;
-  justify-content: center; /* 水平居中 */
-  align-items: center;     /* 垂直居中 */
-}
 
 .site-title {
   display: flex;
@@ -233,6 +219,7 @@
   line-height: 1.5;
   width: 100%;
   box-sizing: border-box; /* 新增 */
+  align-items: flex-start;
 }
 
 /* 提交按钮样式 */

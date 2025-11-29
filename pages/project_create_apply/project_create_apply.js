@@ -2,9 +2,10 @@
 const app = getApp();
 var config = (wx.getStorageSync('config'));
 const token = wx.getStorageSync('auth_token');
+const { getUserProfile, USER_PROFILE_KEY } = require('../index/index.js');
 
 // ============ 调试模式开关 ============
-const DEBUG_MODE = true; // 设置为 false 时使用真实接口
+const DEBUG_MODE = false; // 设置为 false 时使用真实接口
 // ====================================
 
 Page({
@@ -116,6 +117,41 @@ Page({
         find: resources.find
       }
       })
+    }
+  },
+
+    /**
+   * 从缓存加载用户信息
+   */
+  loadUserProfileFromCache() {
+    console.log('[Me] 从缓存加载用户信息');
+    
+    const cachedProfile = getUserProfile();
+    
+    if (cachedProfile && cachedProfile.real_name) {
+      console.log('[Me] 缓存中的用户信息:', cachedProfile);
+      
+      this.setData({
+        formData: {
+          personal_info: {
+            name: cachedProfile.real_name || this.data.formData.personal_info.name,
+            phone_num: cachedProfile.phone_num || this.data.formData.personal_info.phone_num,
+            qq: cachedProfile.qq || this.data.formData.personal_info.qq,
+            student_id: cachedProfile.student_id || this.data.formData.personal_info.student_id,
+            college: cachedProfile.college || this.data.formData.personal_info.college,
+            grade: cachedProfile.grade || this.data.formData.personal_info.grade,
+          }
+        },
+      });
+      
+      console.log('[Me] 用户信息已加载:', this.data.formData.personal_info);
+    } else {
+      console.warn('[Me] 缓存中没有用户信息,使用默认值');
+      wx.showToast({
+        title: '用户信息加载失败',
+        icon: 'none',
+        duration: 2000
+      });
     }
   },
 
@@ -243,9 +279,10 @@ Page({
     } else {
       // ====== 生产模式:调用真实接口 ======
       wx.request({
-        url: config.users.find-by-phonenum,
+        url: config.users.find_by_phonenum,
         method: 'GET',
         header: {
+          'Content-Type': 'application/json',
           'Authorization': 'Bearer ' + token
         },
         data: {
@@ -765,15 +802,15 @@ onSubmit() {
         console.log('提交响应:', res);
         
         if (res.statusCode === 200 && res.data.code === 200) {
-          wx.showModal({
-            title: '提交成功',
-            content: '项目申请已提交,请等待审核',
-            showCancel: false,
-            success: () => {
-              // 返回上一页
-              wx.navigateBack();
-            }
+          wx.showToast({ 
+            title: "提交成功",
+            icon: "success"
           });
+          
+          // 延迟返回,让用户看到成功提示
+          setTimeout(() => {
+            wx.navigateBack({ delta: 1 });
+          }, 1500);
         } else {
           wx.showModal({
             title: '提交失败',
@@ -887,13 +924,31 @@ buildSubmitData() {
   };
 },
 
-  onLoad(options) {
-    console.log("[Project Create Apply] 获取页面图标资源");
-    this.loadIcons();
-    
-    // 初始化日期选择器
-    this.initDatePickers();
-  },
+// 返回处理
+handlerGobackClick() {
+  wx.showModal({
+    title: '确认返回',
+    content: '返回将丢失已填写的内容，是否确认？',
+    success: (res) => {
+      if (res.confirm) {
+        wx.navigateBack({ delta: 1 });
+      }
+    }
+  });
+},
+
+// 返回首页
+handlerGohomeClick() {
+  wx.showModal({
+    title: '返回首页',
+    content: '返回首页将丢失已填写的内容，是否确认？',
+    success: (res) => {
+      if (res.confirm) {
+        wx.switchTab({ url: '/pages/index/index' });
+      }
+    }
+  });
+},
 
   /**
    * 生命周期函数--监听页面加载
@@ -902,6 +957,7 @@ buildSubmitData() {
     console.log("[Project Create Apply] 获取页面图标资源");
     this.loadIcons();
     this.initDatePickers();
+    this.loadUserProfileFromCache();
   },
 
   /**
