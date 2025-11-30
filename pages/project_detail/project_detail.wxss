@@ -293,4 +293,163 @@
 .recruit-switch--off .recruit-switch__circle {
   transform: translateX(0);
 }
+.modal-mask {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.6);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+}
 
+/* 弹窗内容 */
+.modal-content {
+  width: 600rpx;
+  background: #fff;
+  border-radius: 20rpx;
+  padding-top: 30rpx;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+}
+
+.modal-title {
+  font-size: 32rpx;
+  font-weight: bold;
+  color: #00adb5;
+  text-align: center;
+  display: block;
+  margin-bottom: 30rpx;
+}
+
+/* 搜索容器 */
+.search-container {
+  position: relative;
+  flex-direction: row;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0rpx 30rpx 0rpx 30rpx;
+  border: 2rpx solid #e5e5e5;
+  border-left: none;
+  border-right: none;
+  width: 90%;
+}
+
+.search-input {
+  width: 100%;
+  height: 80rpx;
+  padding: 0 80rpx 0 30rpx;
+  font-size: 28rpx;
+  box-sizing: border-box;
+}
+
+.find-icon {
+  width: 42rpx;
+  height: 42rpx;
+}
+
+.delete-icon {
+  width: 32rpx;
+  height: 32rpx;
+}
+
+/* 下拉列表 */
+.dropdown-results {
+  position: absolute;
+  top: 180rpx;
+  left: 5%;
+  max-height: 400rpx;
+  background: #fff;
+  box-shadow: 0 4rpx 16rpx rgba(0, 0, 0, 0.15);
+  overflow-y: auto;
+  z-index: 1;
+  width: 90%;
+}
+
+.dropdown-item {
+  padding: 25rpx 30rpx;
+  border-bottom: 1rpx solid #f0f0f0;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.dropdown-item text {
+  color: #808080;
+  font-size: 28rpx;
+}
+.dropdown-item:last-child {
+  border-bottom: none;
+}
+
+.dropdown-item.active {
+  background: #e8f4f8;
+}
+
+/* 已选择成员显示 */
+.selected-member {
+  background: #e8f4f8;
+  border-radius: 20rpx;
+  padding: 25rpx 30rpx;
+  margin-top: 30rpx;
+  width: 90%;
+  display: flex;
+  align-items: center;
+  gap: 15rpx;
+}
+
+.selected-label {
+  font-size: 26rpx;
+  color: #00adb5;
+  font-weight: 700;
+}
+
+.selected-name {
+  font-size: 28rpx;
+  font-weight: 700;
+  color: #222831;
+  flex: 1;
+}
+
+/* 按钮组 */
+.modal-buttons {
+  display: flex;
+  flex-direction: row;
+  justify-content: start;
+  align-items: center;
+  margin-top: 30rpx;
+  border-top: 2rpx solid #e5e5e5;
+  width: 100%;
+}
+
+.modal-btn {
+  flex: 1;
+  height: 80rpx;
+  font-size: 28rpx;
+  color: #808080;
+  background: #fff;
+  line-height: 80rpx;
+  text-align: center;
+}
+
+.cancel-btn {
+  border-bottom-left-radius: 20rpx;
+  border-right: 2rpx solid #e5e5e5;
+  padding: 0;
+}
+
+.confirm-btn {
+  border-bottom-right-radius: 20rpx;
+  border-left: 2rpx solid #e5e5e5;
+  padding: 0;
+}
+
+.modal-btn:active {
+  opacity: 0.8;
+}
