@@ -70,7 +70,8 @@ var config = {
     create: host + "/project/create",
     detail: host + "/project",               
     member: host + "/project",    
-    submitClosure: host + "/project"            
+    submitClosure: host + "/project",    
+    toggleRecruit: host + "/project"        
   }
 }
 module.exports = config;

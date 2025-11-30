@@ -25,7 +25,7 @@ Page({
     project_id: '',
     icons: {},
 
-    // ====== 成员搜索弹窗相关 ======
+    // 成员搜索弹窗相关
     showModal: false,
     searchPhone: '',
     searchResults: [],
@@ -40,21 +40,24 @@ Page({
   onLoad(options) {
     console.log("[Project Detail] 获取页面图标资源");
     this.loadIcons();
-
-    // ✅ 无论有没有传 project_id，都给一个 id，然后一律调用 fetchProjectDetail
+  
     const projectIdFromOption = options.project_id;
+  
+    // ⭐ 若没有带 id，则用 MOCK_PROJECT_ID 并进入 mock 模式
     const finalProjectId = projectIdFromOption || "MOCK_PROJECT_ID";
-
+  
     if (!projectIdFromOption) {
-      console.warn("[Project Detail] 未传 project_id，使用 MOCK_PROJECT_ID + mock 数据");
+      console.warn("[Project Detail] 未传 project_id，使用 MOCK 数据模式");
     }
-
+  
     this.setData({
       project_id: finalProjectId
     });
-
-    this.fetchProjectDetail(finalProjectId);
+  
+    this.fetchProjectDetail(finalProjectId, !projectIdFromOption); 
+    // 第二个参数: true = 强制使用 mock
   },
+  
 
   /**
    * 加载图标资源
@@ -76,15 +79,14 @@ Page({
   },
 
   /**
-   * 获取项目详情（带 mock fallback）
-   * 预留后端接口：config.projects.detail
+   * 获取项目详情（带简单 mock fallback）
+   * 接口：GET /project/{project_id}
    */
   fetchProjectDetail(project_id) {
     wx.showLoading({
       title: '加载中...',
     });
 
-    // 统一 mock 数据
     const mockData = {
       project_id: project_id,
       project_name: "示例项目名称（Mock）",
@@ -102,10 +104,9 @@ Page({
         { name: "李四", college: "电子信息学院", phone: "15500000000", maker_id: "MK_MOCK_1" },
         { name: "王五", college: "计算机学院", phone: "15600000000", maker_id: "MK_MOCK_2" }
       ],
-      is_recruit: true // 是否招募，用于开关
+      is_recruit: true
     };
 
-    // 1）DEBUG 模式：直接用 mockData
     if (DEBUG) {
       console.log("[Project Detail] DEBUG 模式，使用 mockData");
       this.setData({
@@ -115,9 +116,8 @@ Page({
       return;
     }
 
-    // 2）接口未配置：直接用 mockData
-    if (!config || !config.projects || !config.projects.detail) {
-      console.warn("[Project Detail] config.projects.detail 未配置，使用 mockData");
+    if (!config || !config.project || !config.project.detail) {
+      console.warn("[Project Detail] config.project.detail 未配置，使用 mockData");
       this.setData({
         apiData: mockData
       });
@@ -125,9 +125,8 @@ Page({
       return;
     }
 
-    // 3）请求后端，失败 / 非 200 也 fallback 到 mockData
     wx.request({
-      url: config.project.detail + `/${project_id}`,
+      url: `${config.project.detail}/${project_id}`,
       method: 'GET',
       header: {
         'content-type': 'application/json',
@@ -167,13 +166,14 @@ Page({
 
   /**
    * 自定义招募开关点击事件
-   * 保留原本前端切换逻辑 + 安全接口预留
+   * 接口：PUT /project/{project_id}/action/toggle-recruit
+   * body: { is_recruiting: true/false }
    */
   toggleRecruitCustom() {
     const current = !!this.data.apiData.is_recruit;
     const next = !current;
 
-    // 1）DEBUG：本地直接切换
+    // DEBUG：本地切换
     if (DEBUG) {
       this.setData({
         'apiData.is_recruit': next
@@ -182,9 +182,8 @@ Page({
       return;
     }
 
-    // 2）接口未配置：本地切换 + 提示
-    if (!config || !config.projects || !config.projects.toggleRecruit) {
-      console.warn('[Project Detail] config.projects.toggleRecruit 未配置，已本地切换，不调用后端');
+    if (!config || !config.project || !config.project.toggleRecruit) {
+      console.warn('[Project Detail] config.project.toggleRecruit 未配置，已本地切换');
       this.setData({
         'apiData.is_recruit': next
       });
@@ -195,23 +194,31 @@ Page({
       return;
     }
 
-    // 3）正常调用后端
+    if (!this.data.project_id) {
+      wx.showToast({
+        title: '缺少项目ID',
+        icon: 'none'
+      });
+      return;
+    }
+
     wx.showLoading({
       title: '提交中...',
     });
 
     wx.request({
-      url: config.project.toggleRecruit + `/${this.data.project_id}`,
-      method: 'POST',
+      url: `${config.project.toggleRecruit}/${this.data.project_id}/action/toggle-recruit`,
+      method: 'PUT',
       header: {
         'content-type': 'application/json',
         'Authorization': token
       },
       data: {
-        is_recruit: next
+        is_recruiting: next
       },
       success: (res) => {
-        if (res.data && res.data.code === 200) {
+        console.log('[Project Detail] toggle-recruit 响应:', res);
+        if (res.statusCode === 200 && res.data && res.data.code === 200) {
           this.setData({
             'apiData.is_recruit': next
           });
@@ -300,7 +307,7 @@ Page({
   },
 
   /**
-   * 添加成员（弹出搜索弹窗 + 人数上限）
+   * 添加成员：弹出搜索弹窗 + 人数上限
    */
   addMember() {
     if (DEBUG) {
@@ -325,14 +332,9 @@ Page({
   },
 
   /**
-   * 删除成员：弹出列表选择要删除的成员，然后调用后端 DELETE 接口
-   * DELETE  /project/{project_id}/member
-   * Body:
-   * {
-   *   "deleted_members": [
-   *     { "maker_id": "XXX" }
-   *   ]
-   * }
+   * 删除成员：选择一个成员，调用后端删除
+   * DELETE /project/{project_id}/member
+   * body: { deleted_members: [{ maker_id }] }
    */
   deleteMember() {
     const members = this.data.apiData.members || [];
@@ -373,7 +375,7 @@ Page({
     }
 
     if (!config || !config.project || !config.project.member) {
-      console.warn('[Project Detail] config.projects.member 未配置');
+      console.warn('[Project Detail] config.project.member 未配置');
       wx.showToast({
         title: '删除成员接口未配置',
         icon: 'none'
@@ -455,96 +457,21 @@ Page({
   },
 
   /**
-   * 结束项目
+   * 结束项目：不直接调接口，跳转到结项页面
    */
   finishProject() {
-    const that = this;
+    const project_id = this.data.project_id;
 
-    // 先弹确认框（防止误触）
-    wx.showModal({
-      title: '确认提交结项',
-      content: '提交结项后，项目状态将进入结项审批流程，确认现在提交吗？',
-      success(res) {
-        if (!res.confirm) return;
+    if (!project_id) {
+      wx.showToast({
+        title: '缺少项目ID',
+        icon: 'none'
+      });
+      return;
+    }
 
-        // 调试模式：仅提示，不调后端
-        if (DEBUG) {
-          wx.showToast({
-            title: '调试模式：已提交结项',
-            icon: 'success'
-          });
-          return;
-        }
-
-        // 配置检查
-        if (!config || !config.project || !config.project.submitClosure) {
-          console.warn('[Project Detail] config.project.submitClosure 未配置');
-          wx.showToast({
-            title: '结项接口未配置',
-            icon: 'none'
-          });
-          return;
-        }
-
-        if (!that.data.project_id) {
-          wx.showToast({
-            title: '缺少项目ID',
-            icon: 'none'
-          });
-          return;
-        }
-
-        // 这里先用一个简单的描述，你后面可以改成从输入框获取
-        const finishDesc =
-          (that.data.apiData && that.data.apiData.finish_description) ||
-          '项目已圆满完成，相关成果材料已提交。';
-
-        wx.showLoading({
-          title: '提交中...',
-        });
-
-        wx.request({
-          url: `${config.project.submitClosure}/${that.data.project_id}/action/submit-closure`,
-          method: 'PUT',
-          header: {
-            'content-type': 'application/json',
-            'Authorization': token
-          },
-          data: {
-            finish_description: finishDesc
-          },
-          success: (res) => {
-            console.log('[Project Detail] 提交结项响应:', res);
-            if (res.data && res.data.code === 200) {
-              wx.showToast({
-                title: '结项申请已提交',
-                icon: 'success',
-                duration: 1500,
-                success: () => {
-                  setTimeout(() => {
-                    wx.navigateBack();
-                  }, 1500);
-                }
-              });
-            } else {
-              wx.showToast({
-                title: (res.data && res.data.message) || '提交结项失败',
-                icon: 'none'
-              });
-            }
-          },
-          fail: (err) => {
-            console.error('[Project Detail] 提交结项失败:', err);
-            wx.showToast({
-              title: '网络错误，请重试',
-              icon: 'none'
-            });
-          },
-          complete: () => {
-            wx.hideLoading();
-          }
-        });
-      }
+    wx.navigateTo({
+      url: `/pages/project_finish/project_finish?project_id=${project_id}`
     });
   },
 
@@ -576,9 +503,8 @@ Page({
     wx.stopPullDownRefresh();
   },
 
-  // ============== 成员搜索弹窗逻辑（与创建页对齐） ==============
+  // ============== 成员搜索弹窗逻辑（与创建页类似） ==============
 
-  // Mock 搜索结果
   getMockSearchResults(phone) {
     const allMockUsers = [
       { real_name: "张三", college: "计算机学院", phone_num: "13800138000", maker_id: "MK20251123225706077_863" },
@@ -597,7 +523,6 @@ Page({
     return filtered.slice(0, 5);
   },
 
-  // 搜索输入
   onSearchInput(e) {
     const phone = e.detail.value;
     this.setData({
@@ -627,7 +552,6 @@ Page({
     });
   },
 
-  // 搜索接口调用
   searchMembers(phone) {
     console.log('[Project Detail] 开始搜索成员:', phone);
 
@@ -700,7 +624,6 @@ Page({
     });
   },
 
-  // 清空搜索
   clearSearch() {
     this.setData({
       searchPhone: '',
@@ -710,7 +633,6 @@ Page({
     });
   },
 
-  // 选择成员
   selectMember(e) {
     const index = e.currentTarget.dataset.index;
     const member = this.data.searchResults[index];
@@ -727,7 +649,6 @@ Page({
     });
   },
 
-  // 确认添加成员（更新前端列表，后端可按需接入）
   confirmAddMember() {
     if (!this.data.selectedMember) {
       wx.showToast({
@@ -749,7 +670,6 @@ Page({
 
     const selectedMember = this.data.selectedMember;
 
-    // 检查是否已存在
     const exists = members.some(m => m.phone === selectedMember.phone_num);
     if (exists) {
       wx.showToast({
@@ -779,7 +699,6 @@ Page({
     this.hideModal();
   },
 
-  // 显示成员弹窗
   showMemberModal() {
     this.setData({
       showModal: true,
@@ -790,7 +709,6 @@ Page({
     });
   },
 
-  // 隐藏成员弹窗
   hideModal() {
     this.setData({
       showModal: false,
@@ -801,14 +719,11 @@ Page({
     });
   },
 
-  // 阻止冒泡
   stopPropagation() {},
 
-  // 搜索框获得焦点（可选）
   onSearchFocus() {
     console.log('[Project Detail] 搜索框获得焦点');
   },
 
-  // 搜索框失焦（可选）
   onSearchBlur() {}
 });
