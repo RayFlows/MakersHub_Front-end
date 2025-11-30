@@ -459,70 +459,91 @@ Page({
    */
   finishProject() {
     const that = this;
+
+    // 先弹确认框（防止误触）
     wx.showModal({
-      title: '确认结束项目',
-      content: '结束后项目状态将不可再修改，确认结束？',
+      title: '确认提交结项',
+      content: '提交结项后，项目状态将进入结项审批流程，确认现在提交吗？',
       success(res) {
-        if (res.confirm) {
-          if (DEBUG) {
-            wx.showToast({
-              title: '调试模式：已结束项目',
-              icon: 'success'
-            });
-            return;
-          }
+        if (!res.confirm) return;
 
-          if (!config || !config.project || !config.project.finish) {
-            console.warn('[Project Detail] config.projects.finish 未配置');
-            wx.showToast({
-              title: '结束项目接口未配置',
-              icon: 'none'
-            });
-            return;
-          }
-
-          wx.showLoading({
-            title: '提交中...',
+        // 调试模式：仅提示，不调后端
+        if (DEBUG) {
+          wx.showToast({
+            title: '调试模式：已提交结项',
+            icon: 'success'
           });
+          return;
+        }
 
-          wx.request({
-            url: config.project.finish + `/${that.data.project_id}`,
-            method: 'POST',
-            header: {
-              'content-type': 'application/json',
-              'Authorization': token
-            },
-            success: (res) => {
-              if (res.data && res.data.code === 200) {
-                wx.showToast({
-                  title: '项目已结束',
-                  icon: 'success',
-                  duration: 1500,
-                  success: () => {
-                    setTimeout(() => {
-                      wx.navigateBack();
-                    }, 1500);
-                  }
-                });
-              } else {
-                wx.showToast({
-                  title: (res.data && res.data.message) || '结束项目失败',
-                  icon: 'none'
-                });
-              }
-            },
-            fail: (err) => {
-              console.error('[Project Detail] 结束项目失败:', err);
+        // 配置检查
+        if (!config || !config.project || !config.project.submitClosure) {
+          console.warn('[Project Detail] config.project.submitClosure 未配置');
+          wx.showToast({
+            title: '结项接口未配置',
+            icon: 'none'
+          });
+          return;
+        }
+
+        if (!that.data.project_id) {
+          wx.showToast({
+            title: '缺少项目ID',
+            icon: 'none'
+          });
+          return;
+        }
+
+        // 这里先用一个简单的描述，你后面可以改成从输入框获取
+        const finishDesc =
+          (that.data.apiData && that.data.apiData.finish_description) ||
+          '项目已圆满完成，相关成果材料已提交。';
+
+        wx.showLoading({
+          title: '提交中...',
+        });
+
+        wx.request({
+          url: `${config.project.submitClosure}/${that.data.project_id}/action/submit-closure`,
+          method: 'PUT',
+          header: {
+            'content-type': 'application/json',
+            'Authorization': token
+          },
+          data: {
+            finish_description: finishDesc
+          },
+          success: (res) => {
+            console.log('[Project Detail] 提交结项响应:', res);
+            if (res.data && res.data.code === 200) {
               wx.showToast({
-                title: '网络错误，请重试',
+                title: '结项申请已提交',
+                icon: 'success',
+                duration: 1500,
+                success: () => {
+                  setTimeout(() => {
+                    wx.navigateBack();
+                  }, 1500);
+                }
+              });
+            } else {
+              wx.showToast({
+                title: (res.data && res.data.message) || '提交结项失败',
                 icon: 'none'
               });
-            },
-            complete: () => {
-              wx.hideLoading();
             }
-          });
-        }
+          },
+          fail: (err) => {
+            console.error('[Project Detail] 提交结项失败:', err);
+            wx.showToast({
+              title: '网络错误，请重试',
+              icon: 'none'
+            });
+          },
+          complete: () => {
+            wx.hideLoading();
+          }
+        });
       }
     });
   },
