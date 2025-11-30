@@ -150,9 +150,72 @@
       <view class="action-btn finish-btn" bindtap="finishProject">结束项目</view>
     </view>
   </view>
+
   <image
     class="bottom-image"
     src="{{icons.blackCat}}"
     mode="aspectFit"
   ></image>
+
+  <!-- =================== 添加成员弹窗（复用 project_create_apply 样式） =================== -->
+  <view class="modal-mask" wx:if="{{showModal}}" bindtap="hideModal">
+    <view class="modal-content" catchtap="stopPropagation">
+      <text class="modal-title">添加项目成员</text>
+      
+      <!-- 搜索输入框 -->
+      <view class="search-container">
+        <image src="{{icons.find}}" class="find-icon"></image>
+        <input 
+          class="search-input"
+          placeholder="请输入成员电话号码"
+          type="number"
+          value="{{searchPhone}}"
+          bindinput="onSearchInput"
+          bindfocus="onSearchFocus"
+          bindblur="onSearchBlur"
+        />
+        <image
+          src="{{icons.cancel}}"
+          class="delete-icon"
+          wx:if="{{searchPhone.length > 0}}"
+          bindtap="clearSearch"
+        ></image>
+      </view>
+
+      <!-- 下拉结果：未找到 -->
+      <view class="dropdown-results" wx:if="{{hasSearched && searchResults.length === 0 && !selectedMember}}">
+        <view class="dropdown-item">
+          <text>该用户不存在QAQ</text>
+        </view>
+      </view>
+
+      <!-- 下拉结果：有匹配 -->
+      <view class="dropdown-results" wx:elif="{{searchResults.length > 0 && !selectedMember}}">
+        <view 
+          class="dropdown-item"
+          wx:for="{{searchResults}}" 
+          wx:key="phone_num"
+          bindtap="selectMember"
+          data-index="{{index}}"
+        >
+          <text>{{item.real_name}} - {{item.phone_num}} - {{item.college}}</text>
+        </view>
+      </view>
+
+      <!-- 已选择成员提示（可选） -->
+      <view class="selected-member" wx:if="{{selectedMember}}">
+        <text class="selected-label">已选择：</text>
+        <text class="selected-name">
+          {{selectedMember.real_name}} - {{selectedMember.phone_num}} - {{selectedMember.college}}
+        </text>
+      </view>
+
+      <!-- 按钮组 -->
+      <view class="modal-buttons">
+        <button class="modal-btn cancel-btn" bindtap="hideModal">取消</button>
+        <button class="modal-btn confirm-btn" bindtap="confirmAddMember">确认</button>
+      </view>
+    </view>
+  </view>
+  <!-- =================== 弹窗结束 =================== -->
 </view>

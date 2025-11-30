@@ -68,6 +68,8 @@ var config = {
   },
   project: {
     create: host + "/project/create",
+    detail: host + "/project",               
+    member: host + "/project"                
   }
 }
 module.exports = config;
