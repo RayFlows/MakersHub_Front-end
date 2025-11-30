@@ -132,16 +132,14 @@ Page({
       console.log('[Me] 缓存中的用户信息:', cachedProfile);
       
       this.setData({
-        formData: {
-          personal_info: {
-            name: cachedProfile.real_name || this.data.formData.personal_info.name,
-            phone_num: cachedProfile.phone_num || this.data.formData.personal_info.phone_num,
-            qq: cachedProfile.qq || this.data.formData.personal_info.qq,
-            student_id: cachedProfile.student_id || this.data.formData.personal_info.student_id,
-            college: cachedProfile.college || this.data.formData.personal_info.college,
-            grade: cachedProfile.grade || this.data.formData.personal_info.grade,
-          }
-        },
+        'formData.personal_info': {  // ✅ 只更新 personal_info
+          name: cachedProfile.real_name || '',
+          phone_num: cachedProfile.phone_num || '',
+          qq: cachedProfile.qq || '',
+          student_id: cachedProfile.student_id || '',
+          college: cachedProfile.college || '',
+          grade: cachedProfile.grade || '',
+        }
       });
       
       console.log('[Me] 用户信息已加载:', this.data.formData.personal_info);
