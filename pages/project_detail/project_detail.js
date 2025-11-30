@@ -182,7 +182,7 @@ Page({
       return;
     }
 
-    if (!config || !config.project || !config.project.toggleRecruit) {
+    if (!config || !config.project || !config.project.toggle_recruit) {
       console.warn('[Project Detail] config.project.toggleRecruit 未配置，已本地切换');
       this.setData({
         'apiData.is_recruit': next
@@ -207,7 +207,7 @@ Page({
     });
 
     wx.request({
-      url: `${config.project.toggleRecruit}/${this.data.project_id}/action/toggle-recruit`,
+      url: `${config.project.toggle_recruit}/${this.data.project_id}/action/toggle-recruit`,
       method: 'PUT',
       header: {
         'content-type': 'application/json',
