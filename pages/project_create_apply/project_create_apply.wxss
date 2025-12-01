@@ -416,34 +416,7 @@
   gap: 8rpx;
 }
 
-/* 已选择成员显示 */
-.selected-member {
-  background: #e8f4f8;
-  border-radius: 20rpx;
-  padding: 25rpx 30rpx;
-  margin-bottom: 20rpx;
-  display: flex;
-  align-items: center;
-  gap: 15rpx;
-}
 
-.selected-label {
-  font-size: 26rpx;
-  color: #00adb5;
-  font-weight: 700;
-}
-
-.selected-name {
-  font-size: 28rpx;
-  font-weight: 700;
-  color: #222831;
-  flex: 1;
-}
-
-.selected-phone {
-  font-size: 24rpx;
-  color: #666;
-}
 
 /* 提示信息 */
 .modal-hint {
@@ -471,6 +444,7 @@
 }
 
 .modal-btn {
+  font-weight: 600;
   flex: 1;
   height: 80rpx;
   font-size: 28rpx;

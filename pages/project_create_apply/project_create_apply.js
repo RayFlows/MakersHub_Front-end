@@ -35,7 +35,8 @@ Page({
       },
       participants: []
     },
-    isEdit: false,
+    isEditMode: false,
+    currentProjectId: null,
     isRecruiting: ['否', '是'],
     projectType: ['个人项目', '比赛项目'],
     projectTypeIndex: 0,
@@ -743,219 +744,464 @@ Page({
     console.log('更新结束日期:', formattedDate);
   },
 
-  // ========== 表单提交 ==========
-onSubmit() {
-  console.log('开始提交表单');
-  
-  // 1. 表单验证
-  const validation = this.validateForm();
-  if (!validation.valid) {
-    wx.showToast({
-      title: validation.message,
-      icon: 'none',
-      duration: 2000
-    });
-    return;
-  }
-
-  // 2. 构造提交数据
-  const submitData = this.buildSubmitData();
-  console.log('提交数据:', submitData);
-
-  // 3. 显示加载提示
-  wx.showLoading({
-    title: '提交中...',
-    mask: true
-  });
-
-  if (DEBUG_MODE) {
-    // ====== 调试模式:模拟提交 ======
-    console.log('[DEBUG] 模拟提交数据:', JSON.stringify(submitData, null, 2));
+  /**
+   * 加载项目详情(编辑模式)
+   */
+  loadProjectDetail(project_id) {
+    console.log('[Edit Mode] 加载项目详情, project_id:', project_id);
     
-    setTimeout(() => {
-      wx.hideLoading();
-      wx.showModal({
-        title: '提交成功',
-        content: '项目申请已提交(调试模式)',
-        showCancel: false,
-        success: () => {
-          // 返回上一页或跳转到项目列表
-          wx.navigateBack();
+    wx.showLoading({
+      title: '加载中...',
+      mask: true
+    });
+
+    if (DEBUG_MODE) {
+      // ====== 调试模式:使用 Mock 数据 ======
+      console.log('[DEBUG] 使用 Mock 项目数据');
+      
+      setTimeout(() => {
+        const mockData = {
+          code: 200,
+          msg: "success",
+          data: {
+            project_id: "PJ20250615100000123",
+            project_name: "基于视觉识别的自动喂猫机",
+            project_type: 0,
+            description: "本项目旨在利用树莓派和OpenCV开发一款智能喂猫机,通过视觉识别技术自动识别猫咪并进行喂食...",
+            start_time: "2025-09-01 00:00:00",
+            end_time: "2025-12-30 00:00:00",
+            leader_name: "旅行者",
+            leader_phone: "13677778888",
+            leader_qq: "897789202",
+            college: "计算机学院",
+            mentor_name: "张教授",
+            mentor_phone: "13800138000",
+            state: 0,
+            is_recruiting: false,
+            members: [
+              { real_name: "李四", phone_num: "13800138001", college: "计算机学院" },
+              { real_name: "王五", phone_num: "13900139002", college: "软件学院" }
+            ]
+          }
+        };
+        
+        wx.hideLoading();
+        this.fillFormWithProjectData(mockData.data);
+      }, 500);
+      
+    } else {
+      // ====== 生产模式:调用真实接口 ======
+      wx.request({
+        url: `${config.project.detail}/${project_id}`,
+        method: 'GET',
+        header: {
+          'Authorization': 'Bearer ' + token,
+          'Content-Type': 'application/json'
+        },
+        success: (res) => {
+          wx.hideLoading();
+          console.log('[Edit Mode] 项目详情响应:', res);
+          
+          if (res.statusCode === 200 && res.data.code === 200) {
+            this.fillFormWithProjectData(res.data.data);
+          } else {
+            wx.showModal({
+              title: '加载失败',
+              content: res.data.msg || '无法加载项目信息',
+              showCancel: false,
+              success: () => {
+                wx.navigateBack();
+              }
+            });
+          }
+        },
+        fail: (err) => {
+          wx.hideLoading();
+          console.error('[Edit Mode] 加载失败:', err);
+          wx.showModal({
+            title: '网络错误',
+            content: '无法加载项目信息,请检查网络',
+            showCancel: false,
+            success: () => {
+              wx.navigateBack();
+            }
+          });
         }
       });
-    }, 1000);
+    }
+  },
+
+  /**
+   * 填充表单数据
+   */
+  fillFormWithProjectData(projectData) {
+    console.log('[Edit Mode] 填充表单数据:', projectData);
     
-  } else {
-    // ====== 生产模式:调用真实接口 ======
-    wx.request({
-      url: config.project.create,
-      method: 'POST',
-      header: {
-        'Authorization': 'Bearer ' + token,
-        'Content-Type': 'application/json'
+    // 1. 解析日期
+    const startDate = this.parseDateTime(projectData.start_time);
+    const endDate = this.parseDateTime(projectData.end_time);
+    
+    // 2. 填充项目信息
+    this.setData({
+      'formData.project_info': {
+        project_name: projectData.project_name || '',
+        project_type: projectData.project_type.toString(),
+        description: projectData.description || '',
+        is_recruiting: projectData.is_recruiting ? '1' : '0',
+        mentor_name: projectData.mentor_name || '',
+        mentor_phone: projectData.mentor_phone || '',
+        start_time: startDate.dateStr,
+        end_time: endDate.dateStr
       },
-      data: submitData,
-      success: (res) => {
+      
+      // 填充个人信息(负责人信息)
+      'formData.personal_info': {
+        name: projectData.leader_name || '',
+        phone_num: projectData.leader_phone || '',
+        qq: projectData.leader_qq || '',
+        student_id: this.data.formData.personal_info.student_id || '',
+        college: projectData.college || '',
+        grade: this.data.formData.personal_info.grade || ''
+      },
+      
+      // 填充成员列表
+      'formData.participants': projectData.members || [],
+      
+      // 更新选择器状态
+      projectTypeIndex: projectData.project_type,
+      selectedProjectType: this.data.projectType[projectData.project_type],
+      isRecruitingIndex: projectData.is_recruiting ? 1 : 0,
+      selectedIsRecruiting: projectData.is_recruiting ? '是' : '否',
+      
+      // 更新日期选择器
+      startSelectedYear: startDate.year + '年',
+      startSelectedMonth: startDate.month + '月',
+      startSelectedDay: startDate.day + '日',
+      endSelectedYear: endDate.year + '年',
+      endSelectedMonth: endDate.month + '月',
+      endSelectedDay: endDate.day + '日'
+    });
+    
+    // 3. 更新日期选择器选项
+    this.updateStartYearOptions();
+    this.updateStartMonthOptions();
+    this.updateStartDayOptions();
+    this.updateEndYearOptions();
+    this.updateEndMonthOptions();
+    this.updateEndDayOptions();
+    
+    console.log('[Edit Mode] 表单数据填充完成');
+  },
+
+  /**
+   * 解析日期时间字符串
+   * @param {string} dateTimeStr - 格式: "2025-09-01 00:00:00"
+   * @returns {object} { year, month, day, dateStr }
+   */
+  parseDateTime(dateTimeStr) {
+    if (!dateTimeStr) {
+      const now = new Date();
+      return {
+        year: now.getFullYear(),
+        month: now.getMonth() + 1,
+        day: now.getDate(),
+        dateStr: `${now.getFullYear()}-${(now.getMonth() + 1).toString().padStart(2, '0')}-${now.getDate().toString().padStart(2, '0')}`
+      };
+    }
+    
+    // 提取日期部分 "2025-09-01"
+    const datePart = dateTimeStr.split(' ')[0];
+    const [year, month, day] = datePart.split('-').map(Number);
+    
+    return {
+      year: year,
+      month: month,
+      day: day,
+      dateStr: datePart
+    };
+  },
+
+  /**
+   * 表单提交(支持创建和更新)
+   */
+  onSubmit() {
+    console.log('开始提交表单, 编辑模式:', this.data.isEditMode);
+    
+    // 1. 表单验证
+    const validation = this.validateForm();
+    if (!validation.valid) {
+      wx.showToast({
+        title: validation.message,
+        icon: 'none',
+        duration: 2000
+      });
+      return;
+    }
+
+    // 2. 构造提交数据
+    const submitData = this.buildSubmitData();
+    console.log('提交数据:', submitData);
+
+    // 3. 显示加载提示
+    wx.showLoading({
+      title: this.data.isEditMode ? '更新中...' : '提交中...',
+      mask: true
+    });
+
+    if (DEBUG_MODE) {
+      // ====== 调试模式:模拟提交 ======
+      console.log('[DEBUG] 模拟提交数据:', JSON.stringify(submitData, null, 2));
+      
+      setTimeout(() => {
         wx.hideLoading();
-        console.log('提交响应:', res);
         
-        if (res.statusCode === 200 && res.data.code === 200) {
-          wx.showToast({ 
-            title: "提交成功",
-            icon: "success"
-          });
+        // 模拟后端返回
+        const mockResponse = {
+          code: 200,
+          msg: this.data.isEditMode ? "项目创建申请已更新" : "项目创建申请已提交",
+          data: submitData
+        };
+        
+        console.log('[DEBUG] 模拟响应:', mockResponse);
+        
+        wx.showModal({
+          title: '提交成功',
+          content: mockResponse.msg + '(调试模式)',
+          showCancel: false,
+          success: () => {
+            wx.navigateBack();
+          }
+        });
+      }, 1000);
+      
+    } else {
+      // ====== 生产模式:调用真实接口 ======
+      const apiUrl = this.data.isEditMode 
+        ? `${config.project.update}/${this.data.currentProjectId}`  // PUT /project/update/{project_id}
+        : config.project.create;                                     // POST /project/create
+      
+      const method = this.data.isEditMode ? 'PUT' : 'POST';
+      
+      console.log(`[${method}] 请求地址:`, apiUrl);
+      console.log(`[${method}] 请求数据:`, submitData);
+      
+      wx.request({
+        url: apiUrl,
+        method: method,
+        header: {
+          'Authorization': 'Bearer ' + token,
+          'Content-Type': 'application/json'
+        },
+        data: submitData,
+        success: (res) => {
+          wx.hideLoading();
+          console.log('提交响应:', res);
           
-          // 延迟返回,让用户看到成功提示
-          setTimeout(() => {
-            wx.navigateBack({ delta: 1 });
-          }, 1500);
-        } else {
+          if (res.statusCode === 200 && res.data.code === 200) {
+            // 成功提示
+            wx.showToast({ 
+              title: this.data.isEditMode ? "更新成功" : "提交成功",
+              icon: "success",
+              duration: 1500
+            });
+            
+            // 1.5秒后返回上一页
+            setTimeout(() => {
+              wx.navigateBack({ delta: 1 });
+            }, 1500);
+            
+          } else {
+            // 失败提示
+            wx.showModal({
+              title: this.data.isEditMode ? '更新失败' : '提交失败',
+              content: res.data.msg || '操作失败,请重试',
+              showCancel: false
+            });
+          }
+        },
+        fail: (err) => {
+          wx.hideLoading();
+          console.error('提交失败:', err);
+          
           wx.showModal({
-            title: '提交失败',
-            content: res.data.msg || '提交失败,请重试',
+            title: '网络错误',
+            content: '提交失败,请检查网络后重试',
             showCancel: false
           });
         }
-      },
-      fail: (err) => {
-        wx.hideLoading();
-        console.error('提交失败:', err);
-        wx.showModal({
-          title: '网络错误',
-          content: '提交失败,请检查网络后重试',
-          showCancel: false
-        });
+      });
+    }
+  },
+
+  // ========== 表单验证 ==========
+  validateForm() {
+    const { project_info, participants } = this.data.formData;
+    
+    // 验证项目名称
+    if (!project_info.project_name || project_info.project_name.trim() === '') {
+      return { valid: false, message: '请输入项目名称' };
+    }
+    
+    // 验证项目类型
+    if (project_info.project_type === '' || project_info.project_type === null) {
+      return { valid: false, message: '请选择项目类型' };
+    }
+    
+    // 验证项目简介
+    if (!project_info.description || project_info.description.trim() === '') {
+      return { valid: false, message: '请输入项目简介' };
+    }
+    
+    // 验证项目简介长度(建议至少20字)
+    if (project_info.description.trim().length < 20) {
+      return { valid: false, message: '项目简介至少需要20字' };
+    }
+    
+    // 验证开始日期
+    if (!project_info.start_time) {
+      return { valid: false, message: '请选择开始日期' };
+    }
+    
+    // 验证结束日期
+    if (!project_info.end_time) {
+      return { valid: false, message: '请选择结束日期' };
+    }
+    
+    // 验证日期逻辑(结束日期必须晚于开始日期)
+    const startDate = new Date(project_info.start_time);
+    const endDate = new Date(project_info.end_time);
+    if (endDate <= startDate) {
+      return { valid: false, message: '结束日期必须晚于开始日期' };
+    }
+    
+    // 验证是否招募成员
+    if (project_info.is_recruiting === '' || project_info.is_recruiting === null) {
+      return { valid: false, message: '请选择是否招募成员' };
+    }
+    
+    // 验证指导老师姓名
+    if (!project_info.mentor_name || project_info.mentor_name.trim() === '') {
+      return { valid: false, message: '请输入指导老师姓名' };
+    }
+    
+    // 验证指导老师电话
+    if (!project_info.mentor_phone || project_info.mentor_phone.trim() === '') {
+      return { valid: false, message: '请输入指导老师电话' };
+    }
+    
+    // 验证电话格式(11位数字)
+    const phoneRegex = /^1[3-9]\d{9}$/;
+    if (!phoneRegex.test(project_info.mentor_phone)) {
+      return { valid: false, message: '指导老师电话格式不正确' };
+    }
+    
+    return { valid: true, message: '验证通过' };
+  },
+
+  /**
+   * 构造提交数据
+   * 编辑模式下只提交项目信息相关字段,不包含成员信息
+   */
+  buildSubmitData() {
+    const { project_info, participants } = this.data.formData;
+    
+    if (this.data.isEditMode) {
+      // ====== 编辑模式:只提交项目基本信息 ======
+      console.log('[Edit Mode] 构造更新数据(仅项目信息)');
+      
+      return {
+        project_name: project_info.project_name.trim(),
+        project_type: parseInt(project_info.project_type),
+        description: project_info.description.trim(),
+        start_time: project_info.start_time + ' 00:00:00',
+        end_time: project_info.end_time + ' 00:00:00',
+        mentor_name: project_info.mentor_name.trim(),
+        mentor_phone: project_info.mentor_phone.trim(),
+        is_recruiting: project_info.is_recruiting === '1' || project_info.is_recruiting === 1
+        // 注意:编辑模式下不包含 member_maker_ids
+      };
+      
+    } else {
+      // ====== 创建模式:提交完整数据(包含成员) ======
+      console.log('[Create Mode] 构造创建数据(包含成员)');
+      
+      const member_maker_ids = participants.map(member => member.maker_id);
+      
+      return {
+        project_name: project_info.project_name.trim(),
+        project_type: parseInt(project_info.project_type),
+        description: project_info.description.trim(),
+        start_time: project_info.start_time + ' 00:00:00',
+        end_time: project_info.end_time + ' 00:00:00',
+        mentor_name: project_info.mentor_name.trim(),
+        mentor_phone: project_info.mentor_phone.trim(),
+        is_recruiting: project_info.is_recruiting === '1' || project_info.is_recruiting === 1,
+        member_maker_ids: member_maker_ids
+      };
+    }
+  },
+
+  // 返回处理(更新提示文本)
+  handlerGobackClick() {
+    const content = this.data.isEditMode 
+      ? '返回将丢失未保存的修改，是否确认？'
+      : '返回将丢失已填写的内容，是否确认？';
+    
+    wx.showModal({
+      title: '确认返回',
+      content: content,
+      success: (res) => {
+        if (res.confirm) {
+          wx.navigateBack({ delta: 1 });
+        }
       }
     });
-  }
-},
+  },
 
-// ========== 表单验证 ==========
-validateForm() {
-  const { project_info, participants } = this.data.formData;
-  
-  // 验证项目名称
-  if (!project_info.project_name || project_info.project_name.trim() === '') {
-    return { valid: false, message: '请输入项目名称' };
-  }
-  
-  // 验证项目类型
-  if (project_info.project_type === '' || project_info.project_type === null) {
-    return { valid: false, message: '请选择项目类型' };
-  }
-  
-  // 验证项目简介
-  if (!project_info.description || project_info.description.trim() === '') {
-    return { valid: false, message: '请输入项目简介' };
-  }
-  
-  // 验证项目简介长度(建议至少20字)
-  if (project_info.description.trim().length < 20) {
-    return { valid: false, message: '项目简介至少需要20字' };
-  }
-  
-  // 验证开始日期
-  if (!project_info.start_time) {
-    return { valid: false, message: '请选择开始日期' };
-  }
-  
-  // 验证结束日期
-  if (!project_info.end_time) {
-    return { valid: false, message: '请选择结束日期' };
-  }
-  
-  // 验证日期逻辑(结束日期必须晚于开始日期)
-  const startDate = new Date(project_info.start_time);
-  const endDate = new Date(project_info.end_time);
-  if (endDate <= startDate) {
-    return { valid: false, message: '结束日期必须晚于开始日期' };
-  }
-  
-  // 验证是否招募成员
-  if (project_info.is_recruiting === '' || project_info.is_recruiting === null) {
-    return { valid: false, message: '请选择是否招募成员' };
-  }
-  
-  // 验证指导老师姓名
-  if (!project_info.mentor_name || project_info.mentor_name.trim() === '') {
-    return { valid: false, message: '请输入指导老师姓名' };
-  }
-  
-  // 验证指导老师电话
-  if (!project_info.mentor_phone || project_info.mentor_phone.trim() === '') {
-    return { valid: false, message: '请输入指导老师电话' };
-  }
-  
-  // 验证电话格式(11位数字)
-  const phoneRegex = /^1[3-9]\d{9}$/;
-  if (!phoneRegex.test(project_info.mentor_phone)) {
-    return { valid: false, message: '指导老师电话格式不正确' };
-  }
-  
-  return { valid: true, message: '验证通过' };
-},
-
-// ========== 构造提交数据 ==========
-buildSubmitData() {
-  const { project_info, participants } = this.data.formData;
-  
-  // 提取成员电话号码列表
-  const member_maker_ids = participants.map(member => member.maker_id);
-  
-  // 转换 is_recruiting 为布尔值
-  const is_recruiting = project_info.is_recruiting === '1' || project_info.is_recruiting === 1;
-  
-  // 转换 project_type 为数字
-  const project_type = parseInt(project_info.project_type);
-  
-  // 构造提交数据(匹配后端接口格式)
-  return {
-    project_name: project_info.project_name.trim(),
-    project_type: project_type,
-    description: project_info.description.trim(),
-    start_time: project_info.start_time + ' 00:00:00', // 添加时间部分
-    end_time: project_info.end_time + ' 00:00:00',     // 添加时间部分
-    mentor_name: project_info.mentor_name.trim(),
-    mentor_phone: project_info.mentor_phone.trim(),
-    is_recruiting: is_recruiting,
-    member_maker_ids: member_maker_ids
-  };
-},
-
-// 返回处理
-handlerGobackClick() {
-  wx.showModal({
-    title: '确认返回',
-    content: '返回将丢失已填写的内容，是否确认？',
-    success: (res) => {
-      if (res.confirm) {
-        wx.navigateBack({ delta: 1 });
+  // 返回首页(更新提示文本)
+  handlerGohomeClick() {
+    const content = this.data.isEditMode 
+      ? '返回首页将丢失未保存的修改，是否确认？'
+      : '返回首页将丢失已填写的内容，是否确认？';
+    
+    wx.showModal({
+      title: '返回首页',
+      content: content,
+      success: (res) => {
+        if (res.confirm) {
+          wx.navigateTo({ url: '/pages/index/index' });
+        }
       }
-    }
-  });
-},
-
-// 返回首页
-handlerGohomeClick() {
-  wx.showModal({
-    title: '返回首页',
-    content: '返回首页将丢失已填写的内容，是否确认？',
-    success: (res) => {
-      if (res.confirm) {
-        wx.switchTab({ url: '/pages/index/index' });
-      }
-    }
-  });
-},
+    });
+  },
 
   /**
    * 生命周期函数--监听页面加载
    */
   onLoad(options) {
-    console.log("[Project Create Apply] 获取页面图标资源");
+    console.log("[Project Create Apply] 页面加载, options:", options);
+    
+    // 加载图标资源
     this.loadIcons();
+    
+    // 初始化日期选择器
     this.initDatePickers();
-    this.loadUserProfileFromCache();
+    
+    // 判断是否为编辑模式
+    if (options.project_id) {
+      console.log("[Edit Mode] 检测到 project_id, 进入编辑模式");
+      this.setData({
+        isEditMode: true,
+        currentProjectId: options.project_id
+      });
+      
+      // 加载项目详情
+      this.loadProjectDetail(options.project_id);
+    } else {
+      console.log("[Create Mode] 进入创建模式");
+      // 创建模式:加载用户信息
+      this.loadUserProfileFromCache();
+    }
   },
 
   /**
