@@ -68,10 +68,14 @@ var config = {
   },
   project: {
     create: host + "/project/create",
-    detail: host + "/project",               
+    detail: host + "/project/detail",
+    update: host + "/project/update",               
     member: host + "/project",    
     submit_closure: host + "/project",    
-    toggle_recruit: host + "/project"        
+    toggle_recruit: host + "/project",
+    material_upload: host + "/project/material/upload",
+    material_delete: host + "/project/material",
+    submit_closure: host + "/project/action/submit-closure"         
   }
 }
 module.exports = config;
