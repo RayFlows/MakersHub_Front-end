@@ -792,7 +792,7 @@ Page({
     } else {
       // ====== 生产模式:调用真实接口 ======
       wx.request({
-        url: `${config.project.detail}/${project_id}`,
+        url: config.project.update + `/${project_id}`,
         method: 'GET',
         header: {
           'Authorization': 'Bearer ' + token,
@@ -977,7 +977,7 @@ Page({
     } else {
       // ====== 生产模式:调用真实接口 ======
       const apiUrl = this.data.isEditMode 
-        ? `${config.project.update}/${this.data.currentProjectId}`  // PUT /project/update/{project_id}
+        ? config.project.update + `/${this.data.currentProjectId}`  // PUT /project/update/{project_id}
         : config.project.create;                                     // POST /project/create
       
       const method = this.data.isEditMode ? 'PUT' : 'POST';
