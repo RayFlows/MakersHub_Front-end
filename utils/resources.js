@@ -23,6 +23,8 @@ const ResourceUtils = {
     catBackground: 'cat_background.png',
     // 上传相关
     upload: 'upload.svg',
+    word: 'word.svg',
+    pdf: 'pdf.svg',
     // 复制图标
     grayCopy: 'gray_copy.svg',
     whiteCopy: 'white_copy.svg',
@@ -42,6 +44,7 @@ const ResourceUtils = {
     whiteArrow: 'icon_arrow_chevron-right_white.svg',
     // 取消图标
     cancel: 'cancel.svg',
+    greenCancel: 'green_cancel.svg',
     // 搜索图标
     find: 'find.svg',
     // 分隔图标
