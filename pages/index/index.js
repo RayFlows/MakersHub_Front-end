@@ -135,7 +135,7 @@ const checkTokenValidity = () => {
     const token = getAuthToken();
     if (token) {
       console.log('[Auth] 发现本地令牌', token);
-      
+      console.log('[Auth] 本地令牌', token)
       // 检查是否已有用户信息,没有则重新获取
       const userProfile = getUserProfile();
       if (!userProfile || !userProfile.real_name) {
@@ -215,7 +215,7 @@ const handleUserAuth = (confirmed, resolve, reject) => {
           console.log('[Auth] 后端响应:', response.data);
           if (response.statusCode === 200 && response.data.code === 200) {
             const token = response.data.data.token;
-            console.log('[Auth] 后端返回令牌');
+            console.log('[Auth] 后端返回令牌', token);
             
             // 存储令牌(会自动触发获取用户信息)
             storeAuthToken(token);
