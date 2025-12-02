@@ -63,20 +63,6 @@ Page({
     // 初始化年级选项
     console.log("初始化年级选项")
     this.initGradeRange();
-  
-    // // 加载从me页面传来的数据
-    // this.setData({
-    //   userInfo: {
-    //     real_name: options.real_name ? decodeURIComponent(options.real_name) : "",
-    //     phone_num: options.phone_num ? decodeURIComponent(options.phone_num) : "",
-    //     qq: options.qq ? decodeURIComponent(options.qq) : "",
-    //     student_id: options.student_id ? decodeURIComponent(options.student_id) : "",
-    //     college: options.college ? decodeURIComponent(options.college) : "",
-    //     grade: options.grade ? decodeURIComponent(options.grade) : "",
-    //     avatar: options.avatar ? decodeURIComponent(options.avatar) : "",
-    //     motto: options.motto ? decodeURIComponent(options.motto) : ""
-    //   }
-    // });
 
     if (this.data.userInfo.grade) {
       const gradeFromBackend = this.data.userInfo.grade;
@@ -335,6 +321,7 @@ Page({
       gradeIndex: index,
       'userInfo.grade': gradeNumberOnly,
       isGradeChanged: true,
+      displayGrade: selectedGradeWithSuffix,
     });
     
     console.log('选择的年级:', gradeNumberOnly);
