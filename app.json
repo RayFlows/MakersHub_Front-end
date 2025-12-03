@@ -38,7 +38,8 @@
     "pages/task_management/task_management",
     "pages/project_detail/project_detail",
     "pages/project_create_apply/project_create_apply",
-    "pages/project_closure_material_submit/project_closure_material_submit"
+    "pages/project_closure_material_submit/project_closure_material_submit",
+    "pages/my_project_list/my_project_list"
   ],
   "window": {
     "backgroundTextStyle": "light",

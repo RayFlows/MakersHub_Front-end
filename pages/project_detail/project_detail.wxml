@@ -58,7 +58,7 @@
       </view>
 
       <view class="info">
-        学院：{{apiData.leader_college}}
+        学院：{{apiData.college}}
       </view>
 
       <view class="info">

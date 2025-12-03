@@ -40,24 +40,23 @@ Page({
   onLoad(options) {
     console.log("[Project Detail] 获取页面图标资源");
     this.loadIcons();
-  
+
     const projectIdFromOption = options.project_id;
-  
-    // ⭐ 若没有带 id，则用 MOCK_PROJECT_ID 并进入 mock 模式
+
+    // 若没有带 id，则用 MOCK_PROJECT_ID 并进入 mock 模式
     const finalProjectId = projectIdFromOption || "MOCK_PROJECT_ID";
-  
+
     if (!projectIdFromOption) {
       console.warn("[Project Detail] 未传 project_id，使用 MOCK 数据模式");
     }
-  
+
     this.setData({
       project_id: finalProjectId
     });
-  
-    this.fetchProjectDetail(finalProjectId, !projectIdFromOption); 
+
     // 第二个参数: true = 强制使用 mock
+    this.fetchProjectDetail(finalProjectId, !projectIdFromOption);
   },
-  
 
   /**
    * 加载图标资源
@@ -82,7 +81,7 @@ Page({
    * 获取项目详情（带简单 mock fallback）
    * 接口：GET /project/{project_id}
    */
-  fetchProjectDetail(project_id) {
+  fetchProjectDetail(project_id, forceMock = false) {
     wx.showLoading({
       title: '加载中...',
     });
@@ -107,8 +106,9 @@ Page({
       is_recruit: true
     };
 
-    if (DEBUG) {
-      console.log("[Project Detail] DEBUG 模式，使用 mockData");
+    // DEBUG 或 强制使用 mock
+    if (DEBUG || forceMock) {
+      console.log("[Project Detail] DEBUG / forceMock 模式，使用 mockData");
       this.setData({
         apiData: mockData
       });
@@ -125,14 +125,17 @@ Page({
       return;
     }
 
+    console.log("[Project Detail] 使用 token:", token);
+
     wx.request({
       url: `${config.project.detail}/${project_id}`,
       method: 'GET',
       header: {
         'content-type': 'application/json',
-        'Authorization': token
+        'Authorization': 'Bearer ' + token   // ✅ 关键修正
       },
       success: (res) => {
+        console.log("[Project Detail] 接口返回：", res);
         if (res.data && res.data.code === 200) {
           this.setData({
             apiData: res.data.data
@@ -143,7 +146,7 @@ Page({
             apiData: mockData
           });
           wx.showToast({
-            title: '使用示例数据',
+            title: res.data.msg || res.data.message || '使用示例数据',
             icon: 'none'
           });
         }
@@ -207,11 +210,11 @@ Page({
     });
 
     wx.request({
-      url: `${config.project.toggle_recruit}/${this.data.project_id}/action/toggle-recruit`,
+      url: `${config.project.toggle_recruit}/${this.data.project_id}`,
       method: 'PUT',
       header: {
         'content-type': 'application/json',
-        'Authorization': token
+        'Authorization': 'Bearer ' + token   // ✅ 修正
       },
       data: {
         is_recruiting: next
@@ -410,11 +413,11 @@ Page({
             });
 
             wx.request({
-              url: `${config.project.member}/${this.data.project_id}/member`,
+              url: `${config.project.delete_mem}/${this.data.project_id}`,
               method: 'DELETE',
               header: {
                 'content-type': 'application/json',
-                'Authorization': token
+                'Authorization': 'Bearer ' + token   // ✅ 修正
               },
               data: {
                 deleted_members: [
