@@ -68,7 +68,7 @@ Page({
     
     const cachedProfile = getUserProfile();
     
-    if (cachedProfile && cachedProfile.real_name) {
+    if (cachedProfile) {
       console.log('[Me] 缓存中的用户信息:', cachedProfile);
       
       this.setData({
