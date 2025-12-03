@@ -94,16 +94,60 @@
       <view class="section-header">
         <text class="sub-title">项目成员</text>
 
-        <view class="member-actions">
+        <!-- 删除模式：隐藏右侧按钮 -->
+        <view class="member-actions" wx:if="{{!deleteMode}}">
           <view class="action-btn add-btn" bindtap="addMember">添加</view>
           <view class="action-btn delete-btn" bindtap="deleteMember">删除</view>
         </view>
       </view>
 
-      <!-- 成员列表 -->
-      <view class="info" wx:for="{{apiData.members}}" wx:key="index">
-        {{item.name}} - {{item.college}} - {{item.phone}}
-      </view>
+
+      <!-- 普通模式：仅展示成员列表 -->
+      <block wx:if="{{!deleteMode}}">
+        <view class="info" wx:for="{{apiData.members}}" wx:key="index">
+          {{item.real_name}} - {{item.college}} - {{item.phone_num}}
+        </view>
+      </block>
+
+      <!-- 删除模式：自定义勾选框 + 下方确认/取消 -->
+      <block wx:elif="{{deleteMode}}">
+        <view
+          class="info member-item"
+          wx:for="{{apiData.members}}"
+          wx:key="index"
+        >
+          <!-- 自定义勾选框：青色底 + 白色勾 -->
+          <view
+            class="custom-checkbox"
+            data-index="{{index}}"
+            bindtap="toggleMemberSelect"
+          >
+            <view class="checkbox-box {{item._selected ? 'checkbox-box--checked' : ''}}">
+              <view class="checkbox-tick" wx:if="{{item._selected}}"></view>
+            </view>
+          </view>
+
+          <text class="member-text">
+            {{item.real_name}} - {{item.college}} - {{item.phone_num}}
+          </text>
+        </view>
+
+        <!-- 下方确认 / 取消按钮 -->
+        <view class="delete-actions">
+          <view
+            class="delete-action-btn delete-confirm-btn"
+            bindtap="confirmDeleteSelected"
+          >
+            确认
+          </view>
+          <view
+            class="delete-action-btn delete-cancel-btn"
+            bindtap="cancelDeleteMode"
+          >
+            取消
+          </view>
+        </view>
+      </block>
     </view>
 
     <!-- 项目简介 -->
@@ -157,15 +201,15 @@
     mode="aspectFit"
   ></image>
 
-  <!-- =================== 添加成员弹窗（复用 project_create_apply 样式） =================== -->
+  <!-- =================== 添加成员弹窗 =================== -->
   <view class="modal-mask" wx:if="{{showModal}}" bindtap="hideModal">
     <view class="modal-content" catchtap="stopPropagation">
       <text class="modal-title">添加项目成员</text>
-      
+
       <!-- 搜索输入框 -->
       <view class="search-container">
         <image src="{{icons.find}}" class="find-icon"></image>
-        <input 
+        <input
           class="search-input"
           placeholder="请输入成员电话号码"
           type="number"
@@ -183,17 +227,23 @@
       </view>
 
       <!-- 下拉结果：未找到 -->
-      <view class="dropdown-results" wx:if="{{hasSearched && searchResults.length === 0 && !selectedMember}}">
+      <view
+        class="dropdown-results"
+        wx:if="{{hasSearched && searchResults.length === 0 && !selectedMember}}"
+      >
         <view class="dropdown-item">
           <text>该用户不存在QAQ</text>
         </view>
       </view>
 
       <!-- 下拉结果：有匹配 -->
-      <view class="dropdown-results" wx:elif="{{searchResults.length > 0 && !selectedMember}}">
-        <view 
+      <view
+        class="dropdown-results"
+        wx:elif="{{searchResults.length > 0 && !selectedMember}}"
+      >
+        <view
           class="dropdown-item"
-          wx:for="{{searchResults}}" 
+          wx:for="{{searchResults}}"
           wx:key="phone_num"
           bindtap="selectMember"
           data-index="{{index}}"
@@ -202,7 +252,7 @@
         </view>
       </view>
 
-      <!-- 已选择成员提示（可选） -->
+      <!-- 已选择成员提示 -->
       <view class="selected-member" wx:if="{{selectedMember}}">
         <text class="selected-label">已选择：</text>
         <text class="selected-name">

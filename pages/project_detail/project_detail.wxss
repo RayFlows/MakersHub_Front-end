@@ -453,3 +453,141 @@
 .modal-btn:active {
   opacity: 0.8;
 }
+.member-item {
+  display: flex;
+  align-items: center;
+  /* background-color: #00adb5; */
+}
+
+.member-item .member-text {
+  margin-left: 12rpx;
+  display: inline-block;       /* 必须，让 vertical 调整生效 */
+  padding: 1rpx 1rpx;        /* 原本的 padding */
+  line-height: 5rpx;          /* 明显小于高度 → 文字靠上 */
+}
+
+
+.delete-actions {
+  margin-top: 24rpx;
+  display: flex;
+  justify-content: flex-start;
+  gap: 24rpx;
+}
+
+.delete-action-btn {
+  padding: 12rpx 40rpx;
+  border-radius: 999rpx;
+  font-size: 28rpx;
+  text-align: center;
+}
+
+.delete-confirm-btn {
+  background-color: #00adb5;
+  color: #ffffff;
+}
+
+.delete-cancel-btn {
+  background-color: #ffffff;
+  color: #00adb5;
+  border-width: 2rpx;
+  border-style: solid;
+  border-color: #00adb5;
+}
+/* 隐藏默认 checkbox */
+.hidden-checkbox {
+  position: absolute;
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+/* 外层容器 */
+.custom-checkbox {
+  width: 40rpx;
+  height: 40rpx;
+  position: relative;
+  margin-right: 16rpx;
+}
+
+/* 默认外观：青色底框 */
+.checkbox-box {
+  width: 100%;
+  height: 100%;
+  background-color: #ffffff;           /* 默认白色 */
+  border: 4rpx solid #00adb5;          /* 青色边框 */
+  border-radius: 12rpx;                /* 你图里的圆角 */
+  box-sizing: border-box;
+}
+
+/* 复选框被选中时：改成青色底 + 白色对勾 */
+.hidden-checkbox:checked + .checkbox-box {
+  background-color: #00adb5;           /* 青色背景 */
+  border-color: #00adb5;               /* 去掉白边 */
+}
+
+/* 对勾（白色） */
+.hidden-checkbox:checked + .checkbox-box::after {
+  content: '';
+  position: absolute;
+  left: 10rpx;
+  top: 4rpx;
+  width: 14rpx;
+  height: 28rpx;
+  border: solid white;
+  border-width: 0 6rpx 6rpx 0;
+  transform: rotate(45deg);
+}
+.member-item {
+  display: flex;
+  align-items: center;
+}
+
+.custom-checkbox {
+  width: 40rpx;
+  height: 40rpx;
+  margin-right: 16rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* 外框：默认白底 + 青色边框 */
+.checkbox-box {
+  width: 100%;
+  height: 100%;
+  border-radius: 8rpx;              /* 圆角程度可以微调 */
+  border: 4rpx solid #00adb5;
+  background-color: #ffffff;
+  box-sizing: border-box;
+  position: relative;
+}
+
+/* 选中后：青色底 */
+.checkbox-box--checked {
+  background-color: #00adb5;
+  border-color: #00adb5;
+}
+
+/* 白色对勾 */
+.checkbox-tick {
+  position: absolute;
+  left: 11rpx;           /* 这些数字可以自己微调到最顺眼 */
+  top: 6rpx;
+  width: 12rpx;
+  height: 22rpx;
+  border-right: 4rpx solid #ffffff;
+  border-bottom: 4rpx solid #ffffff;
+  transform: rotate(45deg);
+}
+
+/* 你原来让文字上移的样式可以保留或稍调 */
+.member-item .member-text {
+  margin-left: 12rpx;
+  /* background-color: #00adb5; */
+  padding: 1rpx 1rpx 1rpx;
+  border-radius: 999rpx;
+  font-size: 28rpx;
+  color: #000000;
+  display: inline-block;
+  line-height: 5rpx; /* 让文字偏上 */
+}

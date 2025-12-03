@@ -1,6 +1,6 @@
 // pages/project_detail/project_detail.js
 
-var config = (wx.getStorageSync('config'));
+var config = wx.getStorageSync('config');
 const token = wx.getStorageSync('auth_token');
 const DEBUG = false; // 调试模式标志
 const app = getApp();
@@ -31,7 +31,11 @@ Page({
     searchResults: [],
     selectedMember: null,
     searchTimer: null,
-    hasSearched: false
+    hasSearched: false,
+
+    // 删除模式相关
+    deleteMode: false,              // 是否处于删除选择模式
+    selectedDeleteIndexes: []       // 被勾选准备删除的成员索引
   },
 
   /**
@@ -43,19 +47,21 @@ Page({
 
     const projectIdFromOption = options.project_id;
 
-    // 若没有带 id，则用 MOCK_PROJECT_ID 并进入 mock 模式
-    const finalProjectId = projectIdFromOption || "MOCK_PROJECT_ID";
-
     if (!projectIdFromOption) {
-      console.warn("[Project Detail] 未传 project_id，使用 MOCK 数据模式");
+      console.warn("[Project Detail] 未传 project_id，无法从后端加载");
+      wx.showToast({
+        title: '缺少项目ID',
+        icon: 'none'
+      });
+      return;
     }
 
     this.setData({
-      project_id: finalProjectId
+      project_id: projectIdFromOption
     });
 
-    // 第二个参数: true = 强制使用 mock
-    this.fetchProjectDetail(finalProjectId, !projectIdFromOption);
+    // 正常从后端获取
+    this.fetchProjectDetail(projectIdFromOption);
   },
 
   /**
@@ -100,8 +106,8 @@ Page({
       mentor_phone: "13900000000",
       state: 2,
       members: [
-        { name: "李四", college: "电子信息学院", phone: "15500000000", maker_id: "MK_MOCK_1" },
-        { name: "王五", college: "计算机学院", phone: "15600000000", maker_id: "MK_MOCK_2" }
+        { real_name: "李四", college: "电子信息学院", phone_num: "15500000000", maker_id: "MK_MOCK_1" },
+        { real_name: "王五", college: "计算机学院", phone_num: "15600000000", maker_id: "MK_MOCK_2" }
       ],
       is_recruit: true
     };
@@ -132,13 +138,30 @@ Page({
       method: 'GET',
       header: {
         'content-type': 'application/json',
-        'Authorization': 'Bearer ' + token   // ✅ 关键修正
+        'Authorization': 'Bearer ' + token
       },
       success: (res) => {
         console.log("[Project Detail] 接口返回：", res);
         if (res.data && res.data.code === 200) {
+          const raw = res.data.data || {};
+          console.log('[Project Detail] 原始项目详情数据:', raw);
+
+          // ⭐ 统一成前端使用的 is_recruit 布尔字段
+          const normalized = {
+            ...raw,
+            is_recruit: (() => {
+              if (typeof raw.is_recruit !== 'undefined' && raw.is_recruit !== null) {
+                return !!raw.is_recruit;
+              }
+              if (typeof raw.is_recruiting !== 'undefined' && raw.is_recruiting !== null) {
+                return !!raw.is_recruiting;
+              }
+              return false;
+            })()
+          };
+
           this.setData({
-            apiData: res.data.data
+            apiData: normalized
           });
         } else {
           console.warn("[Project Detail] 后端返回异常，使用 mockData:", res);
@@ -170,7 +193,7 @@ Page({
   /**
    * 自定义招募开关点击事件
    * 接口：PUT /project/{project_id}/action/toggle-recruit
-   * body: { is_recruiting: true/false }
+   * body: { is_recruiting: true/false } （这里同时传 is_recruit，双保险）
    */
   toggleRecruitCustom() {
     const current = !!this.data.apiData.is_recruit;
@@ -214,10 +237,12 @@ Page({
       method: 'PUT',
       header: {
         'content-type': 'application/json',
-        'Authorization': 'Bearer ' + token   // ✅ 修正
+        'Authorization': 'Bearer ' + token
       },
       data: {
-        is_recruiting: next
+        // ⭐ 两个字段一起传，兼容后端可能的命名
+        is_recruiting: next,
+        is_recruit: next
       },
       success: (res) => {
         console.log('[Project Detail] toggle-recruit 响应:', res);
@@ -313,14 +338,6 @@ Page({
    * 添加成员：弹出搜索弹窗 + 人数上限
    */
   addMember() {
-    if (DEBUG) {
-      wx.showToast({
-        title: '调试模式：添加成员',
-        icon: 'none'
-      });
-      return;
-    }
-
     const members = (this.data.apiData.members || []);
     if (members.length >= MAX_MEMBERS) {
       wx.showToast({
@@ -335,39 +352,10 @@ Page({
   },
 
   /**
-   * 删除成员：选择一个成员，调用后端删除
-   * DELETE /project/{project_id}/member
-   * body: { deleted_members: [{ maker_id }] }
+   * 点击“删除”：进入删除选择模式
    */
   deleteMember() {
     const members = this.data.apiData.members || [];
-
-    if (DEBUG) {
-      if (!members.length) {
-        wx.showToast({
-          title: '当前没有成员可删除',
-          icon: 'none'
-        });
-        return;
-      }
-
-      const itemList = members.map(m => `${m.name} - ${m.phone}`);
-      wx.showActionSheet({
-        itemList,
-        success: (res) => {
-          const index = res.tapIndex;
-          const updated = members.filter((_, i) => i !== index);
-          this.setData({
-            'apiData.members': updated
-          });
-          wx.showToast({
-            title: '已本地删除(调试模式)',
-            icon: 'none'
-          });
-        }
-      });
-      return;
-    }
 
     if (!members.length) {
       wx.showToast({
@@ -377,24 +365,119 @@ Page({
       return;
     }
 
-    if (!config || !config.project || !config.project.member) {
-      console.warn('[Project Detail] config.project.member 未配置');
+    // 进入删除模式，清空之前的选择
+    this.setData({
+      deleteMode: true,
+      selectedDeleteIndexes: []
+    });
+  },
+
+  /**
+   * 删除模式下：点击勾选框，切换某个成员的选中状态
+   */
+  toggleMemberSelect(e) {
+    const index = e.currentTarget.dataset.index;
+    const apiData = this.data.apiData || {};
+    const members = apiData.members || [];
+
+    if (!members[index]) return;
+
+    const current = !!members[index]._selected;
+    members[index]._selected = !current;
+
+    const selectedIndexes = members
+      .map((m, idx) => (m._selected ? idx : -1))
+      .filter(idx => idx !== -1);
+
+    this.setData({
+      apiData: {
+        ...apiData,
+        members
+      },
+      selectedDeleteIndexes: selectedIndexes
+    });
+  },
+
+  /**
+   * 删除模式：取消按钮
+   */
+  cancelDeleteMode() {
+    const apiData = this.data.apiData || {};
+    const members = (apiData.members || []).map(m => ({
+      ...m,
+      _selected: false
+    }));
+
+    this.setData({
+      deleteMode: false,
+      selectedDeleteIndexes: [],
+      apiData: {
+        ...apiData,
+        members
+      }
+    });
+  },
+
+  /**
+   * 删除模式：确认按钮 -> 弹窗确认并删除
+   */
+  confirmDeleteSelected() {
+    const members = this.data.apiData.members || [];
+    const indexes = this.data.selectedDeleteIndexes || [];
+
+    if (!indexes.length) {
       wx.showToast({
-        title: '删除成员接口未配置',
+        title: '请先选择要删除的成员',
         icon: 'none'
       });
       return;
     }
 
-    const itemList = members.map(m => `${m.name} - ${m.phone}`);
+    const selectedMembers = indexes
+      .sort((a, b) => a - b)
+      .map(i => members[i])
+      .filter(m => !!m);
 
-    wx.showActionSheet({
-      itemList,
-      success: (res) => {
-        const index = res.tapIndex;
-        const member = members[index];
+    const lines = selectedMembers.map((m, idx) =>
+      `${idx + 1}. ${m.real_name} - ${m.college} - ${m.phone_num}`
+    );
+    const content = `确认删除如下选中成员？\n${lines.join('\n')}`;
 
-        if (!member || !member.maker_id) {
+    wx.showModal({
+      title: '确认删除',
+      content,
+      success: (modalRes) => {
+        if (!modalRes.confirm) return;
+
+        // 调试 or 未配置接口：本地删除
+        if (DEBUG || !config || !config.project || !config.project.delete_mem) {
+          console.warn('[Project Detail] 删除成员接口未配置或调试模式，本地删除');
+          const updatedLocal = members.filter((_, idx) => !indexes.includes(idx));
+          this.setData({
+            'apiData.members': updatedLocal,
+            deleteMode: false,
+            selectedDeleteIndexes: []
+          });
+          wx.showToast({
+            title: '成员已移除(本地)',
+            icon: 'none'
+          });
+          return;
+        }
+
+        if (!this.data.project_id) {
+          wx.showToast({
+            title: '缺少项目ID',
+            icon: 'none'
+          });
+          return;
+        }
+
+        const deleted_members = selectedMembers
+          .filter(m => !!m.maker_id)
+          .map(m => ({ maker_id: m.maker_id }));
+
+        if (!deleted_members.length) {
           wx.showToast({
             title: '成员信息缺少 maker_id',
             icon: 'none'
@@ -402,57 +485,49 @@ Page({
           return;
         }
 
-        wx.showModal({
-          title: '确认删除',
-          content: `确定将 ${member.name} 移出项目吗？`,
-          success: (modalRes) => {
-            if (!modalRes.confirm) return;
+        wx.showLoading({
+          title: '移除中...'
+        });
 
-            wx.showLoading({
-              title: '移除中...'
+        wx.request({
+          url: `${config.project.delete_mem}/${this.data.project_id}`,
+          method: 'DELETE',
+          header: {
+            'content-type': 'application/json',
+            'Authorization': 'Bearer ' + token
+          },
+          data: {
+            deleted_members
+          },
+          success: (resp) => {
+            console.log('[Project Detail] 删除成员响应:', resp);
+            if (resp.data && resp.data.code === 200) {
+              const updated = members.filter((_, idx) => !indexes.includes(idx));
+              this.setData({
+                'apiData.members': updated,
+                deleteMode: false,
+                selectedDeleteIndexes: []
+              });
+              wx.showToast({
+                title: '成员已移除',
+                icon: 'success'
+              });
+            } else {
+              wx.showToast({
+                title: (resp.data && resp.data.message) || '移除失败',
+                icon: 'none'
+              });
+            }
+          },
+          fail: (err) => {
+            console.error('[Project Detail] 删除成员失败:', err);
+            wx.showToast({
+              title: '网络错误，请重试',
+              icon: 'none'
             });
-
-            wx.request({
-              url: `${config.project.delete_mem}/${this.data.project_id}`,
-              method: 'DELETE',
-              header: {
-                'content-type': 'application/json',
-                'Authorization': 'Bearer ' + token   // ✅ 修正
-              },
-              data: {
-                deleted_members: [
-                  { maker_id: member.maker_id }
-                ]
-              },
-              success: (resp) => {
-                console.log('[Project Detail] 删除成员响应:', resp);
-                if (resp.data && resp.data.code === 200) {
-                  const updated = members.filter((_, i) => i !== index);
-                  this.setData({
-                    'apiData.members': updated
-                  });
-                  wx.showToast({
-                    title: '成员已移除',
-                    icon: 'success'
-                  });
-                } else {
-                  wx.showToast({
-                    title: (resp.data && resp.data.message) || '移除失败',
-                    icon: 'none'
-                  });
-                }
-              },
-              fail: (err) => {
-                console.error('[Project Detail] 删除成员失败:', err);
-                wx.showToast({
-                  title: '网络错误，请重试',
-                  icon: 'none'
-                });
-              },
-              complete: () => {
-                wx.hideLoading();
-              }
-            });
+          },
+          complete: () => {
+            wx.hideLoading();
           }
         });
       }
@@ -474,7 +549,7 @@ Page({
     }
 
     wx.navigateTo({
-      url: `/pages/project_finish/project_finish?project_id=${project_id}`
+      url: `/pages/project_closure_material_submit/project_closure_material_submit?project_id=${project_id}`
     });
   },
 
@@ -673,7 +748,7 @@ Page({
 
     const selectedMember = this.data.selectedMember;
 
-    const exists = members.some(m => m.phone === selectedMember.phone_num);
+    const exists = members.some(m => m.phone_num === selectedMember.phone_num);
     if (exists) {
       wx.showToast({
         title: '该成员已在团队中',
@@ -683,23 +758,73 @@ Page({
       return;
     }
 
-    const newMember = {
-      name: selectedMember.real_name,
-      college: selectedMember.college,
-      phone: selectedMember.phone_num,
-      maker_id: selectedMember.maker_id
-    };
+    if (!config || !config.project || !config.project.add_mem) {
+      console.warn('[Project Detail] config.project.add_mem 未配置，暂时只本地添加');
+      const newMemberLocal = {
+        real_name: selectedMember.real_name,
+        college: selectedMember.college,
+        phone_num: selectedMember.phone_num,
+        maker_id: selectedMember.maker_id
+      };
+      const updatedLocal = [...members, newMemberLocal];
+      this.setData({
+        'apiData.members': updatedLocal
+      });
+      this.hideModal();
+      return;
+    }
 
-    const updatedMembers = [...members, newMember];
-
-    this.setData({
-      'apiData.members': updatedMembers
+    wx.showLoading({
+      title: '添加中...'
     });
 
-    console.log('[Project Detail] 添加成员成功:', newMember);
-    console.log('[Project Detail] 当前成员列表:', updatedMembers);
+    const reqBody = {
+      new_members: [
+        {
+          maker_id: selectedMember.maker_id
+        }
+      ]
+    };
+    console.log('[Project Detail] 添加成员请求体:', reqBody);
 
-    this.hideModal();
+    wx.request({
+      url: `${config.project.add_mem}/${this.data.project_id}`,   // /project/member/add/{project_id}
+      method: 'POST',
+      header: {
+        'content-type': 'application/json',
+        'Authorization': 'Bearer ' + token
+      },
+      data: reqBody,
+      success: (res) => {
+        console.log('[Project Detail] 添加成员接口返回:', res.data);
+        console.log('[Project Detail] 422 detail:', res.data && res.data.detail);
+
+        if (res.statusCode === 200 && res.data && res.data.code === 200) {
+          // 成功后从后端重新拉一遍，保证和数据库一致
+          this.fetchProjectDetail(this.data.project_id);
+          wx.showToast({
+            title: '成员已添加',
+            icon: 'success'
+          });
+          this.hideModal();
+        } else {
+          wx.showToast({
+            title: (res.data && (res.data.msg || res.data.message)) || '添加失败',
+            icon: 'none'
+          });
+        }
+      },
+      fail: (err) => {
+        console.error('[Project Detail] 添加成员请求失败:', err);
+        wx.showToast({
+          title: '网络错误，请重试',
+          icon: 'none'
+        });
+      },
+      complete: () => {
+        wx.hideLoading();
+      }
+    });
   },
 
   showMemberModal() {
