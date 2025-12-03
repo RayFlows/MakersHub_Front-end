@@ -77,7 +77,8 @@ var config = {
     material_delete: host + "/project/material",
     submit_closure: host + "/project/action/submit-closure",    
     delete_mem: host + "/project/member",     
-    view_my: host + "/project/list/view-my"
+    view_my: host + "/project/list/view-my",
+    add_mem: host + "/project/member/add"
   }
 }
 module.exports = config;
