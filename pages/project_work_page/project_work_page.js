@@ -1,5 +1,6 @@
 // pages/project_work_page/project_work_page.js
 const app = getApp();
+const { getUserProfile, USER_PROFILE_KEY } = require('../index/index.js');
 
 Page({
   data: {
@@ -32,25 +33,23 @@ Page({
     }
   },
 
+  onTapPermitProject() {
+    wx.navigateTo({
+      url: '/pages/project_permit_list/project_permit_list',
+    })
+  },
+
   handlerGobackClick() {
-    wx.showModal({
-      title: '你点击了返回',
-      content: '是否确认放回',
-      success: e => {
-        if (e.confirm) {
-          const pages = getCurrentPages();
-          if (pages.length >= 2) {
-            wx.navigateBack({
-              delta: 1
-            });
-          } else {
-            wx.reLaunch({
-              url: '/pages/index/index'
-            });
-          }
-        }
-      }
-    });
+    const pages = getCurrentPages();
+    if (pages.length >= 2) {
+      wx.navigateBack({
+        delta: 1
+      });
+    } else {
+      wx.reLaunch({
+        url: '/pages/index/index'
+      });
+    }
   },
   handlerGohomeClick() {
     wx.reLaunch({
@@ -58,17 +57,11 @@ Page({
     });
   },
 
-  // 示例：获取用户权限
+  // 获取用户权限
   fetchUserLevel() {
-    // 发起网络请求
-    wx.request({
-      url: 'https://api.example.com/user/info',
-      success: (res) => {
-        this.setData({ level: res.data.level })
-      },
-      fail: () => {
-        wx.showToast({ title: '获取权限失败' })
-      }
+    const cachedProfile = getUserProfile();
+    this.setData({
+      level: cachedProfile.role
     })
   }
 })
