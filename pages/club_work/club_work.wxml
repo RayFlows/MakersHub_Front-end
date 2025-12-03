@@ -1,0 +1,72 @@
+<!--index.wxml-->
+<view class="container">
+  <navBar title='协会工作' background='#222831' color='#fff' back="{{true}}" home="{{true}}" iconTheme='white' bindback="handlerGobackClick" bindhome="handlerGohomeClick"></navBar>
+  <!--常用功能容器-->
+  <view class = "common-function">
+      <text class = "title">常用功能</text>
+      <view class = "buttons">
+          <button>
+              <image class= "icon" src = "{{icons.badge}}"/>
+              <text>值班签到</text>
+          </button>
+          <button>
+              <image class= "icon clean" src = "{{icons.broom}}"/>
+              <text>扫除签到</text>
+          </button>
+          <button>
+              <image class= "icon remote" src = "{{icons.remote}}"/>
+              <text>远程控制</text>
+          </button>
+          <button bindtap="jumpToDutyApplicationPage">
+            <image class= "icon apply-duty" src = "{{icons.whiteCalendar}}"/>
+            <text>值班申请</text>
+          </button>
+      </view>
+  </view>
+
+  <!--部门工作容器-->
+  <view class = "work">
+      <text class = "title">部门工作</text>
+      <view class="cat-head">  
+          <view class = "department">
+              <image class = "avatar" src = "/images/club_work/department_img.png" />
+              <view class = "text-box">
+                  <text class = "name">宣传部</text>
+                  <text class = "duty">海报、推文、
+                  宣传信息管理等</text>
+              </view>
+              <button class = "manage" bind:tap = "jumpToPublicityWorkPage">进入管理</button>
+          </view>  
+          <image class = "split left" src="/images/club_work/circuit_split.svg"/>
+          <view class = "department">
+              <image class = "avatar" src = "/images/club_work/department_img.png" />
+              <view class = "text-box">
+                  <text class = "name">基管部</text>
+                  <text class = "duty">物资管理、
+                  基地管理等</text>
+              </view>
+              <button class = "manage" bind:tap = "jumpToBaseManagementWorkPage">进入管理</button>       
+          </view>
+          <image class = "split right" src="/images/club_work/circuit_split.svg"/>  
+          <view class = "department">
+              <image class = "avatar" src = "/images/club_work/department_img.png" />
+              <view class = "text-box">
+                  <text class = "name">项目部</text>
+                  <text class = "duty">项目跟进、
+                  档案管理等</text>
+              </view>
+              <button class = "manage" bind:tap = "jumpTopProjectWorkPage">进入管理</button>      
+          </view> 
+          <image class = "split left" src="/images/club_work/circuit_split.svg"/> 
+          <view class = "department">
+              <image class = "avatar" src = "/images/club_work/department_img.png" />
+              <view class = "text-box">
+                  <text class = "name">运维部</text>
+                  <text class = "duty">网络管理、
+                  服务器运维等</text>
+              </view>
+              <button class = "manage" bind:tap = "jumpToMaintenanceWorkPage">进入管理</button>
+          </view>  
+      </view>
+  </view>
+</view>

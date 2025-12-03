@@ -1,0 +1,68 @@
+<!--pages/MyPoints/MyPoints.wxml-->
+<view class = "container">
+  <!-- 顶部导航栏，包含页面标题和编辑图标 -->
+  <navBar title='协会活动' background='#222831' color='#fff' back="{{true}}" home="{{true}}" iconTheme='white' bindback="handlerGobackClick" bindhome="handlerGohomeClick"></navBar>
+  <view class="swiper-container">
+    <swiper 
+      indicator-dots="true" 
+      interval="2000" 
+      autoplay="true" 
+      circular="true" 	
+      indicator-active-color	= "#00ADB5">
+      <block wx:for="{{posters}}" wx:key="id">
+        <swiper-item>
+          <image src="{{item.image}}" mode = "heightFix"></image>
+        </swiper-item>
+      </block>
+    </swiper>
+  </view>
+
+  <!--分割的tab，有选择器-->
+  <view class="tab">
+    <!-- <text class="sort-mode">活动列表</text> -->
+    <view class = "choser">
+      <view class="sort-select" bindtap="toggleSortDropdown">
+        排序：{{sortText}}
+        <view class="arrow {{isFolded ? 'folded' : 'unfolded'}}"></view>
+      </view>
+      <view class="sort-dropdown" wx:if="{{!isFolded}}">
+        <view 
+          class="sort-option {{currentSort === 'default' ? 'active' : ''}}"
+          data-value="default"
+          bindtap="selectSort"
+        >默认</view>
+        <view 
+          class="sort-option {{currentSort === 'asc' ? 'active' : ''}}"
+          data-value="asc"
+          bindtap="selectSort"
+        >正序</view>
+        <view 
+          class="sort-option {{currentSort === 'desc' ? 'active' : ''}}"
+          data-value="desc"
+          bindtap="selectSort"
+        >逆序</view>
+      </view>
+    </view>
+  </view>
+
+  <view class="list-container">
+    <block wx:for="{{items}}" wx:key="event_id">
+      <view class="item-container">
+        <image src="{{item.poster}}" class="item-image"></image>
+        <view class="item-details">
+          <text class="name">{{item.event_name}}</text>
+          <text class="start-date">{{item.start_time}}</text>
+        </view>
+        <button hover-class ="none" style = "width: 150rpx; margin:0;" bindtap="navigateToDetail" data-event-id="{{item.event_id}}">详情</button>
+      </view>
+    </block>   
+  </view>
+
+  <!-- 无活动时显示“暂无活动信息”-->
+  <view wx:if="{{items.length === 0}}" class="empty-tip">
+    <text>暂无活动信息</text>
+  </view>
+
+</view>
+
+

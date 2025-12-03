@@ -1,0 +1,191 @@
+<!--pages/xiumi_link_permit/xiumi_link_permit.wxml-->
+<view class="container">
+  <!-- 顶部导航栏 -->
+  <navBar
+    class="navbar"
+    title="秀米链接审核"
+    background="#222831"
+    color="#fff"
+    back="{{true}}"
+    home="{{true}}"
+    iconTheme="white"
+    bindback="handlerGobackClick"
+    bindhome="handlerGohomeClick"
+  />
+
+  <!-- tab 切换 -->
+  <view class="tab">
+    <text bindtap="changeItem" data-item="0" class="{{tab==0?'active':''}}">待审核</text>
+    <text bindtap="changeItem" data-item="1" class="{{tab==1?'active':''}}">已打回</text>
+    <text bindtap="changeItem" data-item="2" class="{{tab==2?'active':''}}">已通过</text>
+  </view>
+
+  <!-- 内容区域 -->
+  <swiper current="{{tab}}" bindchange="onSwiperChange">
+    <!-- 待审核 -->
+    <swiper-item>
+      <view class="list-container">
+        <block wx:for="{{unreviewedList}}" wx:key="link_id">
+          <view class="item-container">
+            <view class="item-details">
+              <view class="title-and-state">
+                <text class="title">{{item.title}}</text>
+                <view
+                  class="state"
+                  style="background-color: {{stateColors[item.state]}}; color: #fff"
+                >
+                  {{stateTag[item.state]}}
+                </view>
+              </view>
+              <text class="label">提交时间：</text>
+              <text class="content">{{item.formatted_time}}</text>
+              <text class="label">秀米链接：</text>
+              <view class="link">
+                <text class="content">{{item.link}}</text>
+                <image 
+                class="copy-icon"
+                src="{{icons.grayCopy}}"
+                mode="widthFix"
+                bind:tap="copy"
+                data-link="{{item.link}}"
+                ></image>
+              </view>
+            </view>
+            <!-- 根据item.showFeedback动态显示按钮或输入框 -->
+            <view class="button-container" wx:if="{{!item.showFeedback}}">
+              <view
+                class="detail-btn"
+                style="background:#E33C64;"
+                data-link-id="{{item.link_id}}"
+                data-index="{{index}}"
+                bindtap="showFeedbackInput"
+              >打回</view>
+              <view
+                class="detail-btn"
+                style="background:#00ADB5;"
+                data-title="{{item.title}}"
+                data-name="{{item.name}}"
+                data-link="{{item.link}}"
+                data-link-id="{{item.link_id}}"
+                bindtap="onApprove"
+              >通过</view>
+            </view>
+            <!-- 打回输入框及按钮 -->
+            <view class="feedback-input-container" wx:if="{{item.showFeedback}}">
+              <textarea
+                class="feedback-textarea"
+                placeholder="请输入打回原因（100字内）"
+                maxlength="100"
+                bind:input="onFeedbackInput"
+                data-link-id="{{item.link_id}}"
+                data-index="{{index}}"
+                value="{{item.feedbackText || ''}}"
+              ></textarea>
+              <view class="button-container">
+                <view
+                  class="detail-btn"
+                  style="background:#999999;"
+                  data-link-id="{{item.link_id}}"
+                  data-index="{{index}}"
+                  bindtap="cancelFeedback"
+                >取消</view>
+                <view
+                  class="detail-btn"
+                  style="background:#00ADB5;"
+                  data-link-id="{{item.link_id}}"
+                  data-index="{{index}}"
+                  bindtap="confirmFeedback"
+                >确认</view>
+              </view>
+            </view>
+          </view>
+        </block>
+      </view>
+    </swiper-item>
+
+    <!-- 已打回 -->
+    <swiper-item>
+      <view class="list-container">
+        <block wx:for="{{rejectedList}}" wx:key="link_id">
+          <view class="item-container">
+            <view class="item-details">
+              <view class="title-and-state">
+                <text class="title">{{item.title}}</text>
+                <view
+                  class="state"
+                  style="background-color: {{stateColors[item.state]}}; color: #fff"
+                >
+                  {{stateTag[item.state]}}
+                </view>
+              </view>
+              <text class="label">提交时间：</text>
+              <text class="content">{{item.formatted_time}}</text>
+              <text class="label">秀米链接：</text>
+              <view class="link">
+                <text class="content">{{item.link}}</text>
+                <image 
+                class="copy-icon"
+                src="{{icons.grayCopy}}"
+                mode="widthFix"
+                bind:tap="copy"
+                data-link="{{item.link}}"
+                ></image>
+              </view>
+            </view>
+            <!-- 审核反馈信息 -->
+            <view class="feedback-container">
+              <view class="feedback-title">审核反馈</view>
+              <view class="feedback-content">{{item.review || '暂无反馈信息'}}</view>
+            </view>
+          </view>
+        </block>
+      </view>
+    </swiper-item>
+
+    <!-- 已通过 -->
+    <swiper-item>
+      <view class="list-container">
+        <block wx:for="{{approvedList}}" wx:key="link_id">
+          <view class="item-container">
+            <view class="item-details">
+              <view class="title-and-state">
+                <text class="title">{{item.title}}</text>
+                <view
+                  class="state"
+                  style="background-color: {{stateColors[item.state]}}; color: #fff"
+                >
+                  {{stateTag[item.state]}}
+                </view>
+              </view>
+              <text class="label">提交时间：</text>
+              <text class="content">{{item.formatted_time}}</text>
+              <text class="label">秀米链接：</text>
+              <view class="link">
+                <text class="content">{{item.link}}</text>
+                <image 
+                class="copy-icon"
+                src="{{icons.grayCopy}}"
+                mode="widthFix"
+                bind:tap="copy"
+                data-link="{{item.link}}"
+                ></image>
+              </view>
+            </view>
+            <image
+              class="green-cat-pattern"
+              src="{{icons.catPattern}}"
+              mode="widthFix"
+            />
+          </view>
+        </block>
+      </view>
+    </swiper-item>
+  </swiper>
+
+  <!-- 底部装饰 -->
+  <image
+    class="bottom-image"
+    src="{{icons.whiteCat}}"
+    mode="widthFix"
+  />
+</view>

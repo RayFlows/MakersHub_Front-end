@@ -1,0 +1,210 @@
+/* pages/personal_stuff_borrow_apply/personal_stuff_borrow_apply.wxss */
+/* 基础容器样式 */
+.container {
+  background-color: #222831;
+  min-height: 100vh;
+  padding: 30rpx;
+  padding-bottom: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  color: #4E5969;
+}
+
+
+.focused{
+  /* border-color: #00ADB5; */
+  box-shadow: 0 0 5px rgba(0, 107, 255, 0.7);
+}
+
+/* 表单容器 */
+.form-container {
+  background: #00adb5;
+  border-radius: 32rpx;
+  padding: 40rpx;
+  box-shadow: 0 8rpx 24rpx rgba(0, 0, 0, 0.1);
+  width: 95%;
+  margin-bottom: 30rpx;
+  color: #4E5969;
+}
+
+/* 统一输入框样式 */
+.input-field {
+  height: 90rpx;
+  background: #e5e5e5;
+  border-radius: 35rpx;
+  font-size: 28rpx;
+  padding: 0 28rpx;
+  margin-bottom: 30rpx;
+  transition: all 0.3s;
+}
+
+.input-field:focus {
+  border-color: #222831;
+}
+
+picker:active {
+  background-color: rgba(0, 173, 181, 0.2);
+}
+
+
+
+/* 标签文本样式 */
+.form-label {
+  font-size: 30rpx;
+  font-weight: 700;
+  color: #fff;
+  margin-top: 20rpx;
+  margin-bottom: 20rpx;
+  display: block;
+}
+
+.material-details {
+  background: #00adb5;
+  border-radius: 32rpx;
+  padding: 40rpx 0 40rpx 0;
+  box-shadow: 0 8rpx 24rpx rgba(0, 0, 0, 0.1);
+  width: 95%;
+  margin-bottom: 30rpx;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.add {
+  display: inline-block;
+  flex: none;
+  line-height: 30px;
+  padding: 0 12px;
+  background: #FFE89E;
+  border-radius: 24rpx;
+  color: #222831;
+  font-size: 27rpx;
+  font-weight: 700;
+  margin-top: 40rpx;
+}
+
+.box {
+  margin-top: 10px;
+  clear: both;
+  overflow: hidden;
+  padding: 0 15px;
+  display: flex;
+  align-items: center;
+}
+
+.b-ipt {
+  overflow: hidden;
+  flex: 1;
+  width: 520rpx;
+  padding: 20rpx;
+  margin: 0 5rpx;
+  border-radius: 28rpx;
+  background-color: #83D9DE;
+  color: #4E5969;
+  font-size: 27rpx;
+  font-weight: 700;
+}
+
+.b-ipt:focus{
+  border-color: #222831;
+}
+
+.del {
+  flex: none;
+  width: 40rpx;
+  height: 40rpx;
+  margin-right: 20rpx;
+  text-align: center;
+  font-weight: 700;
+  border: 4rpx solid white;
+  color: white;
+  border-radius: 50rpx;
+  cursor: pointer;
+  display: flex;
+  justify-content: center; /* 水平居中 */
+  align-items: center;     /* 垂直居中 */
+}
+
+/* 选择器组布局 */
+.time-picker-group {
+  display: grid;
+  width: 600rpx;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 20rpx;
+  /* margin: 40rpx 0; */
+  color:#7D8592;
+  font-weight: 700;
+}
+
+.time-picker-group picker {
+  margin: 10rpx;
+  background: #83D9DE;
+  border-radius: 30rpx;
+  height: 80rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* 统一选择器样式 */
+.time-picker {
+  border-radius: 25rpx;
+  height: 70rpx;
+  font-size: 28rpx;
+  color: #4E5969;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s;
+}
+
+/* 特殊定位选择器 */
+.year-picker {
+  grid-column: span 2;
+}
+
+.hour-picker,
+.minute-picker {
+  grid-column: span 1;
+}
+
+.textarea-field {
+  height: 200rpx;
+  padding: 20rpx 28rpx;
+  line-height: 1.5;
+  width: 95%;
+  box-sizing: border-box; /* 新增 */
+}
+
+/* 提交按钮样式 */
+.submit-btn {
+  background: #00adb5;
+  color: white;
+  border-radius: 45rpx;
+  height: 90rpx;
+  font-size: 32rpx;
+  margin-top: 60rpx;
+  box-shadow: 0 4rpx 12rpx rgba(0, 0, 0, 0.15);
+  transition: all 0.3s;
+  line-height: 60rpx;
+  font-weight: 400;
+}
+
+.submit-btn:active {
+  transform: scale(0.98);
+  filter:brightness(0.95);
+}
+
+
+/* 装饰图片样式 */
+.decorative-image {
+  width: 440rpx;
+  height: 174rpx;
+  display: block;
+  position: relative;
+  bottom: 0;
+  margin-top: 50rpx;
+  z-index: 99;
+}

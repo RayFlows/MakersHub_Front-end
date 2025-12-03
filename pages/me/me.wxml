@@ -1,0 +1,109 @@
+<!-- “我的”页面 -->
+<view class="container">
+  <!-- 顶部导航栏，包含页面标题和编辑图标 -->
+  <view class='nav'>
+        <navBar 
+        title='我的' 
+        background='#222831' 
+        color='#FFFFFF' 
+        back="{{false}}" 
+        home="{{false}}" 
+        iconTheme='white' 
+        bindback="handlerGobackClick"
+        showEditIcon="{{true}}"
+        bindedit="goToEditPage"
+        ></navBar>
+  </view>
+  <!-- 用户信息区域,用于展示用户的姓名，联系方式，个人签名等信息 -->
+  <!-- 显示用户姓名，姓名数据从 userInfo 对象的 name 属性中获取 -->
+  <view class="user-info">
+    <view class="info-box">
+      <text class="user-name">{{userInfo.real_name}}</text>
+      <!-- 包含用户个性签名信息的容器-->
+      <!-- 显示用户个性签名，签名数据从 userInfo 对象的 signiture 属性中获取 -->
+      <text class="info-text">{{userInfo.motto}}</text>
+    </view>
+     <!-- 用户头像区域，显示默认的头像占位图 -->
+    <view class="avatar">
+      <image src="{{userInfo.profile_photo}}" mode="aspectFill" />
+    </view>
+  </view>
+  
+  <!-- 此部分展示协会成员身份和积分信息 -->   
+  <!--协会成员和积分-->
+  <view class="membership">
+  <!-- 根据 isAssociationMember 变量的值动态显示 '协会' 或 '外部' -->
+    <text class="membership-label">{{isAssociationMember ? '协会\n成员' : '外部\n成员'}}</text>
+    <!--分割线图标-->
+    <image class="separate" src="/images/me/separate.svg" mode = "aspectFill" />
+    <!-- 仅当用户是协会成员时显示积分相关内容 -->
+    <view class="score" wx:if="{{isAssociationMember}}">
+      <!-- 显示 '积分' 标签 -->
+      <text class="score-label">积分</text>
+      <!-- 积分值的显示区域，点击后触发 goToPointsPage 函数 -->
+      <button class="score-value" bindtap="goToMyPointPage" style="width:100%;">
+      <!-- 显示用户的积分，积分值从 userPoints 变量获取 -->
+        <text class="score-number">{{userInfo.score}}</text>
+        <!--白色箭头图标-->
+        <image class="arrow-icon-white" src="{{icons.whiteArrow}}" mode="aspectFill" />
+      </button>
+    </view>
+  </view>
+
+
+    <!-- 下半部分展示五个功能框 -->
+  <view class="function-list-container">
+    <image class="background-image" src="/images/me/cat_background.svg" mode="aspectFill"/>
+        <view class="function-list">
+          <block wx:for="{{items}}" wx:key="index">
+            <button 
+              wx:if="{{index < 4}}"
+              class="function-item" 
+              bindtap="{{itemHandler[index]}}"
+              style="width:80%; background-color: {{index % 2 ? '#EEEEEE' : '#00ADB5'}};"
+            >
+              <text>{{item}}</text>
+              <image class="arrow-icon" src="{{icons.blackArrow}}" mode="aspectFill" />
+            </button>
+            <!-- 第5个按钮只在协会成员时显示 -->
+            <button 
+              wx:if="{{index === 4 && isAssociationMember}}"
+              class="function-item" 
+              bindtap="goToWorkPage"
+              style="width:80%; background-color: {{index % 2 ? '#EEEEEE' : '#00ADB5'}};"
+            >
+              <text>{{item}}</text>
+              <image class="arrow-icon" src="{{icons.blackArrow}}" mode="aspectFill" />
+            </button>
+          </block>
+        
+        </view>
+  </view>
+  <!-- 底部的导航栏 -->
+<view class="bottom-nav">
+    <!-- 社区的按钮 -->
+    <view class="nav-item" data-page="community" bindtap="switchPage">
+      <image class="community-icon" src="{{ activeTab=='community' ? '/images/index/community_chosen.svg' : '/images/index/community_unchosen.svg' }}" mode="aspectFill" />
+      <text class="nav-item-text1">社区</text>
+    </view>
+    <!-- 首页的按钮 -->
+    <view class="circle"data-page="index" bindtap="switchPage">
+      <view class="green-circle">
+        <image class="icon-on-green-circle" 
+          src="{{ activeTab == 'index' ? icons.catIconChosen : icons.catIconUnchosen }}" 
+          mode="aspectFit">
+        </image>
+      </view>
+    </view>
+    <!-- 我的的按钮 -->
+    <view class="nav-item" data-page="me" bindtap="switchPage">
+      <image class="me-icon" src="{{ activeTab=='me' ? icons.meChosen : icons.meUnchosen }}" mode="aspectFit" style="color: {{ activeTab=='me' ? '#00ADB5' : '#ffffff' }}"></image>
+      <text class="nav-item-text2">我的</text>
+    </view>
+  </view>
+</view>
+  
+
+
+
+

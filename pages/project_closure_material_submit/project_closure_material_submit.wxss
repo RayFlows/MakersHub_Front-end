@@ -1,0 +1,220 @@
+/* pages/project_closure_material_submit/project_closure_material_submit.wxss */
+
+/* 基础容器样式 */
+.container {
+  background-color: #222831;
+  min-height: 100vh;
+  padding: 30rpx;
+  padding-bottom: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+/* 要求描述容器样式 */
+.requirement-container {
+  background: #fff;
+  border-radius: 25rpx;
+  box-shadow: 0 8rpx 24rpx rgba(0, 0, 0, 0.1);
+  width: 95%;
+  margin-bottom: 30rpx;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+/* 要求描述容器标题行样式 */
+.header {
+  border-top-left-radius: 25rpx;
+  border-top-right-radius: 25rpx;
+  padding: 25rpx;
+  background: linear-gradient(to right, #00adb5, #fff);
+  color: #fff;
+  font-weight: 600;
+  font-size: 28rpx;
+  width: 100%;
+}
+
+.body {
+  flex: 1;
+  color: #808080;
+  padding: 40rpx;
+  font-size: 28rpx;
+}
+
+/* 要求描述容器样式 */
+.material-container {
+  background: #fff;
+  border-radius: 25rpx;
+  box-shadow: 0 8rpx 24rpx rgba(0, 0, 0, 0.1);
+  width: 95%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
+  padding: 40rpx;
+  gap: 20rpx;
+}
+
+/* 标签文本样式 */
+.form-label {
+  font-size: 30rpx;
+  font-weight: 700;
+  color: #00adb5;
+  display: block;
+}
+
+/* textarea 容器 */
+.textarea-wrapper {
+  width: 100%;
+  position: relative;
+}
+
+.textarea-field {
+  background: #e5e5e5;
+  width: 100%;
+  min-height: 200rpx;
+  border-radius: 20rpx;
+  padding: 20rpx;
+  box-sizing: border-box;
+  font-size: 28rpx;
+  line-height: 1.6;
+  color: #808080;
+}
+
+/* 聚焦状态 */
+.textarea-field.focused {
+  border: 1rpx solid #00adb5;
+  box-shadow: 0 0 5px rgba(0, 173, 181, 0.5);
+}
+
+/* 字符计数器 */
+.char-counter {
+  position: absolute;
+  bottom: 10rpx;
+  right: 20rpx;
+  font-size: 24rpx;
+  color: #808080;
+}
+
+/* 超出字数限制时的样式 */
+.char-counter .exceed {
+  color: #ff4444;
+  font-weight: 600;
+}
+
+/* 文件列表容器 */
+.file-list {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: center;
+  border-radius: 20rpx;
+  border: 3rpx solid #00adb5;
+  background: #CFF8FA;
+}
+
+/* 单个文件项 */
+.file-item {
+  width: 100%;
+  height: 80rpx;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  padding: 0 20rpx;
+  box-sizing: border-box;
+}
+
+/* 文件类型图标 */
+.file-type-icon {
+  width: 40rpx;
+  height: 40rpx;
+  margin-right: 15rpx;
+  flex-shrink: 0;
+}
+
+/* 文件名 */
+.file-name {
+  flex: 1;
+  font-size: 28rpx;
+  color: #00adb5;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* 删除图标 */
+.delete-icon {
+  width: 32rpx;
+  height: 32rpx;
+  margin-left: 15rpx;
+  flex-shrink: 0;
+}
+
+/* 上传按钮增加点击态 */
+.upload-file:active {
+  background-color: #d5d5d5;
+  opacity: 0.8;
+}
+
+.upload-file {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 80rpx;
+  background-color: #e5e5e5;
+  border-radius: 30rpx;
+  border: 4rpx dotted #808080;
+  color: #808080;
+}
+
+.upload-icon {
+  width: 42rpx;
+  height: 42rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 0 0 20rpx;
+}
+
+.hint {
+  color: #808080;
+  width: 100%;
+  font-size: 24rpx;
+  text-align: start;
+}
+
+/* 提交按钮样式 */
+.submit-btn {
+  background: #00adb5;
+  color: white;
+  border-radius: 45rpx;
+  height: 90rpx;
+  font-size: 32rpx;
+  margin-top: 60rpx;
+  box-shadow: 0 4rpx 12rpx rgba(0, 0, 0, 0.15);
+  transition: all 0.3s;
+  line-height: 60rpx;
+  font-weight: 400;
+}
+
+.submit-btn:active {
+  transform: scale(0.98);
+  filter:brightness(0.95);
+}
+
+
+/* 装饰图片样式 */
+.decorative-image {
+  width: 440rpx;
+  height: 174rpx;
+  display: block;
+  position: relative;
+  bottom: 0;
+  margin-top: 50rpx;
+  z-index: 99;
+}

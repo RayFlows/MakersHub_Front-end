@@ -1,0 +1,57 @@
+<!--pages/MyPoints/MyPoints.wxml-->
+<view class = "container">
+  <!-- 顶部导航栏，包含页面标题和编辑图标 -->
+  <navBar title='我的积分' background='#00ADB5' color='#fff' back="{{true}}" home="{{true}}" iconTheme='white' bindback="handlerGobackClick" bindhome="handlerGohomeClick"></navBar>
+  <view class="score">
+    <view class="header">
+      <view class="points-label">当前积分</view>
+      <view class="points-value">{{score}}</view>
+    </view>
+  </view>
+
+  <!--下半 切换-->
+  <view class="tab">
+    <text bindtap="changeItem" data-item="0" class="{{tab==0?'active':''}}">积分兑换</text>
+    <text bindtap="changeItem" data-item="1" class="{{tab==1?'active':''}}">兑换历史</text>
+  </view>
+  <view class="list-container">
+    <swiper current="{{tab}}" bindchange="onSwiperChange">
+      <!-- 积分兑换界面 -->
+      <swiper-item wx:if="{{tab === 0}}">
+        <block wx:for="{{items}}" wx:key="index">
+          <view class="item-container">
+            <image src="{{item.image}}" class="item-image"></image>
+            <view class="item-details">
+              <text class="name">{{item.name}}</text>
+              <text class="description">{{item.description}}</text>
+            </view>
+            <button hover-class ="none" style = "width: 170rpx; margin:0;" bindtap="exchangeItem" data-url="{{item.exchangeUrl}}">兑换</button>
+          </view>
+        </block>
+        <text class="footer">没有喜欢的？其他兑换待开发中...</text>
+        <!-- <image class="bottom-image" src="/images/my_points/white_cat.svg"></image> -->
+      </swiper-item>
+
+      <!-- 兑换历史界面 -->
+      <swiper-item wx:if="{{tab === 1}}">
+          <view class="vertical-container">
+            <block wx:for="{{history}}" wx:key="index">
+              <view class="item-container">
+                <image src="{{item.image}}" class="item-image"></image>
+                <view class="item-details2">
+                  <text class="meg">兑换内容：{{item.name}}</text>
+                  <text class="meg">时间：{{item.time}}</text>
+                  <text class="meg">详情：{{item.details}}</text>
+                </view>
+                <text class="points-used">{{item.pointsUsed}}</text>
+              </view>
+            </block>
+          </view>
+      </swiper-item>
+      
+    </swiper>
+    
+  </view>
+</view>
+
+

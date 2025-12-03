@@ -1,0 +1,199 @@
+/* pages/MyPoints/MyPoints.wxss */
+page{
+  background-color: #222831;
+  overflow: hidden;
+}
+
+.container {
+  position: relative;
+  overflow: hidden ;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  height: 100vh;
+}
+
+.swiper-container {
+  width: 100%;
+  height: 500rpx;
+  /* background-color: #00ADB5; */
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+swiper {
+  width: 100%;
+  height: 500rpx;
+}
+
+swiper-item {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.swiper-container image {
+  height: 100%;
+}
+
+.tab{
+  width: 94%;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  margin-top:10rpx;
+  font-size: 30rpx;
+  color:#00ADB5;
+  border-bottom: 6rpx solid #00ADB5;
+}
+
+.choser {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+}
+
+.sort-select {
+  position: relative;
+  width: 200rpx;
+  height: 60rpx;
+  /* color: #666; */
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  text-align: center;
+  padding: 12rpx;
+  /* background-color: rgba(0,173,181,0.6); */
+  border-radius: 23rpx;
+}
+
+.arrow.folded {
+  border-left: 12rpx solid #999;
+  border-top: 12rpx solid transparent;
+  border-bottom: 12rpx solid transparent;
+}
+
+.arrow.unfolded {
+  border-top: 12rpx solid #999;
+  border-left: 12rpx solid transparent;
+  border-right: 12rpx solid transparent;
+  transform: translateY(6rpx);
+}
+
+.sort-dropdown {
+  position:absolute;
+  width: 150rpx;
+  background: #fff;
+  border-radius: 0 0 16rpx 16rpx;
+  box-shadow: 0 4rpx 12rpx rgba(0,0,0,0.1);
+  z-index: 1;
+  margin-top: 60rpx;
+}
+
+.sort-option {
+  padding: 20rpx;
+  color: #666;
+  /* border-bottom: 1rpx solid #eee; */
+}
+
+.sort-option.active {
+  color: #00ADB5;
+  background-color: rgba(0,173,181,0.1);
+}
+
+.sort-option:last-child {
+  border-bottom: none;
+}
+
+.list-container {
+  width: 100%;
+  overflow-x: hidden;
+  display: flex;
+  flex-direction: column;
+  height: auto;
+  align-items: center;
+  justify-content: flex-start;
+  gap:30rpx;
+  overflow-y: auto; 
+  padding:25rpx;
+  margin-bottom: 15rpx;
+}
+
+/* 活动列表容器 */
+.item-container {
+  display: flex;
+  align-items: center;
+  width: 619rpx;
+  height: 183rpx; /* 确保高度与图片一致 */
+  justify-content: flex-start; /* 从起始位置开始排列 */
+  background-color: #fff;
+  color: #393E46;
+  border-radius: 35rpx;
+  gap:30rpx;
+
+}
+
+.item-image {
+  width: 183rpx; /* 与容器高度一致 */
+  height: 183rpx; /* 与容器高度一致 */
+  border-radius: 35rpx 0rpx 0rpx 35rpx; /*调整圆角效果*/
+}
+
+/* 项目容器样式 */
+.item-details {
+  height: 181rpx;
+  width: 200rpx;
+  display: flex;
+  flex-direction: column; /* 垂直排列子元素 */
+  justify-content: center; /* 子元素顶端对齐 */
+  gap:15rpx;
+}
+
+/* 名称文本样式 */
+.name {
+  font-size: 32rpx;
+  font-weight: 600;
+  color: #393E46; 
+  max-width: 100%; /* 最大宽度为100%，防止溢出 */
+  text-align: left; /* 设置文本左对齐 */
+}
+
+/* 描述文本样式 */
+.start-date {
+  font-size: 21rpx; 
+  color: #393E46; /* 字体颜色：中灰色 */
+  max-width: 100%; /* 最大宽度为100%，防止溢出 */
+  text-align: start;
+  word-wrap: break-word; /* 允许长单词或URL地址强制换行 */
+  word-break: break-all; /* 允许长单词或URL地址强制换行 */
+  text-overflow: ellipsis; /* 使用省略号表示溢出部分 */
+}
+
+/* 兑换按钮 */
+button {
+  height: 66rpx;
+  background-color: #00BAAD;
+  color: white;
+  border-radius: 42rpx;
+  text-align: center; /* 水平居中 */
+  font-size: 27rpx; /* 设置合适的字体大小 */
+  font-weight: 400;
+}
+
+button:active {
+  filter: brightness(0.95)
+}
+
+/* 没有活动时提示信息的样式 */
+.empty-tip {
+  width: 100%;
+  padding: 100rpx 0;
+  text-align: center;
+  color: #EEEEEE;
+  font-size: 30rpx;
+}

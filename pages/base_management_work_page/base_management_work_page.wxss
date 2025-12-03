@@ -1,0 +1,110 @@
+/* pages/base_management_work_page/base_management_work_page.wxss */
+/*index.wxss*/
+/* 页面基本布局 */
+page {
+  height: 100vh; 
+  display: flex; 
+  flex-direction: column; 
+  background-color: #222831;
+  -webkit-tap-highlight-color:rgba(0,0,0,0);
+}
+
+/* 整个页面背景及内边距 */
+.container {
+  display: flex;
+  justify-content: flex-start;
+  background-color: #222831;
+  min-height: 100vh;
+  padding: 20rpx;
+}
+
+/* 公共的按钮容器样式 */
+.button-container {
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  justify-content: space-between;
+  border-radius: 36.624rpx;
+  padding: 10rpx;
+  margin-top: 35rpx;
+  margin-bottom: 65rpx;
+  cursor: pointer;
+  width: 540rpx;
+  height: 140rpx;
+}
+
+/* 各容器背景色 */
+.btn1,
+.btn3 {
+  background-color: #EEEEEE;
+}
+.btn2,
+.btn4 {
+  background-color: #00ADB5;
+}
+
+
+/* 左侧图片容器及图片样式 */
+.left-image-container {
+  width: 61.04rpx;
+  height: 61.04rpx;
+  margin-left: 20rpx;
+}
+.left-image {
+  width: 100%;
+  height: 100%;
+  /* border-radius: 50%; */
+}
+
+/* 中间文字容器基础样式 */
+.text-container {
+  flex: 1;
+  font-size: 34.88rpx;
+  line-height: 40rpx;
+  
+}
+
+/* 文字颜色及左边距 */
+.text1 {
+  color: #000000;
+  margin-left: 25rpx;
+}
+.text2 {
+  color: #ffffff;
+  margin-left: 25rpx;
+}
+.text3 {
+  color: #000000;
+  margin-left: 25rpx;
+}
+.text4 {
+  color: #ffffff;
+  margin-left: 25rpx;
+}
+
+/* 右侧箭头图片容器及图片样式 */
+.arrow-container {
+  width: 83.712rpx;
+  height: 83.712rpx;
+  margin-right: 20rpx;
+}
+.arrow-image {
+  width: 100%;
+  height: 100%;
+}
+
+/* 底部猫猫容器 */
+.bottom-image-container {
+  width: 100%;
+  position: fixed;
+  bottom: 0;
+  z-index: 1;
+  /* padding: 20rpx; */
+  display: flex;
+  justify-content: center; 
+}
+
+.bottom-image {
+  width: 440rpx;
+  height: auto;
+}

@@ -1,0 +1,218 @@
+<!-- pages/activity/activity.wxml -->
+<view class="container">
+  <navBar 
+    title='活动宣传发布' 
+    background='#222831' 
+    color='#fff' 
+    back="{{true}}" 
+    home="{{true}}" 
+    iconTheme='white'
+    bindback="handlerGobackClick" 
+    bindhome="handlerGohomeClick">
+  </navBar>
+
+  <view class="form-container">
+    <view class="form-header">活动详情</view>
+
+    <!-- 活动名称 -->
+    <view class="form-item">
+      <text class="form-label">活动名称</text>
+      <input class="form-input {{isNameFocused ? 'focused' : ''}}" bindtap = "onNameFocused" bindblur = "onNameBlur" placeholder="请输入活动名称" data-field="event_name"/>
+    </view>
+
+    <!-- 海报上传 -->
+    <view class="form-item">
+      <text class="form-label">海报</text>
+      <view class="{{event.poster ? 'poster-preview-container' : 'upload-box'}}" bindtap="onUploadPoster">
+        <!-- 未选择海报时显示上传提示 -->
+        <block wx:if="{{!event.poster}}">
+          <image class="upload-icon" src="{{icons.upload}}"></image>
+          <text>点击上传海报</text>
+        </block>
+        <!-- 已选择海报时显示预览图 -->
+        <block wx:else>
+          <image class="poster-preview" src="{{event.poster}}" mode="aspectFill"></image>
+          <view class="reupload-btn">
+            <image class="reupload-icon" src="{{icons.upload}}"></image>
+            <text>重新选择</text>
+          </view>
+        </block>
+      </view>
+    </view>
+
+    <!-- 活动简介 -->
+    <view class="form-item">
+      <text class="form-label">活动简介</text>
+      <textarea class="form-input textarea {{isDescriptionFocused ? 'focused' : ''}}" bindtap = "onDescriptionFocused" bindblur = "onDescriptionBlur" placeholder="请输入活动简介" data-field="description"></textarea>
+    </view>
+
+    <!-- 举办地点 -->
+    <view class="form-item">
+      <text class="form-label">举办地点</text>
+      <input class="form-input {{isLocationFocused ? 'focused' : ''}}" bindtap = "onLocationFocused" bindblur = "onLocationBlur" placeholder="请输入举办地点" data-field="location"/>
+    </view>
+
+    <!-- 二课链接 -->
+    <view class="form-item">
+      <text class="form-label">二课链接</text>
+      <input class="form-input {{isLinkFocused ? 'focused' : ''}}" bindtap = "onLinkFocused" bindblur = "onLinkBlur" placeholder="请输入二课链接" data-field="link"/>
+    </view>
+    
+    <!--限制参与人员-->
+    <view class="form-item">
+      <text class="form-label">参与对象</text>
+      <input class="form-input {{isParticipantFocused ? 'focused' : ''}}" bindtap = "onParticipantFocused" bindblur = "onParticipantBlur" placeholder="请输入参与对象" data-field="participant"/>
+    </view>
+
+    <!-- 时间选择器组 -->
+    <!-- 举办时间 -->
+    <view class="time-picker-group">
+      <text class="form-label">举办时间</text>
+      <view class="picker-row">
+        <picker 
+          class="date-picker" 
+          mode="selector" 
+          range="{{options.years}}" 
+          bindchange="onYearChange" 
+          data-type="startTime">
+          <view>{{formattedStartTime.year}}</view>
+        </picker>
+        <picker 
+          class="date-picker" 
+          mode="selector" 
+          range="{{options.months}}" 
+          bindchange="onMonthChange" 
+          data-type="startTime">
+          <view>{{formattedStartTime.month}}</view>
+        </picker>
+        <picker 
+          class="date-picker" 
+          mode="selector" 
+          range="{{options.days}}"
+          bindchange="onDayChange"  
+          data-type="startTime">
+          <view>{{formattedStartTime.day}}</view>
+        </picker>
+      </view>
+      <view class="picker-row">
+        <picker 
+          class="time-picker" 
+          mode="selector" 
+          range="{{options.hours}}" 
+          bindchange="onHourChange"  
+          data-type="startTime">
+          <view>{{formattedStartTime.hour}}</view>
+        </picker>
+        <picker 
+          class="time-picker" 
+          mode="selector" 
+          range="{{options.minutes}}" 
+          bindchange="onMinuteChange"  
+          data-type="startTime">
+          <view>{{formattedStartTime.minute}}</view>
+        </picker>
+      </view>
+    </view>
+
+    <!-- 结束时间 -->
+    <view class="time-picker-group">
+      <text class="form-label">至</text>
+      <view class="picker-row">
+        <picker 
+          class="date-picker" 
+          mode="selector" 
+          range="{{options.years}}" 
+          bindchange="onYearChange" 
+          data-type="endTime">
+          <view>{{formattedEndTime.year}}</view>
+        </picker>
+        <picker 
+          class="date-picker" 
+          mode="selector" 
+          range="{{options.months}}" 
+          bindchange="onMonthChange" 
+          data-type="endTime">
+          <view>{{formattedEndTime.month}}</view>
+        </picker>
+        <picker 
+          class="date-picker" 
+          mode="selector" 
+          range="{{options.days}}"
+          bindchange="onDayChange" 
+          data-type="endTime">
+          <view>{{formattedEndTime.day}}</view>
+        </picker>
+      </view>
+      <view class="picker-row">
+        <picker 
+          class="time-picker" 
+          mode="selector" 
+          range="{{options.hours}}" 
+          bindchange="onHourChange" 
+          data-type="endTime">
+          <view>{{formattedEndTime.hour}}</view>
+        </picker>
+        <picker 
+          class="time-picker" 
+          mode="selector" 
+          range="{{options.minutes}}" 
+          bindchange="onMinuteChange" 
+          data-type="endTime">
+          <view>{{formattedEndTime.minute}}</view>
+        </picker>
+      </view>
+    </view>
+
+    <!-- 报名截止时间 -->
+    <view class="time-picker-group">
+      <text class="form-label">报名截止时间</text>
+      <view class="picker-row">
+        <picker 
+          class="date-picker" 
+          mode="selector" 
+          range="{{options.years}}" 
+          bindchange="onYearChange" 
+          data-type="deadline">
+          <view>{{formattedDeadline.year}}</view>
+        </picker>
+        <picker 
+          class="date-picker" 
+          mode="selector" 
+          range="{{options.months}}" 
+          bindchange="onMonthChange" 
+          data-type="deadline">
+          <view>{{formattedDeadline.month}}</view>
+        </picker>
+        <picker 
+          class="date-picker" 
+          mode="selector" 
+          range="{{options.days}}"
+          bindchange="onDayChange" 
+          data-type="deadline">
+          <view>{{formattedDeadline.day}}</view>
+        </picker>
+      </view>
+      <view class="picker-row">
+        <picker 
+          class="time-picker" 
+          mode="selector" 
+          range="{{options.hours}}" 
+          bindchange="onHourChange" 
+          data-type="deadline">
+          <view>{{formattedDeadline.hour}}</view>
+        </picker>
+        <picker 
+          class="time-picker" 
+          mode="selector" 
+          range="{{options.minutes}}" 
+          bindchange="onMinuteChange" 
+          data-type="deadline">
+          <view>{{formattedDeadline.minute}}</view>
+        </picker>
+      </view>
+    </view>
+  </view>
+
+  <button class="submit-btn" bindtap="onSubmit">立即发布</button>
+  <image class="bottom-image" src="{{icons.whiteCat}}" mode="widthFix"></image>
+</view>

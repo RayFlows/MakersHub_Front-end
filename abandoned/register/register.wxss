@@ -1,0 +1,202 @@
+/* 全局容器样式 */
+.container {
+  position: relative;
+  width: 100vw;
+  min-height: 100vh;
+  overflow-x: hidden;
+  padding: 0 !important;
+}
+
+/* 背景容器样式 */
+.background-container {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  z-index: 1;
+}
+
+.background {
+  width: 100%;
+  height: 100%;
+}
+
+/* 主标题样式 */
+.SCU {
+  width: 100%;
+  text-align: center;
+  position: absolute;
+  top: 10%;
+  z-index: 10;
+  font-size: 70rpx;
+  font-weight: 800;
+  color: white;
+  text-shadow: 2rpx 2rpx 4rpx rgba(0,0,0,0.2);
+}
+
+/* 装饰图片样式 */
+.decoration-image {
+  position: absolute;
+  bottom: 5%;
+  z-index: 5;
+  width: 447rpx;
+  height: 295rpx;
+}
+
+.cat {
+  width: 100%;
+  height: 100%;
+}
+
+/* 注册内容区域 */
+.login-content {
+  position: relative;
+  z-index: 20;
+  width: 80%;
+  top:250rpx;
+  margin: 0 auto 0;
+  /* padding: 40rpx 50rpx 10rpx 50rpx; */
+  min-height: calc(100vh - 400rpx); 
+}
+
+.dial {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  z-index: -1;
+}
+
+/* 表单容器 */
+.form-container {
+  margin-top: 120rpx;
+  position: relative;
+  z-index: 30;
+}
+
+.login-title {
+  text-align: center;
+  font-weight: bold;
+  font-size: 36rpx;
+  color: #222831;
+  margin-bottom: 40rpx;
+}
+
+/* 表单元素样式 */
+.form-item {
+  margin-bottom: 40rpx;
+  padding: 0 40rpx;
+  box-sizing: border-box;
+}
+
+.form-item label {
+  display: block;
+  font-weight: bold;
+  color: #00ADB5;
+  font-size: 30rpx;
+  margin-bottom: 20rpx;
+}
+
+/* 输入框通用样式 */
+.preinput {
+  width: 100%;
+  height: 80rpx;
+  border: 2rpx solid #eee;
+  border-radius: 40rpx;
+  padding: 0 30rpx;
+  font-size: 28rpx;
+  transition: all 0.3s;
+  box-sizing: border-box;
+}
+
+.preinput.focused {
+  border-color: #00ADB5;
+  box-shadow: 0 4rpx 12rpx rgba(0,173,181,0.2);
+}
+
+/* 验证码容器特殊样式 */
+.code-container {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.code-container .preinput {
+  width: 70%;
+  border-top-right-radius: 0;
+  border-bottom-right-radius: 0;
+}
+
+.code-btn {
+  width: 25%;
+  height: 80rpx;
+  background: #00ADB5;
+  color: white;
+  border-radius: 0 40rpx 40rpx 0;
+  font-size: 28rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-left: -2rpx;
+}
+
+/* 密码输入容器 */
+.input-container {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.password-toggle-icon {
+  position: absolute;
+  right: 30rpx;
+  width: 40rpx;
+  height: 40rpx;
+  z-index: 999;
+}
+
+/* 按钮样式 */
+.button {
+  width: 100%;
+  height: 88rpx;
+  background: #00ADB5;
+  color: white;
+  border-radius: 44rpx;
+  font-size: 34rpx;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 40rpx 0;
+}
+
+/* 返回登录链接 */
+.login-link {
+  text-align: center;
+  color: #00ADB5;
+  font-size: 30rpx;
+  margin-top: 30rpx;
+  display: block;
+}
+
+/* 响应式适配 */
+@media screen and (max-height: 1400rpx) {
+  .login-content {
+    min-height: auto;
+    margin-top: 15vh;
+    padding: 30rpx;
+  }
+  
+  .decoration-image {
+    width: 350rpx;
+    height: auto;
+    bottom: 5vh;
+  }
+  
+  .code-btn {
+    font-size: 24rpx;
+    padding: 0 10rpx;
+  }
+
+  .register-link{
+    text-align: center;
+  }
+}

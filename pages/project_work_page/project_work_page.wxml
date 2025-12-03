@@ -1,0 +1,42 @@
+<!--pages/project_work_page/project_work_page.wxml-->
+
+<view class="container">
+  <navBar title='项目部' background='rgba(0,0,0,0)' color='#fff' back="{{true}}" home="{{true}}" iconTheme='white' bindback="handlerGobackClick" bindhome="handlerGohomeClick"></navBar>
+  <!-- 第1个容器：发布任务 -->
+  <view class="button-container btn1" bindtap="navigate1" wx:if="{{level >= 2}}">
+    <view class="left-image-container">
+      <image class="left-image" src="{{icons.grayTask}}" mode="aspectFit"></image>
+    </view>
+    <view class="text-container text1">发布任务</view>
+    <view class="arrow-container">
+      <image class="arrow-image" src="{{icons.blackArrow}}" mode="aspectFit"></image>
+    </view>
+  </view>
+
+  <!-- 第2个容器：赛事发布 -->
+  <view class="button-container btn2" bindtap="navigate2" wx:if="{{level >= 1}}">
+    <view class="left-image-container">
+      <image class="left-image" src="{{icons.pencilNote}}" mode="aspectFit"></image>
+    </view>
+    <view class="text-container text2">赛事发布</view>
+    <view class="arrow-container">
+      <image class="arrow-image" src="{{icons.whiteArrow}}" mode="aspectFit"></image>
+    </view>
+  </view>
+
+  <!-- 第3个容器：审核项目 -->
+  <view class="button-container btn3" bindtap="navigate3" wx:if="{{level >= 1}}">
+    <view class="left-image-container">
+      <image class="left-image" src="{{icons.inspect}}" mode="aspectFit"></image>
+    </view>
+    <view class="text-container text3">审核项目</view>
+    <view class="arrow-container">
+      <image class="arrow-image" src="{{icons.blackArrow}}" mode="aspectFit"></image>
+    </view>
+  </view>
+</view>
+
+<!-- 在container外添加底部图片容器 -->
+<view class="bottom-image-container">
+  <image class="bottom-image" src="{{icons.whiteCat}}" mode="widthFix"></image>
+</view>

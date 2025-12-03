@@ -1,0 +1,113 @@
+<!-- 页面整体容器，使用 container 类保持与登录页统一 -->
+<view class="container">
+  <!-- 背景图片容器 -->
+  <view class="background-container">
+    <!-- <image class="background" src="data:{{image1.filetype}};base64,{{image1.data}}" alt="{{image1.alt_text}}"></image> -->
+    <image class="background" src="/images/login_register_background.png"></image>
+  </view>
+
+  <!-- 主标题 -->
+  <view class="SCU">SCU Makers</view>
+
+  <!-- 装饰图片 -->
+  <view class="decoration-image">
+    <!-- <image class="cat" src="data:{{image2.filetype}};base64,{{image2.data}}" alt="{{image2.alt_text}}"></image> -->
+    <image class="cat" src="/images/login/login_cat.png"></image>
+  </view>
+
+  <!-- 注册内容区域 -->
+  <view class="login-content">
+    <image class="dial" src="/images/register/register_dial.png" mode="scaleToFill"></image>
+    
+    <!-- 表单容器 -->
+    <view class="form-container">
+      <view class="login-title">注册 SCU Makers 小程序</view>
+
+      <form>
+        <!-- 邮箱输入项 -->
+        <view class="form-item">
+          <label>邮箱</label>
+          <input
+            class="preinput {{isFocused1 ? 'focused' : ''}}"
+            type="text"
+            placeholder="你的邮箱"
+            value="{{email}}"
+            bindfocus="handleFocus1"
+            bindinput="handleEmailInput"
+            bindblur="handleBlur1"
+          />
+        </view>
+
+        <!-- 验证码输入项 -->
+        <view class="form-item">
+          <label>验证码</label>
+          <view class="input-container code-container">
+            <input
+              class="preinput {{isFocused2 ? 'focused' : ''}}"
+              type="text"
+              placeholder="验证码"
+              value="{{verifyCode}}"
+              bindinput="handleVerifyCodeInput"
+              bindfocus="handleFocus2"
+              bindblur="handleBlur2"
+            />
+            <button 
+              class="code-btn" 
+              bindtap="getVerifyCode"
+              hover-class="code-btn-hover">
+              获取验证码
+            </button>
+          </view>
+        </view>
+
+        <!-- 密码输入项 -->
+        <view class="form-item" bindtap="handleContainerClick">
+          <label>密码</label>
+          <view class="input-container">
+            <input
+              class="preinput {{isFocused3 ? 'focused' : ''}}"
+              type="{{isPasswordVisible1 ? 'text' : 'password'}}"
+              placeholder="密码"
+              value="{{password}}"
+              bindinput="handlePasswordInput"
+              bindfocus="handleFocus3"
+              bindblur="handleBlur3"
+            />
+            <image
+              src="{{isPasswordVisible1 ? '/images/register/preview-open.svg' : '/images/register/preview-close.svg'}}"
+              catchtap="togglePasswordVisibility1"
+              data-visible="{{isPasswordVisible1}}"
+              class="password-toggle-icon"
+            />
+          </view>
+        </view>
+
+        <!-- 确认密码输入项 -->
+        <view class="form-item" bindtap="handleContainerClick">
+          <label>确认密码</label>
+          <view class="input-container">
+            <input
+              class="preinput {{isFocused4 ? 'focused' : ''}}"
+              type="{{isPasswordVisible2 ? 'text' : 'password'}}"
+              placeholder="确认密码"
+              value="{{confirmPassword}}"
+              bindinput="handleConfirmPasswordInput"
+              bindfocus="handleFocus4"
+              bindblur="handleBlur4"
+            />
+            <image
+              src="{{isPasswordVisible2 ? '/images/register/preview-open.svg' : '/images/register/preview-close.svg'}}"
+              catchtap="togglePasswordVisibility2"
+              data-visible="{{isPasswordVisible2}}"
+              class="password-toggle-icon"
+            />
+          </view>
+        </view>
+
+        <!-- 操作按钮 -->
+        <button class="button" bindtap="handleRegister" style="width: 90%;">注   册</button>
+        <text class="login-link" bindtap="navigateToLogin" style="width: 100%;" >已有账号？立即登录</text>
+      </form>
+    </view>
+  </view>
+</view>

@@ -1,0 +1,167 @@
+/* pages/editPage/editPage.wxss */
+
+button:active {
+  filter:brightness(0.95);
+}
+
+/* 错误状态的样式 */
+.input.error {
+  border-color: rgba(227, 60, 100, 0.8);
+  box-shadow: 0 0 5px rgba(227, 60, 100, 0.4);
+}
+
+.error-text {
+  color: #E33C64;
+  font-size: 24rpx;
+  margin-top: -5rpx;
+}
+
+/* 页面容器 */
+.container {
+  position: relative; /* 新增：创建定位上下文 */
+  background-color: #222831;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  padding:0;
+  overflow-x: hidden;
+  gap: 60rpx;
+}
+
+.focused{
+  border-color: #00ADB5;
+  box-shadow: 0 0 5px rgba(0, 173, 181, 0.5);
+}
+
+/*白色框框上的圆形*/
+.circle {
+  width: 296rpx;  /* 圆形的宽度 */
+  height: 296rpx; /* 圆形的高度 */
+  border-radius: 50%; /* 使元素变成圆形 */
+  background-color: #FFFFFF; /* 圆形的颜色 */
+  margin-top:-70rpx;
+  padding: 20rpx;
+}
+/*中间的白色框框部分*/
+.info-box{
+  width: 649rpx;
+  min-height: 800rpx;
+  padding: 20rpx;
+  background-color: #FFFFFF;
+  border-radius: 35rpx;
+  text-align: left;
+  margin-top: 45rpx;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap:30rpx;
+}
+/* 头像部分 */
+.avatar-section {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+/*头像图片部分*/
+.avatar {
+  width: 210rpx;
+  height: 210rpx;
+  border-radius: 50%;
+
+}
+/*编辑头像图标部分*/
+.edit-icon {
+  width: 26rpx;
+  height: 26rpx;
+  margin-top:-10rpx;
+  margin-right: -110rpx;
+}
+
+/* 信息输入部分 */
+.info-section {
+  width: 480rpx;
+  display: flex;
+  flex-direction: column;
+  gap:15rpx;
+}
+/*绿色文字部分*/
+.label {
+  color: #00ADB5;
+  font-size: 27rpx;
+  font-weight: bold;
+}
+
+/*前面输入框的样式*/
+.input {
+  width: 480rpx;
+  border-radius: 21rpx;
+  border: 1.7rpx solid #D8E0F0;
+  background-color: #FFFFFF;
+  height:84rpx;
+  font-size:28rpx;
+  color:#7D8592;
+  padding:15rpx;
+  display: flex;
+  align-items: center;
+}
+
+picker.input {
+  padding: 0; 
+}
+
+.input view {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  padding: 15rpx; 
+  align-items: center;
+  box-sizing: border-box;
+}
+/*最后一个输入框的样式*/
+textarea.input {
+  font-size:28rpx;
+  display: flex;
+  align-items: flex-start;
+  color:#7D8592;
+}
+
+/* 保存按钮 */
+.save-button button{
+  padding: 24rpx;
+  background-color: #00ADB5;
+  color: #FFFFFF;
+  font-size:27rpx;
+  font-weight: 400;
+  border: none;
+  border-radius: 24rpx;
+  margin-bottom: 15rpx;
+}
+/*保存成功的提示样式*/
+.success-message {
+  margin-top: 32rpx;
+  padding: 17rpx;
+  color: white;
+  border-radius: 8rpx;
+  text-align: center;
+}
+/* .icon-in-bottom{
+  width: 440rpx;
+  height: 174rpx;
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 99;
+} */
+/* 猫猫图标 - 跟随内容流 */
+.icon-in-bottom{
+  width: 440rpx;
+  height: 174rpx;
+  /* 移除 position: absolute 和 bottom: 0 */
+  /* 改为相对定位或静态定位 */
+  margin: 0 auto; /* 水平居中 */
+  display: block;
+  padding-bottom: 0rpx; /* 底部留白 */
+}

@@ -1,0 +1,172 @@
+<!--pages/my_project_list/my_project_list.wxml-->
+
+<view class="container">
+  <!-- 顶部导航栏 -->
+  <navBar class="navbar"
+          title="我的项目"
+          background="#222831"
+          color="#fff"
+          back="{{true}}"
+          home="{{true}}"
+          iconTheme="white"
+          bindback="handlerGobackClick"
+          bindhome="handlerGohomeClick" />
+
+  <!-- 顶部 tab 切换：待审核 / 进行中 / 已打回 -->
+  <view class="tab">
+    <text bindtap="changeItem" data-item="0" class="{{tab==0?'active':''}}">待审核</text>
+    <text bindtap="changeItem" data-item="1" class="{{tab==1?'active':''}}">进行中</text>
+    <text bindtap="changeItem" data-item="2" class="{{tab==2?'active':''}}">已打回</text>
+    <text bindtap="changeItem" data-item="3" class="{{tab==3?'active':''}}">已结束</text>
+  </view>
+
+  <!-- 内容区域 swiper 切换 -->
+  <swiper current="{{tab}}" bindchange="onSwiperChange">
+
+    <!-- 待审核 tab -->
+    <swiper-item>
+      <view class="list-container">
+        <block wx:if="{{pendingList.length > 0}}">
+          <block wx:for="{{pendingList}}" wx:key="project_id">
+            <view class="item-container">
+              <view class="item-details">
+                <!-- 项目名称 -->
+                <text class="name">{{item.project_name}}</text>
+
+                <!-- 创建时间 + 状态 -->
+                <text class="label">项目创建时间：</text>
+                <view class="time-and-state">
+                  <text class="create-time">{{item.formatted_time}}</text>
+                  <!-- 状态标签：待审核 -->
+                  <view class="state"
+                        style="background-color: {{stateColors[item.state]}}; color: {{stateText[item.state]}}">
+                    {{stateTag[item.state]}}
+                  </view>
+                </view>
+              </view>
+
+              <!-- 详情按钮 -->
+              <view class="detail-btn"
+                    data-project-id="{{item.project_id}}"
+                    bindtap="navigateToDetail">
+                详情
+              </view>
+            </view>
+          </block>
+        </block>
+
+        <block wx:else>
+          <view class="empty-hint">
+            <text>还没有待审核的项目哦\n快去创建一个新项目吧～</text>
+          </view>
+        </block>
+      </view>
+    </swiper-item>
+
+    <!-- 进行中 tab -->
+    <swiper-item>
+      <view class="list-container">
+        <block wx:if="{{ongoingList.length > 0}}">
+          <block wx:for="{{ongoingList}}" wx:key="project_id">
+            <view class="item-container">
+              <view class="item-details">
+                <text class="name">{{item.project_name}}</text>
+                <text class="label">项目创建时间：</text>
+                <view class="time-and-state">
+                  <text class="create-time">{{item.formatted_time}}</text>
+                  <view class="state"
+                        style="background-color: {{stateColors[item.state]}}; color: {{stateText[item.state]}}">
+                    {{stateTag[item.state]}}
+                  </view>
+                </view>
+              </view>
+
+              <view class="detail-btn"
+                    data-project-id="{{item.project_id}}"
+                    bindtap="navigateToDetail">
+                详情
+              </view>
+            </view>
+          </block>
+        </block>
+
+        <block wx:else>
+          <view class="empty-hint">
+            <text>当前还没有进行中的项目哦\n快去启动一个项目吧～</text>
+          </view>
+        </block>
+      </view>
+    </swiper-item>
+
+    <!-- 已打回 tab -->
+    <swiper-item>
+      <view class="list-container">
+        <block wx:if="{{rejectedList.length > 0}}">
+          <block wx:for="{{rejectedList}}" wx:key="project_id">
+            <view class="item-container">
+              <view class="item-details">
+                <text class="name">{{item.project_name}}</text>
+                <text class="label">项目创建时间：</text>
+                <view class="time-and-state">
+                  <text class="create-time">{{item.formatted_time}}</text>
+                  <view class="state"
+                        style="background-color: {{stateColors[item.state]}}; color: {{stateText[item.state]}}">
+                    {{stateTag[item.state]}}
+                  </view>
+                </view>
+              </view>
+
+              <view class="detail-btn"
+                    data-project-id="{{item.project_id}}"
+                    bindtap="navigateToDetail">
+                详情
+              </view>
+            </view>
+          </block>
+        </block>
+
+        <block wx:else>
+          <view class="empty-hint">
+            <text>还没有被打回的项目\n保持这个状态继续加油～</text>
+          </view>
+        </block>
+      </view>
+    </swiper-item>
+     <!-- ✅ 已结束 tab (3) -->
+  <swiper-item>
+    <view class="list-container">
+      <block wx:if="{{finishedList.length > 0}}">
+        <block wx:for="{{finishedList}}" wx:key="project_id">
+          <view class="item-container">
+            <view class="item-details">
+              <text class="name">{{item.project_name}}</text>
+              <text class="label">项目创建时间：</text>
+              <view class="time-and-state">
+                <text class="create-time">{{item.formatted_time}}</text>
+                <view class="state"
+                      style="background-color: {{stateColors[item.state]}}; color: {{stateText[item.state]}}">
+                  {{stateTag[item.state]}}
+                </view>
+              </view>
+            </view>
+            <view class="detail-btn"
+                  data-project-id="{{item.project_id}}"
+                  bindtap="navigateToDetail">
+              详情
+            </view>
+          </view>
+        </block>
+      </block>
+      <block wx:else>
+        <view class="empty-hint">
+          <text>暂时还没有结束的项目哦\n项目完成后会显示在这里～</text>
+        </view>
+      </block>
+    </view>
+  </swiper-item>
+
+  </swiper>
+
+  <!-- 底部装饰图（比如项目相关图标，可重用白猫或者换成项目图） -->
+  <image class="bottom-image" src="{{icons.projectDecoration || icons.whiteCat}}" mode="widthFix" />
+</view>

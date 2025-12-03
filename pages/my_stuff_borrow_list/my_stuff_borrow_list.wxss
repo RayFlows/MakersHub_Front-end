@@ -1,0 +1,169 @@
+/* pages/my_site_borrow_list/my_site_borrow_list.wxss */
+
+page {
+  background-color: #222831;
+  overflow: hidden;
+}
+
+.container {
+  position: relative;
+  overflow-x: hidden;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
+  height: 100vh;
+}
+
+.tab {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 100rpx;
+  margin-top: 10rpx;
+  margin-bottom: 25rpx;
+}
+
+.tab text {
+  font-size: 32rpx;
+  color: #FFFFFF;
+  height: 80rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.active {
+  position: relative;
+  border: none;
+  color: #00ADB5 !important;
+  border-bottom: 6rpx solid #00ADB5;
+}
+
+.list-container {
+  display: flex;
+  flex-direction: column;
+  overflow-x: hidden;
+  flex: 1;
+  height: auto;
+  touch-action: none;
+  gap:40rpx;
+}
+
+swiper {
+  flex: 1;
+  height: 100%;
+  width: 100vw;
+}
+
+swiper-item {
+  min-height: 80%;
+  overflow-x: hidden;
+  display: flex;
+  flex-direction: column;
+  height: auto;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 30rpx;
+  overflow-y: auto;
+}
+
+.item-container {
+  display: flex;
+  align-items: center;
+  width: 619rpx;
+  height: auto;
+  justify-content: space-between;
+  background-color: #ffffff;
+  color: #393E46;
+  border-radius: 35rpx;
+  padding:30rpx 40rpx 30rpx 40rpx;
+}
+
+.item-details {
+  height: 100%;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 10rpx;
+}
+
+.name {
+  font-size: 32rpx;
+  font-weight: 600;
+  color: #393E46;
+  max-width: 100%;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  text-align: left;
+}
+
+.label {
+  font-size: 24rpx;
+  color: #888;
+  display: flex;
+}
+
+.create-time {
+  font-size: 24rpx;
+  color: #333;
+  display: inline-block;
+  white-space: nowrap;
+}
+
+.state {
+  display: inline-block;
+  white-space: nowrap;
+  color: #333;
+  font-size: 22rpx;
+  padding: 4rpx 12rpx;
+  border-radius: 24rpx;
+}
+
+.time-and-state {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 28rpx;
+}
+
+.detail-btn {
+  display: flex;
+  width: 200rpx;
+  height: 70rpx;
+  background: #00BAAD;
+  color: #fff;
+  border-radius: 35rpx;
+  font-size: 28rpx;
+  text-align: center;
+  justify-content: center;
+  align-items: center;
+}
+
+.detail-btn:active {
+  filter: brightness(0.95);
+}
+
+.bottom-image {
+  width: 440rpx;
+  height: 174rpx;
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: -99;
+}
+.empty-hint {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 75%; /* 占满 swiper-item 高度 */
+  text-align: center;
+  font-size: 28rpx;
+  line-height: 40rpx;
+  color: #666; /* 确保颜色为 #666 */
+}

@@ -1,0 +1,46 @@
+<!--pages/3D/3D.wxml-->
+<view class = "container">
+  <!-- 顶部导航栏，包含页面标题和编辑图标 -->
+  <navBar title='3D打印申请' background='rgb(0,0,0,0)' color='#fff' back="{{true}}" home="{{true}}" iconTheme='white' bindback="handlerGobackClick" bindhome="handlerGohomeClick"></navBar>
+  <view class="form-container">
+    <view class="form-item">
+        <text class="label1">姓名</text>
+        <input class="{{isNameFocused ? 'focused' : ''}}" type="text" placeholder="姓名" bindinput="bindNameInput" bindtap = "onNameFocused" bindblur="onNameBlur"/>
+    </view>
+    <view class="form-item">
+        <text class="label1">电话</text>
+        <input class="{{isPhoneFocused ? 'focused' : ''}}" type="text" placeholder="电话" bindinput="bindPhoneInput" bindtap = "onPhoneFocused" bindblur="onPhoneBlur"/>
+    </view>
+    <view class="form-item">
+      <text class="label1">选择打印机</text>
+      <radio-group class="radio-group" bindchange="bindPrinterChange">
+          <label class="radio-label">
+          <radio color="#00ADB5" value="二基楼B101" />二基楼B101
+          </label>
+          <label class="radio-label">
+          <radio color="#00ADB5" value="i创街" />i创街
+          </label>
+      </radio-group>
+    </view>
+    <view class="form-item">
+        <text class="label1">料量</text>
+        <input class="{{isAmountFocused ? 'focused' : ''}}" type="text" placeholder="料量" bindinput="bindMaterialInput" bindtap = "onAmountFocused" bindblur="onAmountBlur"/>
+    </view>
+    <view class="form-item">
+      <view class="label-container">
+        <text class="label1">.zip 文件</text>
+        <view class="question-icon" bindtap="showHelp">?</view>
+      </view>
+      <button  class="upload-btn" bindtap="uploadFile" style="width: 578rpx; height: 84rpx;">
+        <image class="upload-icon" src="/images/3D/upload-one.svg"></image>
+        上传.zip文件
+      </button>
+    </view>
+  </view>
+  <view class="container2">
+    <form bindsubmit="submitForm">
+        <button class="btn2" formType="submit" style="width: 227rpx; height: 87rpx;">提交</button>
+    </form>
+  </view>
+  <image class="bottom-image" src="/images/3D/white_cat.svg"></image>
+</view>

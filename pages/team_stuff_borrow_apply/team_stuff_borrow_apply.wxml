@@ -1,0 +1,183 @@
+<!--pages/stuff_borrow/stuff_borrow.wxml-->
+<view class="container">
+  <navBar 
+    title='团队借物' 
+    background='#222831' 
+    color='#fff' 
+    back="{{true}}" 
+    home="{{true}}" 
+    iconTheme='white' 
+    bindback="handlerGobackClick" 
+    bindhome="handlerGohomeClick">
+  </navBar>
+
+  <view class="form-container">
+
+    <!-- 新增任务名称字段
+    <text class="form-label">任务名称</text>
+    <input
+      class="input-field {{ isTaskNameFocused ? 'focused' : '' }}"
+      placeholder="请输入任务名称"
+      data-field="task_name"
+      bindinput="onInput"
+      bindfocus="onTaskNameFocus"
+      bindblur="onTaskNameBlur" /> -->
+
+    <text class="form-label">负责人姓名</text>
+    <input
+      class="input-field {{ isLeaderNameFocused ? 'focused' : '' }}"
+      placeholder="负责人姓名"
+      value="{{name}}"
+      data-field="name"
+      bindinput="onInput"
+      bindfocus="onLeaderNameFocus"
+      bindblur="onLeaderNameBlur" />
+
+      <text class="form-label">借用人学号</text>
+    <input
+      class="input-field {{ isLeaderNameFocused ? 'focused' : '' }}"
+      placeholder="负责人学号"
+      value="{{student_id}}"
+      data-field="student_id"
+      bindinput="onInput"
+      bindfocus="onLeaderIdFocus"
+      bindblur="onLeaderIdBlur" />
+
+    <text class="form-label">负责人电话</text>
+    <input
+      class="input-field {{ isLeaderPhoneFocused ? 'focused' : '' }}"
+      placeholder="负责人电话"
+      value="{{leaderPhone}}"
+      data-field="leaderPhone"
+      bindinput="onInput"
+      bindfocus="onLeaderPhoneFocus"
+      bindblur="onLeaderPhoneBlur" />
+
+    <text class="form-label">邮箱</text>
+    <input
+      class="input-field {{ isEmailFocused ? 'focused' : '' }}"
+      placeholder="邮箱地址"
+      value="{{email}}"
+      data-field="email"
+      bindinput="onInput"
+      bindfocus="onEmailFocus"
+      bindblur="onEmailBlur" />
+
+    <text class="form-label">年级（20XX级）</text>
+    <input
+      class="input-field {{ isGradeFocused ? 'focused' : '' }}"
+      placeholder="年级（例如：2023级）"
+      value="{{grade}}"
+      data-field="grade"
+      bindinput="onInput"
+      bindfocus="onGradeFocus"
+      bindblur="onGradeBlur" />
+
+    <text class="form-label">负责人专业</text>
+    <input
+      class="input-field {{ isMajorFocused ? 'focused' : '' }}"
+      placeholder="专业（例如：计算机科学）"
+      value="{{major}}"
+      data-field="major"
+      bindinput="onInput"
+      bindfocus="onMajorFocus"
+      bindblur="onMajorBlur" />
+
+      <text class="form-label">项目编号</text>
+      <input
+        class="input-field {{ isProjectIdFocused ? 'focused' : '' }}"
+        placeholder="项目编号"
+        value="{{project_number}}"
+        data-field="project_number"
+        bindinput="onInput"
+        bindfocus="onProjectIdFocus"
+        bindblur="onProjectIdBlur" />
+
+      <text class="form-label">指导老师姓名</text>
+      <input
+        class="input-field {{ isAdvisorNameFocused ? 'focused' : '' }}"
+        placeholder="指导老师姓名"
+        value="{{supervisor_name}}"
+        data-field="supervisor_name"
+        bindinput="onInput"
+        bindfocus="onAdvisorNameFocus"
+        bindblur="onAdvisorNameBlur" />
+
+      <text class="form-label">指导老师电话</text>
+      <input
+        class="input-field {{ isAdvisorPhoneFocused ? 'focused' : '' }}"
+        placeholder="指导老师电话"
+        value="{{supervisor_phone}}"
+        data-field="supervisor_phone"
+        bindinput="onInput"
+        bindfocus="onAdvisorPhoneFocus"
+        bindblur="onAdvisorPhoneBlur" />
+
+
+  </view>
+  
+  <view class="form-label">借用物资详情</view>
+
+  <view class="material-details">
+    <view class="box" wx:for="{{array}}" wx:key="index">
+      <view class="del" bindtap="delInput" data-idx="{{index}}">-</view>
+      <picker
+        mode="multiSelector"
+        range="{{multiArrayList[index]}}"
+        value="{{multiIndexList[index]}}"
+        bindchange="bindMultiPickerChange"
+        bindcolumnchange="bindMultiPickerColumnChange"
+        data-idx="{{index}}"
+      >
+        <view class="b-ipt">
+          {{ selectedTextList[index] || '请选择 借用类别 - 物品名称 - 数量' }}
+        </view>
+      </picker>
+    </view>
+    <view class="add" bindtap="addInput">增加条目</view>
+  </view>
+
+  <view class="form-label">归还日期</view>
+
+  <view class="time-picker-group">
+      <picker 
+        mode="selector" 
+        range="{{years}}" 
+        bindchange="onYearChange"
+        data-type="deadline">
+        <view>{{selectedYear || '年份'}}</view>
+      </picker>
+      <picker 
+        mode="selector" 
+        range="{{months}}" 
+        bindchange="onMonthChange"
+        data-type="deadline">
+        <view>{{selectedMonth || '月份'}}</view>
+      </picker>
+      <picker 
+        mode="selector" 
+        range="{{days}}" 
+        bindchange="onDayChange"
+        data-type="deadline">
+        <view>{{selectedDay || '日期'}}</view>
+      </picker>
+    </view>
+
+  <view class="form-label">借用理由</view>
+
+  <textarea 
+    class="input-field textarea-field {{isDescriptionFocused ? 'focused' : ''}}" 
+    placeholder="请输入借用理由" 
+    value="{{reason}}"
+    data-field="reason" 
+    bindinput="onInput"
+    bindfocus="onDescriptionFocus" 
+    bindblur="onDescriptionBlur"/>
+
+  <!-- 在按钮部分 -->
+  <button class="submit-btn" bindtap="onSubmit" style="width: 227rpx;">
+    {{isEditMode ? '更新' : '提交'}}
+  </button>
+
+  <image class="decorative-image" src="{{icons.whiteCat}}"/>
+</view>

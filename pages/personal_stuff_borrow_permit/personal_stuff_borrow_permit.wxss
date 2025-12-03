@@ -1,0 +1,157 @@
+/* pages/personal_stuff_borrow_permit.wxss */
+
+.container {
+  display: flex;
+  flex-direction: column;
+  background: #222831;
+  min-height: 100vh;
+  padding: 30rpx;
+  padding-bottom: 0;
+  justify-content: space-between; 
+  position: relative;
+  gap: 40rpx;
+}
+
+.focused{
+  border-color: #00ADB5;
+  box-shadow: 0 0 5px rgba(0, 173, 181, 0.5);
+}
+
+/* 表单容器 */
+.form-container {
+  flex:1;
+  background: #fff;
+  border-radius: 35rpx;
+  padding: 40rpx;
+  margin-top: 30rpx;
+  width: 95%;
+}
+
+.form-header {
+  font-size: 36rpx;
+  color: #00ADB5;
+  font-weight: bold;
+  text-align: center;
+  margin-bottom: 40rpx;
+}
+
+/* 表单项通用样式 */
+.form-item {
+  margin-bottom: 40rpx;
+}
+
+.form-label {
+  display: block;
+  color: #00ADB5;
+  font-size: 28rpx;
+  margin-bottom: 20rpx;
+  font-weight: bold;
+}
+
+/* 文本域特殊处理 */
+.textarea {
+  height: 160rpx !important;
+  padding: 20rpx;
+  line-height: 1.4;
+}
+
+/* 输入框样式 */
+.form-input {
+  width: 100%;
+  min-height: 80rpx;
+  background: #F5F5F5;
+  border: 2rpx solid #D8E0F0;
+  border-radius: 24.5rpx;
+  padding: 20rpx 20rpx;
+  font-size: 28rpx;
+  box-sizing: border-box;
+  color:#7D8592;
+}
+
+/* 上传区域 */
+.upload-box {
+  display: flex;
+  align-items: center;
+  height: 80rpx;
+  background: #F5F5F5;
+  border: 2rpx dashed #00ADB5;
+  border-radius: 24.5rpx;
+  flex-direction: row;
+  justify-content: center;
+}
+
+.upload-box:active {
+ background-color: rgba(0, 173, 181, 0.2);
+}
+
+.upload-box text {
+  margin-left: 20rpx;
+  color: #666;
+}
+
+.upload-icon {
+  width: 50rpx;
+  height: 50rpx;
+}
+
+/* 时间显示组 */
+.time-group .form-label{
+  border-radius: 24.5rpx;
+}
+
+.time-row {
+  display: flex;
+  gap: 20rpx;
+  margin: 20rpx 0;
+  align-items: center;
+}
+
+/* 提交按钮 */
+.submit-btn {
+  flex:2;
+  background: #00ADB5;
+  color: #fff;
+  border-radius: 50rpx;
+  margin: 60rpx auto;
+  width: 70%;
+  height: 90rpx;
+  line-height: 60rpx;
+  font-size: 32rpx;
+}
+
+.submit-btn:active {
+  transform: scale(0.98);
+  filter:brightness(0.95);
+}
+
+.submit-btn:nth-child(2) {
+  background-color: #E33C64;
+}
+.reply-container {
+  width: 95%;
+}
+
+.reply-buttons {
+  display: flex;
+  gap: 50rpx;
+}
+
+.focused{
+  /* border-color: #00ADB5; */
+  box-shadow:inset 0 0 7px rgba(0, 173, 181, 0.6);
+  outline: none
+}
+.return-btn {
+  /* flex: 1; */
+  height: 80rpx;
+  width: 250rpx;
+  font-size: 32rpx;
+  font-weight: 400;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 40rpx;
+  color: #FFFFFF;
+  background-color: #00ADB5;
+  margin-bottom: 60rpx;
+}

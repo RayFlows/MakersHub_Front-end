@@ -1,0 +1,38 @@
+<!--pages/curriculum/curriculum.wxml-->
+<view class="container">
+  <view class='nav'>
+          <navBar 
+          title='值班安排' 
+          background='#222831' 
+          color='#FFFFFF' 
+          back="{{true}}" 
+          home="{{false}}" 
+          iconTheme='white' 
+          bindback="handlerGobackClick"
+          showEditIcon="{{false}}"
+          ></navBar>
+    </view>
+  <!--第几周-->
+
+  <!--课程表内容-->
+  <view class="cur_top">
+    <view class="cur_left"></view>
+    <!--课程表头顶一行，显示周几与日期-->
+    <text wx:for="一二三四五六天" wx:key="index" class="day">周{{item}}
+      <!-- <view class="precise">{{precise[index]}}</view> -->
+    </text>
+  </view>
+  <!--课程表，双层循环生成-->
+  <view class="grid-box">
+    <view wx:for="{{6}}" wx:key="index" class="cur_mid">
+      <view class="cur_left2">{{index+1}}</view>
+      <view wx:for="一二三四五六七" wx:key="data" wx:for-item="day" wx:for-index="index2" 
+      class="piece"
+      style="background-color: {{curriculum[day][index+1].background_color || 'white'}};border-radius: {{curriculum[day][index+1].border_radius || '0 0 0 0'}};z-index:{{curriculum[day][index+1].text?1:0}}" 
+      catchtap="_goTo"
+      data-id="{{curriculum[day][index+1].id}}"
+      >{{curriculum[day][index+1].text || ""}}</view>
+    </view>
+  </view>
+  <van-dialog id="van-dialog" />
+</view>

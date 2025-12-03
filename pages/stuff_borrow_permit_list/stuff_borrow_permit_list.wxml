@@ -1,0 +1,65 @@
+<view class="container">
+  <!-- 顶部导航栏 -->
+  <navBar class="navbar"
+          title="借物申请处理"
+          background="#222831"
+          color="#fff"
+          back="{{true}}"
+          home="{{true}}"
+          iconTheme="white"
+          bindback="handlerGobackClick"
+          bindhome="handlerGohomeClick" />
+
+  <!-- Tab 切换 -->
+  <view class="tab">
+    <text bindtap="changeItem" data-item="0" class="{{tab==0?'active':''}}">未审核</text>
+    <text bindtap="changeItem" data-item="1" class="{{tab==1?'active':''}}">审核通过</text>
+    <text bindtap="changeItem" data-item="2" class="{{tab==2?'active':''}}">已归还</text>
+  </view>
+
+  <!-- swiper 内容区域 -->
+  <swiper current="{{tab}}" bindchange="onSwiperChange">
+
+    <!-- 通用 swiper-item 渲染函数：通过 wx:for 动态切换列表 -->
+    <swiper-item wx:for="{{[unreviewedList, approvedList, returnedList]}}" wx:for-item="list" wx:for-index="tabIndex">
+      <view class="list-container">
+        <block wx:if="{{list.length > 0}}">
+        <block wx:for="{{list}}" wx:key="event_id" wx:for-index="idx">
+          <view class="item-container">
+            <view class="item-details">
+              <text class="name">{{item.grade}}-{{item.major}}-{{item.name}}</text>
+              <text class="label">申请时间：</text>
+              <view class="time-and-tag">
+                <text class="value">{{item.start_time}}</text>
+                <view class="tag {{item.type === '团队' ? 'tag-team' : ''}}">{{item.type}}</view>
+              </view>
+            </view>
+
+            <!-- 右侧按钮：根据当前 tab 显示不同按钮 -->
+            <view class="detail-btn"
+                  wx:if="{{tabIndex === 0 || tabIndex === 2}}"
+                  data-event-id="{{item.event_id}}"
+                  data-original-type="{{item.originalType}}"
+                  bindtap="navigateToDetail">详情</view>
+
+            <view class="detail-btn"
+                  wx:if="{{tabIndex === 1}}"
+                  data-index="{{idx}}"
+                  data-event-id="{{item.event_id}}"
+                  data-original-type="{{item.originalType}}"
+                  bindtap="navigateToDetail">归还</view>
+          </view>
+        </block>
+        </block>
+        <block wx:else>
+          <view class="empty-hint">
+            <text>(≧∀≦)ゞ\n还没有归还记录呢</text>
+          </view>
+        </block>
+      </view>
+    </swiper-item>
+  </swiper>
+
+  <!-- 底部装饰图片 -->
+  <image class="bottom-image" src="{{icons.whiteCat}}" mode="widthFix" />
+</view>

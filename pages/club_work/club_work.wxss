@@ -1,0 +1,201 @@
+/*1.74418605rpx = 1px*/
+
+/*全局样式渲染*/
+/*页面设置*/
+page {
+    background-color: #222831;
+  }
+
+.container{
+  overflow-x: hidden ;
+  padding: 0;
+  padding-top:25rpx;
+}
+
+
+/*标题样式渲染*/
+.title {
+    /* position: relative; */
+    font-size: 42rpx;
+    font-weight: 600;
+    text-align: center;
+    color:#00ADB5;
+}
+
+button:active {
+    opacity: 0.8;
+}
+
+/*常用功能容器：“常用功能” + 四个按钮*/
+.common-function {
+    /* position: absolute; */
+    /* margin-top: 27rpx; */
+    /* top:30rpx; */
+    width:100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    /* align-items: center; */
+    flex:1;
+}
+
+/*四个按钮封装容器*/
+.buttons {
+    position: relative;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    margin-left: 40rpx;
+    margin-right: 40rpx;
+}
+
+/*四个按钮样式渲染*/
+.buttons button {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-between;
+    margin:21rpx 0rpx 0rpx 0rpx;
+    height: 140rpx;
+    width: 140rpx;
+    background-color:#00ADB5;
+    color:white;
+    font-size: 26rpx;
+    font-weight: 400;
+    padding:17rpx 18rpx 24.4rpx 18rpx;
+    border-radius: 35rpx;
+}
+
+/*按钮图标*/
+.icon {
+    display: inline-block;  /* 使其成为块级元素，便于设置尺寸 */
+    width: 63rpx;
+    height: 63rpx;  /* 设置一个合适的高度 */
+    position: relative;
+}
+
+.clean {
+    width: 57rpx;
+    height: 57rpx;
+}
+
+.remote {
+    width: 57rpx;
+    height: 57rpx;
+}
+
+.apply-duty {
+    width: 68rpx;
+    height: 68rpx;
+}
+
+/*部门工作容器*/
+.work {
+    /* position: absolute; */
+    display: flex;
+    flex-direction: column;
+    align-items:center;
+    justify-content: flex-end;
+    top:240rpx;
+    width: 750rpx;
+    height: 1215rpx;
+    flex:2;
+}
+
+/*特殊修饰部门工作的标题（位置设置变化）*/
+.work .title {
+    position: relative;
+    top:50rpx;
+}
+
+/*猫猫框*/
+.cat-head {
+    /* margin-top: 285rpx; */
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink' width='431' height='675' viewBox='0 0 431 675' fill='none'%3E %3Cpath d='M394.27 6.38177C388.423 -1.90749 377.541 -2.1603 371.41 5.84994L344.169 41.4359L85.7622 41.4359L61.15 6.54363C55.2654 -1.79908 44.3018 -1.99255 38.2 6.13898L3.67 52.1533C1.30337 55.3072 0 59.3427 0 63.5181L0 675L431 675L431 70.3394C431 67.4751 430.64 64.7082 429.968 62.0959C429.766 58.5034 428.598 55.0617 426.62 52.2574L394.27 6.38177Z' fill-rule='evenodd' fill='%23ffffff' %3E %3C/path%3E %3C/svg%3E ");
+    position:relative;
+    width: 750rpx;
+    height: 1165rpx;
+    background-size: cover;
+    display: flex;
+    flex-direction: column;
+    align-items: center; 
+    justify-content: center;
+    padding-top:45rpx;
+    top:0rpx;
+  }
+
+  /*部门容器：封装图片 + 文字内容 + 管理按钮*/
+.department {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    width: 576rpx;
+    height: 164rpx;
+    margin:20rpx 0rpx 20rpx 0rpx;
+}
+
+/*部门图片*/
+.avatar {
+    width: 130rpx;
+    height: 130rpx;
+}
+
+/*分割电路样式*/
+.split {
+    width: 665rpx;
+    height: 54rpx;
+    margin:10rpx 0rpx 10rpx 0rpx;
+}
+
+/*左对齐分割*/
+.left {
+    position: relative;
+    left:-63rpx;
+}
+
+/*右对齐分割*/
+.right {
+    transform: scaleX(-1); /* 水平翻转 */
+    position: relative;
+    left:63rpx;
+}
+
+/*部门介绍文字容器*/
+.text-box {
+    display: flex;
+    flex-direction: column;
+    width: 199rpx;
+}
+
+  /*部门名称文字样式渲染*/
+.name {
+    font-size:63rpx;
+    font-weight: 600;
+    text-shadow: #00ADB5 -6rpx 0rpx;
+}
+
+/*部门职能描述文字样式渲染*/
+.duty {
+    font-size: 24rpx;
+    color: #393E46;
+}
+
+  /*部门工作按钮渲染*/
+.department button {
+    background-color: #222831;
+    color:#00ADB5;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    font-size: 28rpx;
+    font-weight: 600;
+    text-align: center;
+    height: 84rpx;
+    width:174rpx;
+    border-radius: 42rpx;
+    padding:0rpx 10rpx 0rpx 10rpx;
+    margin:0rpx;
+}
+

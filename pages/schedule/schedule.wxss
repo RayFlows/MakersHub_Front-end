@@ -1,0 +1,145 @@
+page {
+  background-color: #222831;
+}
+
+.container {/*页面的整体*/
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  min-height: 100vh;
+  width: 100vw;
+  padding:0;
+}
+
+.table {/*表格整体*/
+  border-radius: 25rpx;
+  width: 605rpx;
+  height: auto;
+  position: relative;
+  margin-top: 50rpx;
+  font-size: 28rpx;
+}
+
+.table-header {/*表格的表头*/
+  border-radius: 25rpx 25rpx 0rpx 0rpx;
+  background-color: #00adb5;
+  color: white;
+  display: flex;
+  justify-content: flex-start;
+}
+
+.table-header-cell {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  border-right: 2px dotted #ccc;
+  border-bottom: 2px dotted #ccc;
+  height: 72rpx;
+}
+
+.table-header-cell:last-child {
+  border-right: 0 ;
+}
+
+.table-body {
+  width: 100%;
+  color:#222831;
+}
+
+.table-cell {
+  text-align: center;
+  border-right: 2px dotted #ccc;
+  border-bottom: 2px dotted #ccc;
+  width: 210.22rpx;
+  height: 72rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0; /* 确保没有额外的padding影响对齐 */
+  line-height: 1; /* 设置行高为1，避免行高影响垂直居中 */
+}
+
+.table-cell:last-child {/*最后一个单元格*/
+  border-right: none;
+}
+
+.table-row {
+  display: flex;
+  height: 72rpx; /* 强制与表头高度一致 */
+  background-color: #fff;
+}
+
+.table-row:nth-child(even) {/*对偶数单元格*/
+  background-color: #f9f9f9;
+}
+
+.table-row:last-child {
+  border-radius: 0 0 25rpx 25rpx;
+}
+
+.table-row:last-child .table-cell {
+  border-bottom: none;
+}
+
+.edit-container {
+  display: flex;
+  width: 605rpx;
+  margin-top:40rpx;
+  align-items: center;
+}
+
+.edit-container.edit {
+  justify-content: flex-end;
+}
+
+/*提交和取消按钮的容器*/
+.edit-container.btn {
+  justify-content: center;
+  gap:50rpx;
+  
+}
+
+button {
+  height: 72rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color:#ffffff;
+  font-weight: 400;
+  border-radius: 36rpx;
+  font-size: 30rpx;
+}
+
+button:first-child {/*提交按钮*/
+ background-color:#00ADB5;
+}
+
+button:last-child{
+  background-color: #E33C64;
+}
+
+.icon-edit{/*编辑按钮的图标*/
+  width: 70rpx;
+  height: 70rpx; 
+}
+
+
+.bottom-image {/*背景图片的小猫*/
+  width: 440.53rpx;
+  height: 174.4rpx;
+  position: absolute;    
+  bottom: 0rpx;                   
+  left: 50%;                  
+  transform: translateX(-50%);
+}
+.table-cell {
+  padding: 12rpx;
+  border-bottom: 1px solid #ccc;
+}
+
+.highlight {
+  background-color: #FFE89E;
+}

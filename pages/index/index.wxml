@@ -1,0 +1,103 @@
+<!--index.wxml-->
+<!-- 顶部的透明的导航栏 -->
+<view class='nav'>
+        <navBar 
+        title='' 
+        background='rgba(0,0,0,0)' 
+        color='#fff' 
+        back="{{false}}" 
+        home="{{false}}" 
+        iconTheme='white' 
+        bindback="handlerGobackClick"
+        showMessageIcon="{{true}}"
+        ></navBar>
+</view>
+
+<!-- 页面内容 -->
+<view class="page-container">
+
+  <!-- 轮播图 -->
+  <swiper class="carousel" autoplay interval="3000" circular>
+    <swiper-item>
+      <image src="/images/index/background.png" class="carousel-image" />
+    </swiper-item>
+    <swiper-item>
+      <image src="/images/index/background.png" class="carousel-image" />
+    </swiper-item>
+  </swiper>
+
+  <!-- 背景容器 -->
+  <view class="content-container">
+    <image class="background-image" src="/images/index/cat_background.svg" mode="aspectFill"/>
+    <!-- 公告栏 -->
+    <view class="announcement-box">
+      <image class="notice-icon" src="/images/index/notice.svg" />
+      <text class="announcement-text">最新公告：校园借物系统正式上线！</text>
+    </view>
+
+    <!-- 功能按钮区 -->
+    <view class="button-grid">
+      <!-- 第一行 -->
+      <view class="button-row">
+        <button class="func-button" bindtap="navigateToPersonalStuffBorrow">
+          <image src="{{icons.spanner}}" class="button-icon" />
+          <text class="text1">个人借物</text>
+        </button>
+        <button class="func-button" bindtap="navigateToTeamStuffBorrow">
+          <image src="{{icons.peoples}}" class="button-icon" />
+          <text class="text6">团队借物</text>
+        </button>
+        <button class="func-button" bindtap="navigateToVenue">
+          <image src="{{icons.grayHouse}}" class="button-icon" />
+          <text class="text2">场地申请</text>
+        </button>
+      </view>
+
+      <!-- 第二行 -->
+      <view class="button-row">
+        <button class="func-button" bindtap="navigateToActivity">
+          <image src="{{icons.activity}}" class="button-icon" />
+          <text class="text4">协会活动</text>
+        </button>
+        <button class="func-button" bindtap="navigateToProject">
+          <image src="{{icons.project}}" class="button-icon" />
+          <text class="text3">项目立项</text>
+        </button>
+        <button class="func-button" bindtap="navigateToViewProject">
+          <image src="{{icons.lookup}}" class="button-icon" />
+          <text class="text5">查看项目</text>
+        </button>
+        
+      </view>
+    </view>
+  </view>
+</view>
+
+<!-- 底部的导航栏 -->
+<view class="bottom-nav">
+    <!-- 社区的按钮 -->
+    <view class="nav-item" data-page="community" bindtap="switchPage">
+      <image class="community-icon" src="{{ activeTab=='community' ? '/images/index/community_chosen.svg' : '/images/index/community_unchosen.svg' }}" mode="aspectFill" />
+      <text class="nav-item-text1">社区</text>
+    </view>
+    <!-- 首页的按钮 -->
+    <view class="circle"data-page="index" bindtap="switchPage">
+      <view class="green-circle">
+        <image class="icon-on-green-circle" 
+          src="{{ activeTab == 'index' ? icons.catIconChosen : icons.catIconUnchosen }}" 
+          mode="aspectFit">
+        </image>
+      </view>
+    </view>
+    <!-- 我的的按钮 -->
+    <view class="nav-item" data-page="me" bindtap="switchPage">
+      <image class="me-icon" src="{{ activeTab=='me' ? icons.meChosen : icons.meUnchosen }}" mode="aspectFit" style="color: {{ activeTab=='me' ? '#00ADB5' : '#ffffff' }}"></image>
+      <text class="nav-item-text2">我的</text>
+    </view>
+  </view>
+
+
+
+
+
+

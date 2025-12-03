@@ -1,0 +1,95 @@
+<!-- pages/task/task.wxml -->
+<view class="container">
+  <navBar     
+    title='发布任务'
+    background='#222831'
+    color='#fff'
+    back="{{true}}"
+    home="{{true}}"
+    iconTheme='white'
+    bindback="handlerGobackClick"
+    bindhome="handlerGohomeClick">
+  </navBar>
+
+  <view class="form-container">
+    <text class="form-label">任务类型</text>
+    <picker
+      class="input-field" 
+      mode="selector"
+      range="{{taskTypes}}"
+      range-key="label"
+      value="{{selectedTaskTypeIndex}}"
+      bindchange="onTaskTypeChange">
+      <view>{{selectedTaskType || '选择任务类型'}}</view>
+    </picker>
+        
+    <text class="form-label">负责人</text>
+    <view class="person-select-group">
+      <picker
+        class="department-picker"
+        mode="selector"
+        range="{{departments}}"
+        range-key="label"
+        bindchange="onDepartmentChange">
+        <view>{{selectedDepartment || '选择部门'}}</view>
+      </picker>
+      <picker
+        range="{{currentMakers}}"
+        range-key="name"
+        class="director-picker {{isDirectorFocused ? 'focused' : ''}}" 
+        mode="selector"
+        bindchange="onMakerChange">
+        <view>{{selectedMaker || '选择负责人'}}</view>
+      </picker>
+    </view>
+
+    <text class="form-label">任务内容</text>
+    <textarea 
+      class="textarea-field {{isDescriptionFocused ? 'focused' : ''}}" 
+      placeholder="请输入任务内容" 
+      value="{{apiData.content}}"
+      data-field="content"
+      bindinput="onInput"
+      bindtap="onDescriptionFocused" 
+      bindblur="onDescriptionBlur"
+    />
+        
+    <text class="form-label">任务截止时间</text>
+    <view class="time-picker-group">
+      <picker
+        mode="selector"
+        range="{{years}}"
+        bindchange="onYearChange">
+        <view>{{selectedYear || '年份'}}</view>
+      </picker>
+      <picker
+        mode="selector"
+        range="{{months}}"
+        bindchange="onMonthChange">
+        <view>{{selectedMonth || '月份'}}</view>
+      </picker>
+      <picker
+        mode="selector"
+        range="{{days}}"
+        bindchange="onDayChange">
+        <view>{{selectedDay || '日期'}}</view>
+      </picker>
+      <picker
+        mode="selector"
+        range="{{hours}}"
+        bindchange="onHourChange">
+        <view>{{selectedHour || '小时'}}</view>
+      </picker>
+      <picker
+        mode="selector"
+        range="{{minutes}}"
+        bindchange="onMinuteChange">
+        <view>{{selectedMinute || '分钟'}}</view>
+      </picker>
+    </view>
+  </view>
+
+  <button class="submit-btn" bindtap="onSubmit" style="width: 227rpx;">提交</button>
+
+  <image class="decorative-image" src="{{icons.whiteCat}}"/>
+</view>

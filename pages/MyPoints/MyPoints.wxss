@@ -1,0 +1,215 @@
+/* pages/MyPoints/MyPoints.wxss */
+page{
+  background-color: #222831;
+  overflow: hidden;
+}
+
+.container {
+  position: relative;
+  overflow-x: hidden ;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
+  height: 100vh;
+}
+
+.score {
+  width: 100vh;
+  height: 270rpx;
+  background-color: #00ADB5;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.points-label {
+  font-size: 63rpx; /* 36号大小 */
+  color: #FFE89E; /* 标黄 */
+  font-weight: bold;
+  text-align: center;
+}
+
+.points-value {
+  font-size: 73.25rpx; /* 36号大小 */
+  color: #FFFFFF; 
+  text-align: center;
+}
+
+.tab{
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap:200rpx;
+  margin-top:10rpx;
+  margin-bottom: 25rpx;
+}
+/* 居中 */
+.tab text{  
+  font-size: 32rpx;
+  color: #FFFFFF; /* 图标颜色 */
+  height: 80rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* 活动状态样式 */
+.active {
+  position: relative; /* 使伪元素定位相对于此元素 */
+  border: none; /* 移除原始的 border-bottom */
+  color: #00ADB5 !important; /* 选中状态的文字颜色， 修改优先级！！！ */
+  border-bottom: 6rpx solid #00ADB5;
+}
+
+.list-container {
+  overflow-x: hidden;
+  flex:1;
+  height: auto;
+  touch-action: none;
+}
+
+swiper {
+  flex: 1;
+  height: 100%;
+  width: 100vw;
+}
+
+swiper-item {
+  min-height:80% ;
+  overflow-x: hidden;
+  display: flex;
+  flex-direction: column;
+  height: auto;
+  align-items: center;
+  justify-content: flex-start;
+  gap:30rpx;
+  overflow-y: auto; 
+}
+
+/* 积分兑换项 */
+.item-container {
+  display: flex;
+  align-items: center;
+  width: 619rpx;
+  height: 183rpx; /* 确保高度与图片一致 */
+  justify-content: flex-start; /* 从起始位置开始排列 */
+  background-color: #ffffff;
+  color: #393E46;
+  border-radius: 35rpx;
+  gap:20rpx;
+}
+
+.item-image {
+  width: 183rpx; /* 与容器高度一致 */
+  height: 183rpx; /* 与容器高度一致 */
+  border-radius: 35rpx 0rpx 0rpx 35rpx;
+}
+
+/* 项目容器样式 */
+.item-details {
+  height: 181rpx;
+  width: 200rpx;
+  display: flex;
+  flex-direction: column; /* 垂直排列子元素 */
+  justify-content: center; /* 子元素顶端对齐 */
+  gap:15rpx;
+}
+
+/* 名称文本样式 */
+.name {
+  font-size: 36rpx;
+  font-weight: 600;
+  color: #393E46; 
+  max-width: 100%; /* 最大宽度为100%，防止溢出 */
+  white-space: nowrap; /* 不允许文本换行 */
+  overflow: hidden; /* 隐藏溢出部分 */
+  text-overflow: ellipsis; /* 使用省略号表示溢出部分 */
+  text-align: left; /* 设置文本左对齐 */
+}
+
+/* 描述文本样式 */
+.description {
+  font-size: 21rpx; 
+  color: #393E46; /* 字体颜色：中灰色 */
+  max-width: 100%; /* 最大宽度为100%，防止溢出 */
+  text-align: start;
+  word-wrap: break-word; /* 允许长单词或URL地址强制换行 */
+  word-break: break-all; /* 允许长单词或URL地址强制换行 */
+  text-overflow: ellipsis; /* 使用省略号表示溢出部分 */
+}
+
+/* 兑换按钮 */
+button {
+  height: 66rpx;
+  background-color: #00BAAD;
+  color: white;
+  border-radius: 42rpx;
+  text-align: center; /* 水平居中 */
+  font-size: 27rpx; /* 设置合适的字体大小 */
+  font-weight: 400;
+}
+
+button:active {
+  filter: brightness(0.95)
+}
+
+/* 历史界面 */
+.item-details2 {
+  height: 181.376rpx;
+  width: 200.28rpx;
+  display: flex;
+  flex-direction: column; /* 垂直排列子元素 */
+  justify-content: center; /* 垂直居中对齐 */
+  align-items: center; /* 水平居中对齐 */
+  text-align: center; /* 文本居中对齐 */
+}
+
+.meg{
+  font-size: 24rpx; 
+  color: #393E46; /* 字体颜色：中灰色 */
+  max-width: 100%; /* 最大宽度为100%，防止溢出 */
+  text-align: left;
+  word-wrap: break-word; /* 允许长单词或URL地址强制换行 */
+  word-break: break-all; /* 允许长单词或URL地址强制换行 */
+  overflow: hidden; /* 隐藏溢出部分 */
+  text-overflow: ellipsis; /* 使用省略号表示溢出部分 */
+  margin-top: 10rpx 0;
+}
+
+.points-used{
+  width: 170rpx;
+  height: 66rpx;
+  color: #00ADB5;
+  font-weight: bold;
+  text-align: center; /* 水平居中 */
+  font-size: 63rpx; /* 设置合适的字体大小 */
+  display: flex;
+  justify-content: center; /* 水平居中 */
+  align-items: center; /* 垂直居中 */
+}
+
+/* 底部文字样式 */
+.footer {
+  font-size: 24rpx; /* 字体大小 */
+  color: #ffffff; /* 字体颜色 */
+  width: 100%; /* 宽度100% */
+  display: flex; /* 使用flex布局 */
+  justify-content: center; /* 水平居中 */
+  align-items: center; /* 垂直居中 */
+  text-align: center;
+  margin-bottom: 25rpx; /* 确保底部对齐 */
+}
+
+/* 底部图片样式 */
+/* .bottom-image {
+  position: absolute;
+  bottom: 0rpx;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 440.5rpx;
+  height: 174rpx;
+} */

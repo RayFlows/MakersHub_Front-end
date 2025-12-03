@@ -1,0 +1,169 @@
+/* pages/3D/3D.wxss */
+page{
+/* height:1626rpx; */
+background-color: #222831;
+}
+
+button:active {
+  opacity: 0.8;
+}
+
+/*统一element样式*/
+input {
+  font-size: 24.416rpx; /* 字体大小：14号字体 */
+  color: #7D8592; /* 字体颜色：深灰色 */
+  background-color: #E5E5E5;
+  border: 1.744rpx solid #D8E0F0; /* 边框样式 */
+  border-radius: 24.416rpx; /* 圆角样式 */
+  padding: 15rpx; /* 内边距 */
+  width: 578rpx; /* 宽度 */
+  height: 84rpx;
+  box-sizing: border-box; /* 确保宽度包含内边距和边框 */
+}
+
+.focused{
+  border-color: #00ADB5;
+  box-shadow: 0 0 5px rgba(0, 173, 181, 0.5);
+}
+
+.container {
+  position: relative;
+  overflow-x: hidden ;
+  padding: 0;
+  padding-top:25rpx;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  gap:30rpx;
+  min-height: 100vh;
+}
+
+/*表格*/
+.form-container { 
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 635rpx;
+  height: 818rpx;
+  background-color: #FFFFFF;
+  border-radius: 35rpx ;
+  padding: 20rpx; /* 根据需要调整 */
+  gap:24.4rpx;
+}
+
+/* 容器样式 */
+.form-item {
+  display: flex;
+  flex-direction: column; /* 垂直排列 */
+  justify-content: flex-start; /* 水平起始对齐 */
+  gap:24.44rpx;
+}
+
+/* 标签样式 */
+.label1 {
+  font-size: 24.5rpx; /* 14号字体 */
+  font-weight: bold;
+  color: #00ADB5; /* 标签颜色，可根据需要调整 */
+}
+
+/* 单选框组样式 */
+.radio-group {
+  display: flex; /* 横向排列 */
+  align-items: center; /* 垂直居中 */
+  justify-content: flex-start;
+  gap:50rpx;
+  flex-wrap: wrap; /* 允许换行 */
+  width: 578rpx; /* 宽度 */
+  height: 51rpx;
+}
+
+/* 单选框标签样式 */
+.radio-label {
+  font-size: 24.5rpx; /* 14号字体 */
+  font-weight: bold;
+  color: #00ADB5; /* 标签颜色 */
+  display: flex;
+  align-items: center; /* 垂直居中 */
+  justify-content: center;
+  gap:10rpx;
+}
+
+
+/* 上传按钮样式 */
+.upload-btn {
+  font-size: 24.416rpx; /* 字体大小：14号字体 */
+  color: #7D8592; /* 字体颜色：深灰色 */
+  font-family: 'siyuanheiti', sans-serif; /* 字体样式：siyuanheiti */
+  background-color: #E5E5E5; /* 背景颜色 */
+  border: 1.744rpx solid #D8E0F0; /* 边框样式 */
+  border-radius: 24.5rpx; /* 圆角样式 */
+  padding: 10rpx; /* 内边距 */
+  display: flex;
+  align-items: center; /* 图标和文字垂直居中 */
+  justify-content: center; /* 图标和文字水平居中 */
+  font-weight: 400;
+}
+
+.upload-btn:active {
+    background-color: rgba(0, 173, 181, 0.2);
+}
+
+/* 上传图标样式 */
+.upload-icon {
+  width: 50rpx; /* 图标宽度 */
+  height: 50rpx; /* 图标高度 */
+  margin-right: 10rpx; /* 图标与文字之间的间距 */
+}
+
+/* 问号图标样式 */
+.question-icon {
+  width: 31rpx; /* 图标宽度 */
+  height: 31rpx; /* 图标高度 */
+  border-radius: 50%; /* 圆形 */
+  background-color: #FFFFFF; /* 背景颜色 */
+  color: #00ADB5; /* 图标颜色 */
+  font-size: 25rpx; /* 图标字体大小 */
+  font-weight: bold;
+  display: flex;
+  align-items: center; /* 垂直居中 */
+  justify-content: center; /* 水平居中 */
+  border: 4rpx solid #00ADB5; /* 圆环边框 */
+}
+/*.zip 和 ？*/
+.label-container {
+  display: flex;
+  align-items: center; /* 垂直居中 */
+  justify-content: center; /* 左对齐 */
+  gap:455rpx;
+}
+
+.container2 {
+  text-align: center;
+  text-align: center; /* 使文字水平居中 */
+  display: flex;
+  align-items: center; /* 图标和文字垂直居中 */
+  justify-content: center; /* 图标和文字水平居中 */
+}
+
+.btn2 {
+  background-color: #00ADB5; /* 背景颜色 */
+  color: white; /* 文字颜色 */
+  border-radius: 43.5rpx; /* 圆角 */
+  display: flex; /* 使用 Flexbox 布局 */
+  align-items: center; /* 垂直居中 */
+  justify-content: center; /* 水平居中 */
+  text-align: center; /* 确保文本内容水平居中 */
+  font-size: 31.92rpx; /* 字体大小 */
+  font-weight: 500;
+}
+
+/* 底部图片样式 */
+.bottom-image {
+  position: absolute; /* 固定位置 */
+  transform: translateX(-50%); /* 精确水平居中 */
+  width: 440.5rpx; /* 图片宽度 */
+  height: 174rpx; /* 图片高度 */
+  bottom: 0; /* 底部对齐 */
+  left: 50%; /* 水平居中 */
+}

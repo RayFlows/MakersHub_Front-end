@@ -1,0 +1,114 @@
+.container {
+  background-color: #222831;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+}
+
+.card-list {
+  display: flex;
+  justify-content: space-around;
+  margin: 20rpx 20rpx 160rpx; /* ✅ 顶部加上 20rpx */
+  gap: 20rpx;
+}
+
+.nav{
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  z-index: 999;
+}
+
+.card {
+  background-color: #00bfc9;
+  border-radius: 20rpx;
+  padding: 30rpx 20rpx 80rpx; /* ⬅️ 为底部预留高度 */
+  width: 300rpx;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  position: relative; /* ⬅️ 配合绝对定位 */
+}
+
+
+.room-name {
+  color: #ffffff;
+  font-size: 32rpx;
+  font-weight: bold;
+  margin-bottom: 20rpx;
+}
+
+.control-row {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-top: 20rpx;
+}
+
+.icon {
+  width: 48rpx;
+  height: 48rpx;
+  margin-right: 10rpx;  /* 缩小图标和“门”的间距 */
+}
+
+.word {
+  font-size: 28rpx;
+  margin-right: 25rpx;  /* 增大“门”和按钮的间距 */
+  color: #ffffff;
+  font-weight: 600;
+}
+.open-btn {
+  background-color: white;
+  color: #00bfc9;
+  border-radius: 40rpx;
+  font-size: 30rpx;
+  height: 60rpx;
+  line-height: 60rpx;
+  padding: 0 30rpx;
+  border: none;
+  max-width: 140rpx; 
+  white-space: nowrap; 
+  overflow: hidden;
+  color: #000000;
+}
+
+.open-btn:active {
+  transform: scale(0.98);
+  filter:brightness(0.95);
+}
+
+.status {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 60rpx;
+  line-height: 60rpx;
+  text-align: center;
+  font-size: 26rpx;
+  border-radius: 0 0 20rpx 20rpx;
+  font-size: 30rpx;
+}
+
+
+.status-online {
+  background-color: #ffe580;
+  color: #00bfc9;
+}
+
+.status-offline {
+  background-color: #f06275;
+  color: #ffffff;
+}
+
+.bottom-cat {
+  width: 440rpx;
+  height: 174rpx;
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 99;
+}

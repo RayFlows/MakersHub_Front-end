@@ -1,0 +1,414 @@
+{
+  "description": "项目私有配置文件。此文件中的内容将覆盖 project.config.json 中的相同字段。项目的改动优先同步到此文件中。详见文档：https://developers.weixin.qq.com/miniprogram/dev/devtools/projectconfig.html",
+  "projectname": "makershub_front",
+  "setting": {
+    "compileHotReLoad": true,
+    "skylineRenderEnable": false,
+    "urlCheck": false,
+    "coverView": true,
+    "lazyloadPlaceholderEnable": false,
+    "preloadBackgroundData": false,
+    "autoAudits": false,
+    "useApiHook": true,
+    "useApiHostProcess": true,
+    "showShadowRootInWxmlPanel": true,
+    "useStaticServer": false,
+    "useLanDebug": false,
+    "showES6CompileOption": false,
+    "checkInvalidKey": true,
+    "ignoreDevUnusedFiles": true,
+    "bigPackageSizeSupport": false
+  },
+  "libVersion": "trial",
+  "condition": {
+    "miniprogram": {
+      "list": [
+        {
+          "name": "pages/my_project_list/my_project_list",
+          "pathName": "pages/my_project_list/my_project_list",
+          "query": "",
+          "scene": null,
+          "launchMode": "default"
+        },
+        {
+          "name": "pages/project_list/project_list",
+          "pathName": "pages/project_list/project_list",
+          "query": "",
+          "launchMode": "default",
+          "scene": null
+        },
+        {
+          "name": "pages/project_closure_material_submit/project_closure_material_submit",
+          "pathName": "pages/project_closure_material_submit/project_closure_material_submit",
+          "query": "",
+          "launchMode": "default",
+          "scene": null
+        },
+        {
+          "name": "pages/project_create_apply/project_create_apply",
+          "pathName": "pages/project_create_apply/project_create_apply",
+          "query": "",
+          "launchMode": "default",
+          "scene": null
+        },
+        {
+          "name": "pages/project_create_apply/project_create_apply",
+          "pathName": "pages/project_create_apply/project_create_apply",
+          "query": "",
+          "launchMode": "default",
+          "scene": null
+        },
+        {
+          "name": "pages/project_detail/project_detail",
+          "pathName": "pages/project_detail/project_detail",
+          "query": "",
+          "launchMode": "default",
+          "scene": null
+        },
+        {
+          "name": "pages/activity_list/activity_list",
+          "pathName": "pages/activity_list/activity_list",
+          "query": "",
+          "launchMode": "default",
+          "scene": null
+        },
+        {
+          "name": "pages/project_create_apply/project_create_apply",
+          "pathName": "pages/project_create_apply/project_create_apply",
+          "query": "",
+          "launchMode": "default",
+          "scene": null
+        },
+        {
+          "name": "pages/project_work_page/project_work_page",
+          "pathName": "pages/project_work_page/project_work_page",
+          "query": "",
+          "launchMode": "default",
+          "scene": null
+        },
+        {
+          "name": "pages/operation_maintenance_work_page/operation_maintenance_work_page",
+          "pathName": "pages/operation_maintenance_work_page/operation_maintenance_work_page",
+          "query": "",
+          "launchMode": "default",
+          "scene": null
+        },
+        {
+          "name": "pages/my_stuff_borrow_detail/my_stuff_borrow_detail",
+          "pathName": "pages/my_stuff_borrow_detail/my_stuff_borrow_detail",
+          "query": "",
+          "launchMode": "default",
+          "scene": null
+        },
+        {
+          "name": "pages/my_task/my_task",
+          "pathName": "pages/my_task/my_task",
+          "query": "",
+          "launchMode": "default",
+          "scene": null
+        },
+        {
+          "name": "pages/task_management/task_management",
+          "pathName": "pages/task_management/task_management",
+          "query": "",
+          "launchMode": "default",
+          "scene": null
+        },
+        {
+          "name": "pages/publicity_work_page/publicity_work_page",
+          "pathName": "pages/publicity_work_page/publicity_work_page",
+          "query": "",
+          "launchMode": "default",
+          "scene": null
+        },
+        {
+          "name": "pages/index/index",
+          "pathName": "pages/index/index",
+          "query": "",
+          "launchMode": "default",
+          "scene": null
+        },
+        {
+          "name": "pages/my_stuff_borrow_list/my_stuff_borrow_list",
+          "pathName": "pages/my_stuff_borrow_list/my_stuff_borrow_list",
+          "query": "",
+          "launchMode": "default",
+          "scene": null
+        },
+        {
+          "name": "pages/xiumi_link_permit/xiumi_link_permit",
+          "pathName": "pages/xiumi_link_permit/xiumi_link_permit",
+          "query": "",
+          "launchMode": "default",
+          "scene": null
+        },
+        {
+          "name": "pages/my_xiumi_link/my_xiumi_link",
+          "pathName": "pages/my_xiumi_link/my_xiumi_link",
+          "query": "",
+          "launchMode": "default",
+          "scene": null
+        },
+        {
+          "name": "pages/publicity_work_page/publicity_work_page",
+          "pathName": "pages/publicity_work_page/publicity_work_page",
+          "query": "",
+          "launchMode": "default",
+          "scene": null
+        },
+        {
+          "name": "pages/xiumi_submit/xiumi_submit",
+          "pathName": "pages/xiumi_submit/xiumi_submit",
+          "query": "",
+          "launchMode": "default",
+          "scene": null
+        },
+        {
+          "name": "pages/site_borrow_permit/site_borrow_permit",
+          "pathName": "pages/site_borrow_permit/site_borrow_permit",
+          "query": "",
+          "launchMode": "default",
+          "scene": null
+        },
+        {
+          "name": "pages/site_borrow_permit_list/site_borrow_permit_list",
+          "pathName": "pages/site_borrow_permit_list/site_borrow_permit_list",
+          "query": "",
+          "launchMode": "default",
+          "scene": null
+        },
+        {
+          "name": "pages/team_stuff_borrow_permit/team_stuff_borrow_permit",
+          "pathName": "pages/team_stuff_borrow_permit/team_stuff_borrow_permit",
+          "query": "",
+          "launchMode": "default",
+          "scene": null
+        },
+        {
+          "name": "pages/my_site_borrow_detail/my_site_borrow_detail",
+          "pathName": "pages/my_site_borrow_detail/my_site_borrow_detail",
+          "query": "",
+          "launchMode": "default",
+          "scene": null
+        },
+        {
+          "name": "pages/team_stuff_borrow_apply/team_stuff_borrow_apply",
+          "pathName": "pages/team_stuff_borrow_apply/team_stuff_borrow_apply",
+          "query": "",
+          "launchMode": "default",
+          "scene": null
+        },
+        {
+          "name": "pages/stuff_borrow_permit_list/stuff_borrow_permit_list",
+          "pathName": "pages/stuff_borrow_permit_list/stuff_borrow_permit_list",
+          "query": "",
+          "launchMode": "default",
+          "scene": null
+        },
+        {
+          "name": "pages/my_site_borrow_list/my_site_borrow_list",
+          "pathName": "pages/my_site_borrow_list/my_site_borrow_list",
+          "query": "",
+          "launchMode": "default",
+          "scene": null
+        },
+        {
+          "name": "pages/site_borrow_detail/site_borrow_detail",
+          "pathName": "pages/site_borrow_detail/site_borrow_detail",
+          "query": "",
+          "launchMode": "default",
+          "scene": null
+        },
+        {
+          "name": "pages/site_borrow_apply/site_borrow_apply",
+          "pathName": "pages/site_borrow_apply/site_borrow_apply",
+          "query": "",
+          "launchMode": "default",
+          "scene": null
+        },
+        {
+          "name": "pages/activity_submit/activity_submit",
+          "pathName": "pages/activity_submit/activity_submit",
+          "query": "",
+          "launchMode": "default",
+          "scene": null
+        },
+        {
+          "name": "pages/duty_arrange/duty_arrange",
+          "pathName": "pages/duty_arrange/duty_arrange",
+          "query": "",
+          "launchMode": "default",
+          "scene": null
+        },
+        {
+          "name": "pages/schedule/schedule",
+          "pathName": "pages/schedule/schedule",
+          "query": "",
+          "launchMode": "default",
+          "scene": null
+        },
+        {
+          "name": "pages/task/task",
+          "pathName": "pages/task/task",
+          "query": "",
+          "launchMode": "default",
+          "scene": null
+        },
+        {
+          "name": "pages/duty_application/duty_application",
+          "pathName": "pages/duty_application/duty_application",
+          "query": "",
+          "launchMode": "default",
+          "scene": null
+        },
+        {
+          "name": "pages/editPage/editPage",
+          "pathName": "pages/editPage/editPage",
+          "query": "",
+          "launchMode": "default",
+          "scene": null
+        },
+        {
+          "name": "pages/me/me",
+          "pathName": "pages/me/me",
+          "query": "",
+          "launchMode": "default",
+          "scene": null
+        },
+        {
+          "name": "pages/personal_stuff_borrow_detail/personal_stuff_borrow_detail",
+          "pathName": "pages/personal_stuff_borrow_detail/personal_stuff_borrow_detail",
+          "query": "",
+          "launchMode": "default",
+          "scene": null
+        },
+        {
+          "name": "pages/site_borrow_detail/site_borrow_detail",
+          "pathName": "pages/site_borrow_detail/site_borrow_detail",
+          "query": "",
+          "launchMode": "default",
+          "scene": null
+        },
+        {
+          "name": "pages/activitydetail/activitydetail",
+          "pathName": "pages/activitydetail/activitydetail",
+          "query": "",
+          "launchMode": "default",
+          "scene": null
+        },
+        {
+          "name": "pages/my_stuff_borrow_list/my_stuff_borrow_list",
+          "pathName": "pages/my_stuff_borrow_list/my_stuff_borrow_list",
+          "query": "",
+          "launchMode": "default",
+          "scene": null
+        },
+        {
+          "name": "pages/object_borrow_list/object_borrow_list",
+          "pathName": "pages/object_borrow_list/object_borrow_list",
+          "query": "",
+          "launchMode": "default",
+          "scene": null
+        },
+        {
+          "name": "pages/task/task",
+          "pathName": "pages/task/task",
+          "query": "",
+          "launchMode": "default",
+          "scene": null
+        },
+        {
+          "name": "pages/activity_list/activity_list",
+          "pathName": "pages/activity_list/activity_list",
+          "query": "",
+          "launchMode": "default",
+          "scene": null
+        },
+        {
+          "name": "pages/personal_stuff_borrow_permit/personal_stuff_borrow_permit",
+          "pathName": "pages/personal_stuff_borrow_permit/personal_stuff_borrow_permit",
+          "query": "",
+          "launchMode": "default",
+          "scene": null
+        },
+        {
+          "name": "pages/index/index",
+          "pathName": "pages/index/index",
+          "query": "",
+          "launchMode": "default",
+          "scene": null
+        },
+        {
+          "name": "pages/personal_stuff_borrow_apply/personal_stuff_borrow_apply",
+          "pathName": "pages/personal_stuff_borrow_apply/personal_stuff_borrow_apply",
+          "query": "",
+          "launchMode": "default",
+          "scene": null
+        },
+        {
+          "name": "components/auth-modal/auth-modal",
+          "pathName": "components/auth-modal/auth-modal",
+          "query": "",
+          "launchMode": "default",
+          "scene": null
+        },
+        {
+          "name": "pages/operation_maintenance_work_page/operation_maintenance_work_page",
+          "pathName": "pages/operation_maintenance_work_page/operation_maintenance_work_page",
+          "query": "",
+          "launchMode": "default",
+          "scene": null
+        },
+        {
+          "name": "pages/me/me",
+          "pathName": "pages/me/me",
+          "query": "",
+          "launchMode": "default",
+          "scene": null
+        },
+        {
+          "name": "pages/index/index",
+          "pathName": "pages/index/index",
+          "query": "",
+          "launchMode": "default",
+          "scene": null
+        },
+        {
+          "name": "pages/remote_control/remote_control",
+          "pathName": "pages/remote_control/remote_control",
+          "query": "",
+          "launchMode": "default",
+          "scene": null
+        },
+        {
+          "name": "pages/site_borrow_list/site_borrow_list",
+          "pathName": "pages/site_borrow_list/site_borrow_list",
+          "query": "",
+          "launchMode": "default",
+          "scene": null
+        },
+        {
+          "name": "pages/site_borrow_permit/site_borrow_permit",
+          "pathName": "pages/site_borrow_permit/site_borrow_permit",
+          "query": "",
+          "launchMode": "default",
+          "scene": null
+        },
+        {
+          "name": "pages/duty_application/duty_application",
+          "pathName": "pages/duty_application/duty_application",
+          "query": "",
+          "launchMode": "default",
+          "scene": null
+        },
+        {
+          "name": "pages/club_work/club_work",
+          "pathName": "pages/club_work/club_work",
+          "query": "",
+          "launchMode": "default",
+          "scene": null
+        }
+      ]
+    }
+  }
+}
