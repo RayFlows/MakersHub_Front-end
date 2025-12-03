@@ -72,10 +72,12 @@ var config = {
     update: host + "/project/update",               
     member: host + "/project",    
     submit_closure: host + "/project",    
-    toggle_recruit: host + "/project",
+    toggle_recruit: host + "/project/action/toggle-recruit",
     material_upload: host + "/project/material/upload",
     material_delete: host + "/project/material",
-    submit_closure: host + "/project/action/submit-closure"         
+    submit_closure: host + "/project/action/submit-closure",    
+    delete_mem: host + "/project/member",     
+    view_my: host + "/project/list/view-my"
   }
 }
 module.exports = config;

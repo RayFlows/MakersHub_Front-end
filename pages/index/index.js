@@ -403,7 +403,7 @@ Page({
   navigateToViewProject: function () {
     this.checkAuthAndNavigate(() => {
       wx.navigateTo({ 
-        url: "/pages" // 注意:这里的URL不完整,需要补充
+        url: "/pages/my_project_list/my_project_list" 
       });
     });
   },
