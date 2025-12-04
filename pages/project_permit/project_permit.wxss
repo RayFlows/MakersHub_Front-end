@@ -1,0 +1,359 @@
+/* 整个页面黑底 */
+page {
+  width: 100%;
+  min-height: 100vh;
+  background-color: #191d27 !important;
+  padding-bottom: env(safe-area-inset-bottom);
+}
+.page {
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  padding-top: 20rpx;
+  width: 100%;
+}
+
+/* 居中外壳 */
+.phone-wrapper {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+}
+
+.phone-inner {
+  width: 630rpx;
+  background-color: #191d27;
+  border-radius: 24rpx;
+  padding: 24rpx 28rpx 40rpx;
+  box-sizing: border-box;
+  position: relative;
+  overflow: visible;
+}
+
+/* 滚动区域 */
+.form-scroll {
+  width: 100%;
+  box-sizing: border-box;
+}
+
+/* 白色卡片 */
+.white-card {
+  width: 100%;
+  background: #ffffff;
+  border-radius: 24rpx;
+  padding: 40rpx 32rpx;
+  box-sizing: border-box;
+  margin-top: 20rpx;
+}
+
+/* 顶部标题 */
+.header {
+  text-align: center;
+  font-size: 34rpx;
+  color: #00bcd4;
+  font-weight: 700;
+  margin-bottom: 30rpx;
+}
+
+/* label */
+.label {
+  font-size: 26rpx;
+  color: #00bcd4;
+  margin-bottom: 6rpx;
+  font-weight: 600;
+}
+
+.field {
+  margin-top: 18rpx;
+}
+
+/* 输入框统一灰色 */
+.input,
+.textarea,
+.feedback {
+  width: 100%;
+  background-color: #f1f2f4;
+  border-radius: 12rpx;
+  font-size: 26rpx;
+  color: #333;
+  box-sizing: border-box;
+}
+
+.input {
+  height: 72rpx;
+  padding: 0 22rpx;
+  line-height: 72rpx;
+}
+
+.textarea {
+  padding: 14rpx 22rpx;
+  min-height: 120rpx;
+}
+
+/* 审核反馈区 */
+.feedback-section {
+  width: 100%;
+  margin-top: 24rpx;
+}
+
+.feedback {
+  min-height: 140rpx;
+}
+
+/* 状态卡片 */
+.status-card {
+  width: 100%;
+  border-radius: 40rpx;
+  padding: 32rpx 40rpx;
+  text-align: center;
+  box-sizing: border-box;
+}
+
+.status-card-reject {
+  background-color: #ffd6e2;
+}
+
+.status-card-pass {
+  background-color: #d9ffff;
+}
+
+.status-title {
+  font-size: 30rpx;
+  font-weight: 700;
+  margin-bottom: 16rpx;
+}
+
+.status-card-reject .status-title,
+.status-card-reject .status-text {
+  color: #ff4b7d;
+}
+
+.status-card-pass .status-title,
+.status-card-pass .status-text {
+  color: #00bcd4;
+}
+
+.status-text {
+  font-size: 26rpx;
+}
+
+/* 按钮块：紧贴反馈 */
+.btn-block {
+  width: 100%;
+  margin-top: 40rpx;
+}
+
+/* 按钮行 */
+.btn-row {
+  display: flex;
+  justify-content: space-between;
+}
+
+.btn {
+  flex: 1;
+  margin: 0 8rpx;
+  height: 80rpx;
+  border-radius: 40rpx;
+  font-size: 28rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.btn::after {
+  border: none;
+}
+
+.btn-secondary {
+  background-color: #ffffff;
+  color: #333333;
+}
+
+.btn-primary {
+  background-color: #00bcd4;
+  color: #ffffff;
+}
+
+.btn-reject {
+  background-color: #ff4b7d !important;
+  color: #ffffff !important;
+}
+
+/* 单按钮居中 */
+.single-btn {
+  justify-content: center;
+}
+
+.single-btn .btn {
+  margin: 0;
+  width: 60%;
+}
+
+/* scroll-view 内底部占位，避免按钮被猫挡住 */
+.bottom-safe {
+  width: 100%;
+  height: 250rpx;  /* 可根据猫图高度微调 */
+}
+
+/* 猫图固定底部 */
+.bottom-image {
+  width: 440rpx;
+  height: 174rpx;
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+/* 遮罩和弹窗 */
+.mask {
+  position: fixed;
+  left: 0;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.4);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+
+.modal {
+  width: 560rpx;
+  background-color: #ffffff;
+  border-radius: 24rpx;
+  overflow: hidden;
+}
+
+.modal-title {
+  text-align: center;
+  padding: 24rpx 0 8rpx;
+  font-size: 30rpx;
+  color: #00bcd4;
+  font-weight: 600;
+}
+
+.modal-body {
+  padding: 24rpx 40rpx 32rpx;
+  font-size: 26rpx;
+  color: #333;
+  text-align: center;
+}
+
+.modal-footer {
+  display: flex;
+  border-top: 1px solid #eeeeee;
+}
+
+.modal-btn {
+  flex: 1;
+  text-align: center;
+  padding: 24rpx 0;
+  font-size: 28rpx;
+}
+
+.modal-cancel {
+  border-right: 1px solid #eeeeee;
+  color: #999999;
+}
+
+.modal-confirm {
+  color: #00bcd4;
+}
+
+/* toast */
+.toast-mask {
+  position: fixed;
+  left: 0;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1200;
+}
+
+.toast-card,
+.error-card {
+  width: 320rpx;
+  padding: 40rpx 0 32rpx;
+  background: rgba(0, 0, 0, 0.85);
+  border-radius: 20rpx;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.error-card {
+  background: #333333;
+}
+
+.icon-circle,
+.error-icon-circle {
+  width: 96rpx;
+  height: 96rpx;
+  border-radius: 50%;
+  border: 4rpx solid #ffffff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 20rpx;
+}
+
+.icon-check {
+  width: 40rpx;
+  height: 20rpx;
+  border-left: 6rpx solid #ffffff;
+  border-bottom: 6rpx solid #ffffff;
+  transform: rotate(-45deg);
+}
+
+.error-icon-cross {
+  width: 40rpx;
+  height: 40rpx;
+  position: relative;
+}
+
+.error-icon-cross::before,
+.error-icon-cross::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 4rpx;
+  height: 40rpx;
+  background-color: #ffffff;
+  transform-origin: center;
+}
+
+.error-icon-cross::before {
+  transform: translate(-50%, -50%) rotate(45deg);
+}
+
+.error-icon-cross::after {
+  transform: translate(-50%, -50%) rotate(-45deg);
+}
+
+.toast-text {
+  color: #ffffff;
+  font-size: 26rpx;
+}
+
+/* 底部猫猫容器 */
+.bottom-image-container {
+  width: 100%;
+  position: fixed;
+  bottom: 0;
+  z-index: 1;
+  /* padding: 20rpx; */
+  display: flex;
+  justify-content: center; 
+}
+
+.bottom-image {
+  width: 440rpx;
+  height: auto;
+}

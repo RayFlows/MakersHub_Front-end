@@ -1,0 +1,51 @@
+<view class="page">
+
+<!-- 顶部 Tab -->
+<view class="top-tabs">
+  <view class="tab-item {{activeTab==0?'active':''}}" data-tab="0" bindtap="onTabChange">待审核</view>
+  <view class="tab-item {{activeTab==1?'active':''}}" data-tab="1" bindtap="onTabChange">进行中</view>
+  <view class="tab-item {{activeTab==2?'active':''}}" data-tab="2" bindtap="onTabChange">已打回</view>
+</view>
+
+<!-- 列表区域 -->
+<scroll-view scroll-y="true" class="list-scroll">
+  <block wx:for="{{filteredList}}" wx:key="project_id">
+    <view class="project-card">
+
+      <view class="card-main">
+        <!-- 左侧：项目名 + 时间 + 状态 -->
+        <view class="info-block">
+          <!-- 第一行：项目名 -->
+          <view class="project-name">{{item.project_name}}</view>
+
+          <!-- 第二行：时间 + 状态在同一行 -->
+          <view class="time-status-row">
+            <!-- 左侧时间，里面上下两行 -->
+            <view class="time-box">
+              <view class="time-label">申请创建时间：</view>
+              <view class="time-value">{{item.created_at}}</view>
+            </view>
+
+            <!-- 右侧状态胶囊（同一行右侧） -->
+            <view class="status-tag {{item.state==0?'status-pending':(item.state==1?'status-running':'status-rejected')}}">
+              {{item.state==0?'待审核':(item.state==1?'进行中':'已打回')}}
+            </view>
+          </view>
+        </view>
+
+        <!-- 右侧：详情按钮，整体在卡片竖直居中 -->
+        <view class="right-block">
+          <view class="detail-btn" data-id="{{item.project_id}}" bindtap="goDetail">
+            详情
+          </view>
+        </view>
+      </view>
+
+    </view>
+  </block>
+
+  <view wx:if="{{filteredList.length === 0}}" class="empty-tip">
+    暂无项目
+  </view>
+</scroll-view>
+</view>

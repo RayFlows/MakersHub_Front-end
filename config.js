@@ -78,7 +78,8 @@ var config = {
     submit_closure: host + "/project/action/submit-closure",    
     delete_mem: host + "/project/member",     
     view_my: host + "/project/list/view-my",
-    add_mem: host + "/project/member/add"
+    add_mem: host + "/project/member/add",
+    project_review_list: host + "/project/list/review"
   }
 }
 module.exports = config;

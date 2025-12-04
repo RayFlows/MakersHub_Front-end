@@ -39,7 +39,9 @@
     "pages/project_detail/project_detail",
     "pages/project_create_apply/project_create_apply",
     "pages/project_closure_material_submit/project_closure_material_submit",
-    "pages/my_project_list/my_project_list"
+    "pages/my_project_list/my_project_list",
+    "pages/project_permit/project_permit",
+    "pages/project_permit_list/project_permit_list"
   ],
   "window": {
     "backgroundTextStyle": "light",

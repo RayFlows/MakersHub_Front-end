@@ -1,0 +1,179 @@
+<view class="page">
+  <view class="phone-wrapper">
+    <view class="phone-inner">
+      <!-- 可滚动内容区域 -->
+      <scroll-view scroll-y="true" class="form-scroll">
+
+        <view class="white-card">
+          <view class="header">项目立项申请</view>
+
+          <view class="field">
+            <view class="label">项目负责人</view>
+            <input class="input" value="{{project.owner}}" disabled />
+          </view>
+
+          <view class="field">
+            <view class="label">负责人学院</view>
+            <input class="input" value="{{project.college}}" disabled />
+          </view>
+
+          <view class="field">
+            <view class="label">负责人学号</view>
+            <input class="input" value="{{project.studentId}}" disabled />
+          </view>
+
+          <view class="field">
+            <view class="label">负责人电话</view>
+            <input class="input" value="{{project.phone}}" disabled />
+          </view>
+
+          <view class="field">
+            <view class="label">负责人QQ</view>
+            <input class="input" value="{{project.qq}}" disabled />
+          </view>
+
+          <view class="field">
+            <view class="label">项目名称</view>
+            <input class="input" value="{{project.name}}" disabled />
+          </view>
+
+          <view class="field">
+            <view class="label">项目类型</view>
+            <input class="input" value="{{project.type}}" disabled />
+          </view>
+
+          <view class="field">
+            <view class="label">项目简介</view>
+            <textarea class="textarea" value="{{project.intro}}" disabled></textarea>
+          </view>
+
+          <view class="field">
+            <view class="label">项目成员</view>
+            <textarea class="textarea" value="{{project.members}}" disabled></textarea>
+          </view>
+
+          <view class="field">
+            <view class="label">是否招募成员</view>
+            <input class="input" value="{{project.recruitText}}" disabled />
+          </view>
+
+          <view class="field">
+            <view class="label">指导老师姓名</view>
+            <input class="input" value="{{project.mentorName}}" disabled />
+          </view>
+
+          <view class="field">
+            <view class="label">指导老师电话</view>
+            <input class="input" value="{{project.mentorPhone}}" disabled />
+          </view>
+
+          <view class="field">
+            <view class="label">项目周期</view>
+            <input class="input" value="{{project.duration}}" disabled />
+          </view>
+        </view>
+
+        <!-- 审核反馈 / 状态提示区域 -->
+        <view class="feedback-section">
+          <!-- 未审核：显示灰色反馈输入框 -->
+          <block wx:if="{{status === 'pending'}}">
+            <textarea
+              class="textarea feedback"
+              placeholder="如要打回，请输入审核反馈"
+              placeholder-style="color: rgba(0,0,0,0.35);"
+              value="{{feedback}}"
+              bindinput="onFeedbackInput"
+            ></textarea>
+          </block>
+
+          <!-- 已打回：粉色卡片 -->
+          <block wx:elif="{{status === 'rejected'}}">
+            <view class="status-card status-card-reject">
+              <view class="status-title">该项目已被打回</view>
+              <view class="status-text">谁允许你们招募的！</view>
+            </view>
+          </block>
+
+          <!-- 已通过：青色卡片 -->
+          <block wx:elif="{{status === 'approved'}}">
+            <view class="status-card status-card-pass">
+              <view class="status-title">该项目已经被通过，正在进行中</view>
+              <view class="status-text">(≧∀≦)ゞ</view>
+            </view>
+          </block>
+        </view>
+
+        <!-- 按钮块：紧贴在反馈下面 -->
+        <view class="btn-block">
+          <!-- 未审核：显示两个按钮 -->
+          <view wx:if="{{status === 'pending'}}" class="btn-row">
+            <button class="btn btn-reject" bindtap="onTapReject">打回</button>
+            <button class="btn btn-primary" bindtap="onTapPass">通过</button>
+          </view>
+
+          <!-- 已打回：只显示“通过”，居中 -->
+          <view wx:elif="{{status === 'rejected'}}" class="btn-row single-btn">
+            <button class="btn btn-primary" bindtap="onTapPass">通过</button>
+          </view>
+
+          <!-- 已通过：不渲染按钮 -->
+        </view>
+
+        <!-- scroll-view 内的底部占位，用来给猫腾出空间 -->
+        <view class="bottom-safe"></view>
+      </scroll-view>
+    </view>
+  </view>
+  
+<view class="bottom-image-container">
+  <image class="bottom-image" src="{{icons.whiteCat}}" mode="widthFix"></image>
+</view>
+  <!-- 打回确认弹窗 -->
+  <view wx:if="{{showRejectModal}}" class="mask">
+    <view class="modal">
+      <view class="modal-title">温馨提示</view>
+      <view class="modal-body">确认打回该项目？</view>
+      <view class="modal-footer">
+        <view class="modal-btn modal-cancel" bindtap="onCancelModal">取消</view>
+        <view class="modal-btn modal-confirm" bindtap="onConfirmReject">确认</view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 通过确认弹窗 -->
+  <view wx:if="{{showPassModal}}" class="mask">
+    <view class="modal">
+      <view class="modal-title">温馨提示</view>
+      <view class="modal-body">通过后无法再打回，确认通过该项目？</view>
+      <view class="modal-footer">
+        <view class="modal-btn modal-cancel" bindtap="onCancelModal">取消</view>
+        <view class="modal-btn modal-confirm" bindtap="onConfirmPass">确认</view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 操作失败弹窗（网络错误） -->
+  <view wx:if="{{showErrorModal}}" class="toast-mask">
+    <view class="error-card">
+      <view class="error-icon-circle">
+        <view class="error-icon-cross"></view>
+      </view>
+      <view class="toast-text">操作失败，请重试</view>
+    </view>
+  </view>
+
+  <!-- 成功 toast -->
+  <view wx:if="{{showResult && resultType === 'reject'}}" class="toast-mask">
+    <view class="toast-card">
+      <view class="icon-circle"><view class="icon-check"></view></view>
+      <view class="toast-text">成功打回该项目</view>
+    </view>
+  </view>
+
+  <view wx:if="{{showResult && resultType === 'pass'}}" class="toast-mask">
+    <view class="toast-card">
+      <view class="icon-circle"><view class="icon-check"></view></view>
+      <view class="toast-text">成功通过该项目</view>
+    </view>
+  </view>
+</view>
