@@ -1,0 +1,9 @@
+{
+  "navigationStyle": "default",
+  "navigationBarTitleText": "审核项目",
+  "navigationBarBackgroundColor": "#191d27",
+  "navigationBarTextStyle": "white",
+  "backgroundColor": "#191d27",
+  "backgroundTextStyle": "light",
+  "usingComponents": {}
+}

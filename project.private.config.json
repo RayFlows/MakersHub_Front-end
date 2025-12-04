@@ -24,6 +24,34 @@
     "miniprogram": {
       "list": [
         {
+          "name": "pages/project_permit_list/project_permit_list",
+          "pathName": "pages/project_permit_list/project_permit_list",
+          "query": "",
+          "launchMode": "default",
+          "scene": null
+        },
+        {
+          "name": "pages/project_permit_list/project_permit_list",
+          "pathName": "pages/project_permit_list/project_permit_list",
+          "query": "",
+          "launchMode": "default",
+          "scene": null
+        },
+        {
+          "name": "pages/project_permit/project_permit",
+          "pathName": "pages/project_permit/project_permit",
+          "query": "",
+          "launchMode": "default",
+          "scene": null
+        },
+        {
+          "name": "pages/project_review_list/project_review_list",
+          "pathName": "pages/project_review_list/project_review_list",
+          "query": "",
+          "launchMode": "default",
+          "scene": null
+        },
+        {
           "name": "pages/project_closure_material_submit/project_closure_material_submit",
           "pathName": "pages/project_closure_material_submit/project_closure_material_submit",
           "query": "",

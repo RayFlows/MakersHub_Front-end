@@ -1,0 +1,160 @@
+/* 整体背景 */
+.page {
+  min-height: 100vh;
+  background-color: #191d27;
+  padding-top: 10rpx; /* 留出系统导航栏，可按需要微调 */
+  box-sizing: border-box;
+}
+
+/* 顶部 Tab 区域（保持原来的头部样式） */
+.top-tabs {
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  padding: 16rpx 40rpx 12rpx;
+  color: #ffffff;
+  font-size: 30rpx;
+}
+
+.tab-item {
+  flex: 1;
+  text-align: center;
+  padding-bottom: 10rpx;
+  opacity: 0.6;
+  position: relative;
+}
+
+.tab-item.active {
+  opacity: 1;
+  font-weight: 700;
+}
+
+.tab-item.active::after {
+  content: '';
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  bottom: 0;
+  width: 80rpx;
+  height: 4rpx;
+  background-color: #00bcd4;
+  border-radius: 999rpx;
+}
+
+/* 列表滚动区域 */
+.list-scroll {
+  padding-bottom: 40rpx;
+}
+
+/* 项目卡片：扁圆白色 */
+.project-card {
+  background-color: #ffffff;
+  border-radius: 30rpx;
+  margin: 24rpx 24rpx 0;
+  padding: 22rpx 26rpx 26rpx;
+  box-sizing: border-box;
+}
+
+/* 卡片内部：左信息 + 右按钮 */
+.card-main {
+  display: flex;
+  flex-direction: row;
+  align-items: center; /* 让左右内容垂直居中对齐 */
+}
+
+/* 左侧信息块 */
+.info-block {
+  flex: 1;
+}
+
+/* 项目名 */
+.project-name {
+  font-size: 34rpx;
+  font-weight: 700;
+  color: #222222;
+}
+
+/* 时间 + 状态 所在行 */
+.time-status-row {
+  margin-top: 12rpx;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+}
+
+/* 左侧时间区域（内部上下两行） */
+.time-box {
+  flex: 1;
+}
+
+.time-label {
+  font-size: 24rpx;
+  color: #999999;
+  line-height: 1.4;
+}
+
+.time-value {
+  margin-top: 4rpx;
+  font-size: 26rpx;
+  color: #666666;
+}
+
+/* 状态胶囊：在时间右侧 */
+.status-tag {
+  margin-top: 8rpx;
+  transform: translateX(-50rpx);  /* ⭐ 让状态显著左移 */
+  padding: 6rpx 22rpx;
+  font-size: 22rpx;
+  border-radius: 999rpx;
+  white-space: nowrap;
+}
+
+/* 待审核：灰色 */
+.status-pending {
+  background-color: #e5e5e5;
+  color: #666666;
+}
+
+/* 进行中：黄色 */
+.status-running {
+  background-color: #f8d27f;
+  color: #6a4e00;
+}
+
+/* 已打回：红色 */
+.status-rejected {
+  background-color: #e85874;
+  color: #ffffff;
+}
+
+/* 右侧按钮块：负责让“详情”在整张卡片垂直居中 */
+.right-block {
+  margin-left: 24rpx;
+  display: flex;
+  align-items: center;
+}
+
+/* 详情按钮：整体小一点、窄一点，靠卡片右侧正中 */
+.detail-btn {
+  min-width: 120rpx;       /* ⭐ 更大一些 */
+  padding: 24rpx 44rpx;    /* ⭐ 增加高度与宽度 */
+  background-color: #00c2c7;
+  color: #ffffff;
+  font-size: 32rpx;
+  border-radius: 999rpx;
+  text-align: center;
+  line-height: 1;
+  white-space: nowrap;
+}
+
+.detail-btn:active {
+  opacity: 0.8;
+}
+
+/* 空列表提示 */
+.empty-tip {
+  margin-top: 80rpx;
+  text-align: center;
+  font-size: 26rpx;
+  color: #999999;
+}
