@@ -174,7 +174,7 @@ page {
   font-size: 28rpx;
   font-weight: 600;
 
-  border-radius: 40rpx;     /* ★ 圆角 */
+  border-radius: 50rpx;     /* ★ 圆角 */
   box-sizing: border-box;
 
   white-space: nowrap;
