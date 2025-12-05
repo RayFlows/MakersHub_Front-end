@@ -1,9 +1,10 @@
 {
-  "navigationStyle": "default",
-  "navigationBarTitleText": "我的项目",
-  "navigationBarBackgroundColor": "#191d27",
   "navigationBarTextStyle": "white",
-  "backgroundColor": "#191d27",
-  "backgroundTextStyle": "light",
-  "usingComponents": {}
+  "navigationStyle": "custom",
+  "backgroundColor": "#222831",
+  "backgroundColorTop": "#000000",
+  "backgroundColorBottom": "#222831",
+  "usingComponents": {
+    "navBar": "/components/navBar/navBar"
+  }
 }

@@ -234,6 +234,20 @@ Page({
     });
   },
 
+  handlerGobackClick() {
+    const pages = getCurrentPages();
+    if (pages.length > 1) {
+      wx.navigateBack();
+    } else {
+      wx.reLaunch({ url: '/pages/index/index' });
+    }
+  },
+  
+  // 顶部导航栏回首页
+  handlerGohomeClick() {
+    wx.reLaunch({ url: '/pages/index/index' });
+  },
+
   /* 映射后端数据到前端字段 */
   mapProjectData(d) {
     // 1. 成员显示逻辑：没有成员时显示“暂无成员”
