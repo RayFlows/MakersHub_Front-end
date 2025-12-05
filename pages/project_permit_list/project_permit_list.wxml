@@ -1,51 +1,90 @@
-<view class="page">
+<view class="container">
+  <!-- 顶部自定义导航栏 -->
+  <navBar
+    class="navbar"
+    title="我的项目"
+    background="#222831"
+    color="#fff"
+    back="{{true}}"
+    home="{{true}}"
+    iconTheme="white"
+    bindback="handlerGobackClick"
+    bindhome="handlerGohomeClick"
+  />
 
-<!-- 顶部 Tab -->
-<view class="top-tabs">
-  <view class="tab-item {{activeTab==0?'active':''}}" data-tab="0" bindtap="onTabChange">待审核</view>
-  <view class="tab-item {{activeTab==1?'active':''}}" data-tab="1" bindtap="onTabChange">进行中</view>
-  <view class="tab-item {{activeTab==2?'active':''}}" data-tab="2" bindtap="onTabChange">已打回</view>
-</view>
+  <!-- 顶部状态切换栏 -->
+  <view class="tab">
+    <text
+      bindtap="onTabChange"
+      data-tab="0"
+      class="{{activeTab==0?'active':''}}"
+    >
+      待审核
+    </text>
+    <text
+      bindtap="onTabChange"
+      data-tab="1"
+      class="{{activeTab==1?'active':''}}"
+    >
+      进行中
+    </text>
+    <text
+      bindtap="onTabChange"
+      data-tab="2"
+      class="{{activeTab==2?'active':''}}"
+    >
+      已打回
+    </text>
+  </view>
 
-<!-- 列表区域 -->
-<scroll-view scroll-y="true" class="list-scroll">
-  <block wx:for="{{filteredList}}" wx:key="project_id">
-    <view class="project-card">
+  <!-- 列表区域 -->
+  <scroll-view scroll-y="true" class="list-scroll">
 
-      <view class="card-main">
-        <!-- 左侧：项目名 + 时间 + 状态 -->
-        <view class="info-block">
-          <!-- 第一行：项目名 -->
-          <view class="project-name">{{item.project_name}}</view>
-
-          <!-- 第二行：时间 + 状态在同一行 -->
-          <view class="time-status-row">
-            <!-- 左侧时间，里面上下两行 -->
-            <view class="time-box">
-              <view class="time-label">申请创建时间：</view>
-              <view class="time-value">{{item.created_at}}</view>
+    <!-- 有数据时 -->
+    <block wx:if="{{filteredList.length > 0}}">
+      <block wx:for="{{filteredList}}" wx:key="project_id">
+        <view class="item-container">
+          <!-- 左侧：项目名 + 时间 + 状态 -->
+          <view class="item-details">
+            <!-- 项目名 -->
+            <view class="name">
+              {{item.project_name || '无项目名称'}}
             </view>
+            <!-- 申请创建时间标签 -->
+            <view class="label">申请创建时间：</view>
 
-            <!-- 右侧状态胶囊（同一行右侧） -->
-            <view class="status-tag {{item.state==0?'status-pending':(item.state==1?'status-running':'status-rejected')}}">
-              {{item.state==0?'待审核':(item.state==1?'进行中':'已打回')}}
+            <!-- 时间 + 状态同一行 -->
+            <view class="time-and-state">
+              <text class="create-time">
+                {{item.created_at}}
+              </text>
+
+              <!-- 状态胶囊：注意 class 写在一行 -->
+              <view class="state {{item.state==0?'state-pending':(item.state==1?'state-running':'state-rejected')}}">
+                {{item.state==0?'待审核':(item.state==1?'进行中':'已打回')}}
+              </view>
             </view>
           </view>
-        </view>
 
-        <!-- 右侧：详情按钮，整体在卡片竖直居中 -->
-        <view class="right-block">
-          <view class="detail-btn" data-id="{{item.project_id}}" bindtap="goDetail">
+          <!-- 右侧详情按钮 -->
+          <view
+            class="detail-btn"
+            data-id="{{item.project_id}}"
+            bindtap="goDetail"
+          >
             详情
           </view>
         </view>
+      </block>
+    </block>
+
+    <!-- 无数据时 -->
+    <block wx:else>
+      <view class="empty-hint">
+        <text>(≧∀≦)ゞ{'\n'}当前状态下暂无项目</text>
       </view>
+    </block>
 
-    </view>
-  </block>
-
-  <view wx:if="{{filteredList.length === 0}}" class="empty-tip">
-    暂无项目
-  </view>
-</scroll-view>
+    <view class="safe-bottom"></view>
+  </scroll-view>
 </view>

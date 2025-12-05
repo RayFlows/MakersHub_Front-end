@@ -1,4 +1,17 @@
 <view class="page">
+  <!-- 导航栏 -->
+  <navBar
+    title="项目审核详情"
+    background="#191d27"
+    color="#ffffff"
+    back="{{true}}"
+    home="{{true}}"
+    iconTheme="white"
+    bindback="handlerGobackClick"
+    bindhome="handlerGohomeClick"
+  />
+
+  <view class="nav-placeholder"></view>
   <view class="phone-wrapper">
     <view class="phone-inner">
       <!-- 可滚动内容区域 -->
@@ -107,8 +120,8 @@
         <view class="btn-block">
           <!-- 未审核：显示两个按钮 -->
           <view wx:if="{{status === 'pending'}}" class="btn-row">
-            <button class="btn btn-reject" bindtap="onTapReject">打回</button>
             <button class="btn btn-primary" bindtap="onTapPass">通过</button>
+            <button class="btn btn-reject" bindtap="onTapReject">打回</button>
           </view>
 
           <!-- 已打回：只显示“通过”，居中 -->
