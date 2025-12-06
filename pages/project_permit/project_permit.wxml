@@ -1,5 +1,4 @@
 <view class="container">
-  <!-- 导航栏 -->
   <navBar
     title="项目审核详情"
     background="#191d27"
@@ -11,173 +10,111 @@
     bindhome="handlerGohomeClick"
   />
 
-  <!-- 可滚动内容区域 -->
+  <view class="form-container">
+    <view class="form-header">项目立项申请</view>
 
-
-    <view class="form-container">
-      <view class="form-header">项目立项申请</view>
-
-      <view class="form-item">
-        <text class="form-label">项目负责人</text>
-        <view class="form-input">{{project.owner}}</view>
-      </view>
-
-      <view class="form-item">
-        <text class="form-label">负责人学院</text>
-        <view class="form-input">{{project.college}}</view>
-      </view>
-
-      <view class="form-item">
-        <text class="form-label">负责人学号</text>
-        <view class="form-input">{{project.studentId}}</view>
-      </view>
-
-      <view class="form-item">
-        <text class="form-label">负责人电话</text>
-        <view class="form-input">{{project.phone}}</view>
-      </view>
-
-      <view class="form-item">
-        <text class="form-label">负责人QQ</text>
-        <view class="form-input">{{project.qq}}</view>
-      </view>
-
-      <view class="form-item">
-        <text class="form-label">项目名称</text>
-        <view class="form-input">{{project.name}}</view>
-      </view>
-
-      <view class="form-item">
-        <text class="form-label">项目类型</text>
-        <view class="form-input">{{project.type}}</view>
-      </view>
-
-      <view class="form-item">
-        <text class="form-label">项目简介</text>
-        <view class="form-input">{{project.intro}}</view>
-      </view>
-
-      <view class="form-item">
-        <text class="form-label">项目成员</text>
-        <view class="form-input">{{project.members}}</view>
-      </view>
-
-      <view class="form-item">
-        <text class="form-label">是否招募成员</text>
-        <view class="form-input">{{project.recruitText}}</view>
-      </view>
-
-      <view class="form-item">
-        <text class="form-label">指导老师姓名</text>
-        <view class="form-input">{{project.mentorName}}</view>
-      </view>
-
-      <view class="form-item">
-        <text class="form-label">指导老师电话</text>
-        <view class="form-input">{{project.mentorPhone}}</view>
-      </view>
-
-      <view class="form-item">
-        <text class="form-label">项目周期</text>
-        <view class="form-input">{{project.duration}}</view>
-      </view>
+    <view class="form-item">
+      <text class="form-label">项目负责人</text>
+      <view class="form-input">{{project.owner}}</view>
     </view>
 
-    <!-- 审核反馈 / 状态提示区域 -->
-    <view class="feedback-section">
-      <!-- 未审核：显示灰色反馈输入框 -->
-      <block wx:if="{{status === 'pending'}}">
-        <textarea
-          class="textarea feedback"
-          placeholder="如要打回，请输入审核反馈"
-          placeholder-style="color: rgba(0,0,0,0.35);"
-          value="{{feedback}}"
-          bindinput="onFeedbackInput"
-        ></textarea>
-      </block>
-
-      <!-- 已打回：粉色卡片 -->
-      <block wx:elif="{{status === 'rejected'}}">
-        <view class="status-card status-card-reject">
-          <view class="status-title">该项目已被打回</view>
-          <view class="status-text">谁允许你们招募的！</view>
-        </view>
-      </block>
-
-      <!-- 已通过：青色卡片 -->
-      <block wx:elif="{{status === 'approved'}}">
-        <view class="status-card status-card-pass">
-          <view class="status-title">该项目已经被通过，正在进行中</view>
-          <view class="status-text">(≧∀≦)ゞ</view>
-        </view>
-      </block>
+    <view class="form-item">
+      <text class="form-label">负责人学院</text>
+      <view class="form-input">{{project.college}}</view>
     </view>
 
-    <!-- 按钮块：紧贴在反馈下面 -->
-    <view class="btn-block">
-      <!-- 未审核：显示两个按钮 -->
-      <view wx:if="{{status === 'pending'}}" class="btn-row">
-        <button class="btn btn-primary" bindtap="onTapPass">通过</button>
-        <button class="btn btn-reject" bindtap="onTapReject">打回</button>
-      </view>
-
-      <!-- 已打回：只显示“通过”，居中 -->
-      <view wx:elif="{{status === 'rejected'}}" class="btn-row single-btn">
-        <button class="btn btn-primary" bindtap="onTapPass">通过</button>
-      </view>
-
-      <!-- 已通过：不渲染按钮 -->
+    <view class="form-item">
+      <text class="form-label">负责人学号</text>
+      <view class="form-input">{{project.studentId}}</view>
     </view>
 
-    <image class="bottom-image" src="{{icons.whiteCat}}"></image>
-  
-<!-- </view> -->
-  <!-- 打回确认弹窗 -->
-  <view wx:if="{{showRejectModal}}" class="mask">
-    <view class="modal">
-      <view class="modal-title">温馨提示</view>
-      <view class="modal-body">确认打回该项目？</view>
-      <view class="modal-footer">
-        <view class="modal-btn modal-cancel" bindtap="onCancelModal">取消</view>
-        <view class="modal-btn modal-confirm" bindtap="onConfirmReject">确认</view>
-      </view>
+    <view class="form-item">
+      <text class="form-label">负责人电话</text>
+      <view class="form-input">{{project.phone}}</view>
+    </view>
+
+    <view class="form-item">
+      <text class="form-label">负责人QQ</text>
+      <view class="form-input">{{project.qq}}</view>
+    </view>
+
+    <view class="form-item">
+      <text class="form-label">项目名称</text>
+      <view class="form-input">{{project.name}}</view>
+    </view>
+
+    <view class="form-item">
+      <text class="form-label">项目类型</text>
+      <view class="form-input">{{project.type}}</view>
+    </view>
+
+    <view class="form-item">
+      <text class="form-label">项目简介</text>
+      <view class="form-input">{{project.intro}}</view>
+    </view>
+
+    <view class="form-item">
+      <text class="form-label">项目成员</text>
+      <view class="form-input">{{project.members}}</view>
+    </view>
+
+    <view class="form-item">
+      <text class="form-label">是否招募成员</text>
+      <view class="form-input">{{project.recruitText}}</view>
+    </view>
+
+    <view class="form-item">
+      <text class="form-label">指导老师姓名</text>
+      <view class="form-input">{{project.mentorName}}</view>
+    </view>
+
+    <view class="form-item">
+      <text class="form-label">指导老师电话</text>
+      <view class="form-input">{{project.mentorPhone}}</view>
+    </view>
+
+    <view class="form-item">
+      <text class="form-label">项目周期</text>
+      <view class="form-input">{{project.duration}}</view>
     </view>
   </view>
 
-  <!-- 通过确认弹窗 -->
-  <view wx:if="{{showPassModal}}" class="mask">
-    <view class="modal">
-      <view class="modal-title">温馨提示</view>
-      <view class="modal-body">通过后无法再打回，确认通过该项目？</view>
-      <view class="modal-footer">
-        <view class="modal-btn modal-cancel" bindtap="onCancelModal">取消</view>
-        <view class="modal-btn modal-confirm" bindtap="onConfirmPass">确认</view>
+  <view class="feedback-section">
+    <block wx:if="{{status === 'pending'}}">
+      <textarea
+        class="textarea feedback"
+        placeholder="如要打回，请输入审核反馈"
+        placeholder-style="color: rgba(0,0,0,0.35);"
+        value="{{feedback}}"
+        bindinput="onFeedbackInput"
+      ></textarea>
+    </block>
+
+    <block wx:elif="{{status === 'rejected'}}">
+      <view class="status-card status-card-reject">
+        <view class="status-title">该项目已被打回</view>
+        <view class="status-text">{{feedback ? feedback : '审核未通过'}}</view>
       </view>
-    </view>
-  </view>
+    </block>
 
-  <!-- 操作失败弹窗（网络错误） -->
-  <view wx:if="{{showErrorModal}}" class="toast-mask">
-    <view class="error-card">
-      <view class="error-icon-circle">
-        <view class="error-icon-cross"></view>
+    <block wx:elif="{{status === 'approved'}}">
+      <view class="status-card status-card-pass">
+        <view class="status-title">该项目已经被通过，正在进行中</view>
+        <view class="status-text">(≧∀≦)ゞ</view>
       </view>
-      <view class="toast-text">操作失败，请重试</view>
+    </block>
+  </view>
+
+  <view class="btn-block">
+    <view wx:if="{{status === 'pending'}}" class="btn-row">
+      <button class="btn btn-primary" bindtap="onTapPass">通过</button>
+      <button class="btn btn-reject" bindtap="onTapReject">打回</button>
+    </view>
+
+    <view wx:elif="{{status === 'rejected'}}" class="btn-row single-btn">
+      <button class="btn btn-primary" bindtap="onTapPass">通过</button>
     </view>
   </view>
 
-  <!-- 成功 toast -->
-  <view wx:if="{{showResult && resultType === 'reject'}}" class="toast-mask">
-    <view class="toast-card">
-      <view class="icon-circle"><view class="icon-check"></view></view>
-      <view class="toast-text">成功打回该项目</view>
-    </view>
-  </view>
-
-  <view wx:if="{{showResult && resultType === 'pass'}}" class="toast-mask">
-    <view class="toast-card">
-      <view class="icon-circle"><view class="icon-check"></view></view>
-      <view class="toast-text">成功通过该项目</view>
-    </view>
-  </view>
+  <image class="bottom-image" src="{{icons.whiteCat}}"></image>
 </view>

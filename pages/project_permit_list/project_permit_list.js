@@ -97,9 +97,9 @@ Page({
           let list = res.data.data || [];
           if (!Array.isArray(list)) list = [list];
 
-          // --- 【修改开始】格式化时间字段 ---
+          // --- 格式化时间字段 ---
           list = list.map(item => {
-            // 既然 WXML 用的是 {{item.created_at}}，这里就处理 created_at 字段
+            // 处理 created_at 字段
             if (item.created_at) {
                 item.created_at = this.formatTime(item.created_at);
             }

@@ -31,21 +31,28 @@ Page({
     // 项目状态：pending / approved / rejected
     status: "pending",
 
-    // 审核反馈
-    feedback: "",
-
-    // 弹窗控制
-    showRejectModal: false,
-    showPassModal: false,
-    showErrorModal: false,
-    showResult: false,
-    resultType: ""
+    // 审核反馈内容
+    feedback: ""
   },
 
+  /* ======================
+     生命周期
+  ====================== */
+  onLoad(options) {
+    console.log("[Detail] 页面加载, options:", options);
+
+    this.loadIcons();
+
+    const projectId = options.project_id || options.id || '';
+    this.setData({
+      projectId
+    });
+
+    this.loadProjectDetail(projectId);
+  },
 
   loadIcons() {
     const resources = app.globalData.publicResources;
-
     if (resources) {
       this.setData({
         icons: {
@@ -61,10 +68,12 @@ Page({
      审核反馈输入
   ====================== */
   onFeedbackInput(e) {
-    this.setData({ feedback: e.detail.value });
+    this.setData({
+      feedback: e.detail.value
+    });
   },
 
-  /* 点击“打回” */
+  /* 点击“打回” - 使用原生 wx.showModal */
   onTapReject() {
     if (!this.data.feedback.trim()) {
       wx.showToast({
@@ -73,24 +82,35 @@ Page({
       });
       return;
     }
-    this.setData({ showRejectModal: true });
+
+    wx.showModal({
+      title: '确认打回',
+      content: '确定要打回该项目申请吗？',
+      confirmColor: '#ff4b7d', // 红色警示
+      success: (res) => {
+        if (res.confirm) {
+          this.submitAudit(2); // 2 = 已打回
+        }
+      }
+    });
   },
 
-  /* 点击“通过” */
+  /* 点击“通过” - 使用原生 wx.showModal */
   onTapPass() {
-    this.setData({ showPassModal: true });
-  },
-
-  /* 关闭弹窗 */
-  onCancelModal() {
-    this.setData({
-      showRejectModal: false,
-      showPassModal: false
+    wx.showModal({
+      title: '确认通过',
+      content: '确定要通过该项目并立项吗？',
+      confirmColor: '#00B8A9',
+      success: (res) => {
+        if (res.confirm) {
+          this.submitAudit(1); // 1 = 通过/进行中
+        }
+      }
     });
   },
 
   /* ======================
-     审核接口提交（按你给的可运行代码风格改写）
+     审核接口提交
      state: 1 = 通过/进行中, 2 = 已打回
   ====================== */
   submitAudit(state) {
@@ -104,12 +124,7 @@ Page({
       return;
     }
 
-    if (state !== 1 && state !== 2) {
-      console.error('非法 state 值:', state);
-      return;
-    }
-
-    // 先 showLoading
+    // 显示 Loading
     wx.showLoading({
       title: state === 1 ? '提交通过中...' : '提交打回中...',
       mask: true
@@ -121,12 +136,12 @@ Page({
       review: this.data.feedback
     };
 
-    console.log('[POST] 请求地址:', apiUrl);
-    console.log('[POST] 请求数据:', submitData);
+    console.log('[PUT] 请求地址:', apiUrl);
+    console.log('[PUT] 请求数据:', submitData);
 
     wx.request({
       url: apiUrl,
-      method: 'PUT',   // ✅ 从 POST 改为 PUT
+      method: 'PUT',
       header: {
         'Authorization': 'Bearer ' + token,
         'Content-Type': 'application/json'
@@ -135,25 +150,26 @@ Page({
       success: (res) => {
         wx.hideLoading();
         console.log('审核响应:', res);
-    
+
         if (res.statusCode === 200 && res.data && res.data.code === 200) {
+          // 成功逻辑
           if (state === 1) {
             this.setData({
-              status: 'approved',
-              showResult: true,
-              resultType: 'pass'
+              status: 'approved'
+            });
+            wx.showToast({
+              title: '审核已通过',
+              icon: 'success'
             });
           } else {
             this.setData({
-              status: 'rejected',
-              showResult: true,
-              resultType: 'reject'
+              status: 'rejected'
+            });
+            wx.showToast({
+              title: '项目已打回',
+              icon: 'success'
             });
           }
-    
-          setTimeout(() => {
-            this.setData({ showResult: false });
-          }, 1500);
         } else {
           wx.showModal({
             title: state === 1 ? '通过失败' : '打回失败',
@@ -165,7 +181,7 @@ Page({
       fail: (err) => {
         wx.hideLoading();
         console.error('审核提交失败:', err);
-    
+
         wx.showModal({
           title: '网络错误',
           content: '提交失败,请检查网络后重试',
@@ -173,18 +189,6 @@ Page({
         });
       }
     });
-  },
-
-  /* 点击“确认打回” */
-  onConfirmReject() {
-    this.setData({ showRejectModal: false });
-    this.submitAudit(2);  // 已打回
-  },
-
-  /* 点击“确认通过” */
-  onConfirmPass() {
-    this.setData({ showPassModal: false });
-    this.submitAudit(1);  // 通过 / 进行中
   },
 
   /* ======================
@@ -234,86 +238,83 @@ Page({
     });
   },
 
+  /* 顶部导航事件 */
   handlerGobackClick() {
     const pages = getCurrentPages();
     if (pages.length > 1) {
       wx.navigateBack();
     } else {
-      wx.reLaunch({ url: '/pages/index/index' });
+      wx.reLaunch({
+        url: '/pages/index/index'
+      });
     }
   },
-  
-  // 顶部导航栏回首页
+
   handlerGohomeClick() {
-    wx.reLaunch({ url: '/pages/index/index' });
+    wx.reLaunch({
+      url: '/pages/index/index'
+    });
   },
 
-  /* 映射后端数据到前端字段 */
+  /* ======================
+     数据映射与处理
+  ====================== */
   mapProjectData(d) {
-    // 1. 成员显示逻辑：没有成员时显示“暂无成员”
+    // 1. 成员显示逻辑
     const membersArr = d.members || [];
-    const membersStr = membersArr.length
-      ? membersArr
-          .map((m) => `${m.real_name} - ${m.college} - ${m.phone_num}`)
-          .join("\n")
-      : "暂无成员";
-  
+    const membersStr = membersArr.length ?
+      membersArr
+      .map((m) => `${m.real_name} - ${m.college} - ${m.phone_num}`)
+      .join("\n") :
+      "暂无成员";
+
     // 2. 项目类型文案
     const typeText =
-      d.project_type === 0
-        ? "个人项目"
-        : d.project_type === 1
-        ? "比赛项目"
-        : String(d.project_type);
-  
-    // 3. 项目周期（起止日期）
-    const startDate = (d.start_time || "").split(" ")[0];
-    const endDate = (d.end_time || "").split(" ")[0];
+      d.project_type === 0 ?
+      "个人项目" :
+      d.project_type === 1 ?
+      "比赛项目" :
+      String(d.project_type);
+
+    // 3. 日期处理逻辑
+    // 需求：显示格式为 "2023/01/01 - 2023/05/01"
+    let startDate = (d.start_time || "").split(" ")[0]; // 取出 "2023-01-01"
+    let endDate = (d.end_time || "").split(" ")[0];
+
+    // 将 "-" 替换为 "/"
+    if (startDate) startDate = startDate.replace(/-/g, '/');
+    if (endDate) endDate = endDate.replace(/-/g, '/');
+
+    // 拼接，保留中间的 " - "
     const duration =
       startDate && endDate ? `${startDate} - ${endDate}` : startDate || "";
-  
+
     // 4. 审核状态
     const status =
       d.state === 1 ? "approved" :
       d.state === 2 ? "rejected" :
       "pending";
-  
+
     // 5. 写入页面数据
     this.setData({
       project: {
         owner: d.leader_name,
         college: d.college,
-        // ✅ 用后端的 leader_student_id，而不是 student_id
         studentId: d.leader_student_id || "",
         phone: d.leader_phone,
         qq: d.leader_qq,
         name: d.project_name,
         type: typeText,
         intro: d.description,
-        // ✅ 成员字符串（可能是“暂无成员”）
         members: membersStr,
         recruitText: d.is_recruiting ? "是" : "否",
         mentorName: d.mentor_name,
         mentorPhone: d.mentor_phone,
-        duration
+        duration: duration // 直接使用处理好的字符串
       },
       status,
-      // 已有审核意见的话也带出来
+      // 这里的 review 是后端返回的历史审核意见
       feedback: d.review || ""
     });
-  },
-
-  /* ======================
-     生命周期
-  ====================== */
-  onLoad(options) {
-    console.log("[Detail] 页面加载, options:", options);
-
-    this.loadIcons();  // 保留你的图标逻辑
-
-    const projectId = options.project_id || options.id || '';
-    this.setData({ projectId });
-
-    this.loadProjectDetail(projectId);
   }
 });
