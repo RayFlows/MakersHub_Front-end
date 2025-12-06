@@ -117,30 +117,30 @@
   </view>
 
   <view class="form-label">开始日期</view>
-<view class="time-picker-group">
-  <picker mode="selector" range="{{startYearOptions}}" bindchange="onYearChange" data-type="start" value="{{startYearOptions.indexOf(startSelectedYear)}}">
-    <view class="selector-field">{{startSelectedYear || '年份'}}</view>
-  </picker>
-  <picker mode="selector" range="{{startMonthOptions}}" bindchange="onMonthChange" data-type="start" value="{{startMonthOptions.indexOf(startSelectedMonth)}}">
-    <view class="selector-field">{{startSelectedMonth || '月份'}}</view>
-  </picker>
-  <picker mode="selector" range="{{startDayOptions}}" bindchange="onDayChange" data-type="start" value="{{startDayOptions.indexOf(startSelectedDay)}}">
-    <view class="selector-field">{{startSelectedDay || '日期'}}</view>
-  </picker>
-</view>
+  <view class="time-picker-group">
+    <picker mode="selector" range="{{startYearOptions}}" bindchange="onYearChange" data-type="start" value="{{startYearOptions.indexOf(startSelectedYear)}}">
+      <view class="selector-field">{{startSelectedYear || '年份'}}</view>
+    </picker>
+    <picker mode="selector" range="{{startMonthOptions}}" bindchange="onMonthChange" data-type="start" value="{{startMonthOptions.indexOf(startSelectedMonth)}}">
+      <view class="selector-field">{{startSelectedMonth || '月份'}}</view>
+    </picker>
+    <picker mode="selector" range="{{startDayOptions}}" bindchange="onDayChange" data-type="start" value="{{startDayOptions.indexOf(startSelectedDay)}}">
+      <view class="selector-field">{{startSelectedDay || '日期'}}</view>
+    </picker>
+  </view>
 
-<view class="form-label">结束日期</view>
-<view class="time-picker-group">
-  <picker mode="selector" range="{{endYearOptions}}" bindchange="onYearChange" data-type="end" value="{{endYearOptions.indexOf(endSelectedYear)}}">
-    <view class="selector-field">{{endSelectedYear || '年份'}}</view>
-  </picker>
-  <picker mode="selector" range="{{endMonthOptions}}" bindchange="onMonthChange" data-type="end" value="{{endMonthOptions.indexOf(endSelectedMonth)}}">
-    <view class="selector-field">{{endSelectedMonth || '月份'}}</view>
-  </picker>
-  <picker mode="selector" range="{{endDayOptions}}" bindchange="onDayChange" data-type="end" value="{{endDayOptions.indexOf(endSelectedDay)}}">
-    <view class="selector-field">{{endSelectedDay || '日期'}}</view>
-  </picker>
-</view>
+  <view class="form-label">结束日期</view>
+  <view class="time-picker-group">
+    <picker mode="selector" range="{{endYearOptions}}" bindchange="onYearChange" data-type="end" value="{{endYearOptions.indexOf(endSelectedYear)}}">
+      <view class="selector-field">{{endSelectedYear || '年份'}}</view>
+    </picker>
+    <picker mode="selector" range="{{endMonthOptions}}" bindchange="onMonthChange" data-type="end" value="{{endMonthOptions.indexOf(endSelectedMonth)}}">
+      <view class="selector-field">{{endSelectedMonth || '月份'}}</view>
+    </picker>
+    <picker mode="selector" range="{{endDayOptions}}" bindchange="onDayChange" data-type="end" value="{{endDayOptions.indexOf(endSelectedDay)}}">
+      <view class="selector-field">{{endSelectedDay || '日期'}}</view>
+    </picker>
+  </view>
 
   <!-- 在按钮部分 -->
   <button class="submit-btn" bindtap="onSubmit" style="width: 227rpx;">
