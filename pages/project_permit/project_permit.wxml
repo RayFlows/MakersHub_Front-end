@@ -134,13 +134,14 @@
 
         <!-- scroll-view 内的底部占位，用来给猫腾出空间 -->
         <view class="bottom-safe"></view>
+        <image class="bottom-image" src="{{icons.whiteCat}}" mode="widthFix"></image>
       </scroll-view>
     </view>
   </view>
   
-<view class="bottom-image-container">
-  <image class="bottom-image" src="{{icons.whiteCat}}" mode="widthFix"></image>
-</view>
+<!-- <view class="bottom-image-container"> -->
+  
+<!-- </view> -->
   <!-- 打回确认弹窗 -->
   <view wx:if="{{showRejectModal}}" class="mask">
     <view class="modal">
