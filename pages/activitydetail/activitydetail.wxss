@@ -1,8 +1,11 @@
 /* container布局 */
 .container {
   position: relative;
-  background: #fff;
+  background: #f9f9f9;
   padding: 0 !important;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
 }
 
 /* 海报容器 */
@@ -16,6 +19,7 @@
 .poster{
   width: 100%;
   height: 100%;
+  object-fit: cover;
 }
 
 /* 右上角状态标签 */
@@ -41,33 +45,38 @@
 
 /* 猫头背景容器 */
 .catheadcontainer {
-  display: flex;
-  flex-direction: column;
   position: relative;
   margin-top: -128rpx; /* 覆盖海报 */
-  padding: 40rpx 30rpx;
-  min-height: 1150rpx; /* 确保容器高度 */
+  flex: 1;
   width: 100%;
+  display: flex;
+  flex-direction: column;
   z-index: 1;
 }
 
-/* 背景图片容器 */
+/* 背景图片 */
 .background-image {
   position: absolute;
-  align-self: flex-start;
   top: 0;
   left: 0;
   width: 100%;
-  height: 100%;
+  height: auto;
   z-index: -1; /* 置于底层 */
+}
+
+/* 内容包装器 */
+.content-wrapper {
+  padding: 40rpx 30rpx;
+  display: flex;
+  flex-direction: column;
 }
 
 /* 活动标题 */
 .activity-title {
   display: block;
   text-align: center;
-  font-size: 41rpx;
-  color: #222831;
+  font-size: 40rpx;
+  color: #00ADB5;
   font-weight: bold;
   margin: 80rpx 0 0 0;
   z-index: 99;
@@ -76,7 +85,7 @@
 /* 信息行布局 */
 .center {
   display: flex;
-  justify-content: space-between;
+  justify-content: flex-end;
   margin: 30rpx 0;
 }
 .infos text {
@@ -90,6 +99,9 @@
 }
 
 /* 标题带竖线效果 */
+.rectangle {
+  margin-bottom: 10rpx;
+}
 .sub-title {
   position: relative;
   padding-left: 20rpx;
@@ -113,7 +125,7 @@
 .info {
   margin-top: 10rpx;
   padding: 20rpx;
-  background: #f9f9f9;
+  /* background: #f9f9f9; */
   border-radius: 12rpx;
   font-size: 30rpx;
   color: #444;
@@ -131,11 +143,18 @@
   transform: translateY(-50%);
 }
 
+/* 底部间距 */
+.bottom-spacing {
+  height: 200rpx; /* 为底部图片预留空间 */
+}
+
 /* 底部装饰图 */
 .bottom-image {
   width: 440.53rpx;
   height: 174.4rpx;
   position: absolute;    
-  bottom: 0rpx;       
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
   z-index: 99;
 }

@@ -1,0 +1,38 @@
+<!-- pages/submit/submit.wxml -->
+<view class="container">
+  <navBar title='秀米链接提交' background='#222831' color='#fff' back="{{true}}" home="{{true}}" iconTheme='white' bindback="handlerGobackClick" bindhome="handlerGohomeClick"></navBar>
+
+  <view class="form-container" >
+    <view class="form-header">秀米链接详情</view>
+    <text class="form-label">推文标题</text>
+    <input 
+      class="form-input {{isTitleFocused ? 'focused' : ''}}" 
+      bindtap = "onTitleFocused" 
+      bindblur = "onTitleBlur" 
+      placeholder="请输入推文标题" 
+      data-field="title"
+      value="{{formData.title}}"
+    />
+    <text class="form-label">制作人姓名</text>
+    <input 
+      class="form-input {{isNameFocused ? 'focused' : ''}}" 
+      bindtap = "onNameFocused" 
+      bindblur = "onNameBlur" 
+      placeholder="请输入制作人姓名" 
+      data-field="name"
+      value="{{formData.name}}"
+    />
+    <text class="form-label">秀米链接</text>
+    <textarea 
+      class="form-textarea {{isLinkFocused ? 'focused' : ''}}" 
+      bindtap = "onLinkFocused" 
+      bindblur = "onLinkBlur"
+      bindinput="onLinkInput"
+      placeholder="请在此处输入秀米链接"
+      data-field="link"
+      value="{{formData.link}}">
+    </textarea>
+    <view class="submit-btn" bindtap="onSubmit">{{isEdited ? "确认修改" : "提交"}}</view>
+  </view>
+  <image class="bottom-image" mode="widthFix" src="{{icons.whiteCat}}"></image>
+</view>

@@ -1,0 +1,183 @@
+/* pages/my_project_list/my_project_list.wxss */
+
+page {
+  background-color: #222831;
+  overflow: hidden;
+}
+
+.container {
+  position: relative;
+  overflow-x: hidden;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
+  height: 100vh;
+}
+
+/* 顶部 tab：待审核 / 进行中 / 已打回 */
+.tab {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 100rpx;
+  margin-top: 10rpx;
+  margin-bottom: 25rpx;
+  /* background-color: #502020; */
+}
+
+.tab text {
+  flex: 0.21; 
+  font-size: 32rpx;
+  color: #FFFFFF;
+  height: 80rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  /* background-color: #502020; */
+}
+
+.active {
+  position: relative;
+  border: none;
+  color: #00ADB5 !important;
+  border-bottom: 6rpx solid #00ADB5;
+}
+
+/* 列表容器（卡片列表） */
+.list-container {
+  display: flex;
+  flex-direction: column;
+  overflow-x: hidden;
+  flex: 1;
+  height: auto;
+  touch-action: none;
+  gap: 40rpx;
+}
+
+swiper {
+  flex: 1;
+  height: 100%;
+  width: 100vw;
+}
+
+swiper-item {
+  min-height: 80%;
+  overflow-x: hidden;
+  display: flex;
+  flex-direction: column;
+  height: auto;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 30rpx;
+  overflow-y: auto;
+}
+
+/* 项目卡片 */
+.item-container {
+  display: flex;
+  align-items: center;
+  width: 619rpx;
+  height: auto;
+  justify-content: space-between;
+  background-color: #ffffff;
+  color: #393E46;
+  border-radius: 35rpx;
+  padding: 30rpx 40rpx 30rpx 40rpx;
+}
+
+.item-details {
+  height: 100%;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 10rpx;
+}
+
+/* 项目名 */
+.name {
+  font-size: 32rpx;
+  font-weight: 600;
+  color: #393E46;
+  max-width: 100%;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  text-align: left;
+}
+
+/* “项目创建时间：” 文案 */
+.label {
+  font-size: 24rpx;
+  color: #888;
+  display: flex;
+}
+
+/* 时间文本 */
+.create-time {
+  font-size: 24rpx;
+  color: #333;
+  display: inline-block;
+  white-space: nowrap;
+}
+
+/* 状态标签底座：颜色由 JS 中的 stateColors/stateText 动态控制 */
+.state {
+  display: inline-block;
+  white-space: nowrap;
+  font-size: 22rpx;
+  padding: 4rpx 12rpx;
+  border-radius: 24rpx;
+}
+
+/* 时间 + 状态 一行 */
+.time-and-state {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 28rpx;
+}
+
+/* 详情按钮 */
+.detail-btn {
+  display: flex;
+  width: 200rpx;
+  height: 70rpx;
+  background: #00BAAD;
+  color: #fff;
+  border-radius: 35rpx;
+  font-size: 28rpx;
+  text-align: center;
+  justify-content: center;
+  align-items: center;
+}
+
+.detail-btn:active {
+  filter: brightness(0.95);
+}
+
+/* 底部装饰图（项目猫 / 白猫） */
+.bottom-image {
+  width: 440rpx;
+  height: 174rpx;
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 99;
+}
+
+/* 空状态提示 */
+.empty-hint {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 75%;
+  text-align: center;
+  font-size: 28rpx;
+  line-height: 40rpx;
+  color: #666;
+}

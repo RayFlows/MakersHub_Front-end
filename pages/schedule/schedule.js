@@ -1,140 +1,162 @@
+
+var config = (wx.getStorageSync('config'));
+const TOKEN_KEY = 'auth_token';
+const app = getApp();
+
 Page({
   data: {
     isEditing: false,
-    level:1,
-    tableData: [
-      { script: '许景源', push: '王远航', news: '岳一扬' },
-      { script: '岳一扬', push: '许景源', news: '王远航' },
-      { script: '王远航', push: '岳一扬', news: '许景源' },
-      { script: '陈泓瑶', push: '陈泓瑶', news: '陈泓瑶' },
-    ],
-    editableRow: null,   // 当前行索引
-    editable1CellIndex: null // 当前列索引
-    
+    tableData: [],
+    icons: {}
   },
 
   onLoad() {
-    
-    // 页面加载时的逻辑
-    wx.request({//页面进入时加载数据
-      url: 'url',
-      method:'GET',
-      data:{
-        activity: that.data.tableData.activity,
-        push: that.data.tableData.push,
-        news:that.data.tableData.news,
-        level:that.data.level
+    this.loadIcons();
+    const token = wx.getStorageSync(TOKEN_KEY);
+
+    wx.request({
+      url: config.arrange.get_arrangement,
+      method: 'GET',
+      header: {
+        'Authorization': `Bearer ${token}`,
+        'Content-Type': 'application/json'
       },
-      success: function(res) {
-        console.log('数据库数据：', res.data);
-        that.setData({
-          items: res.data // 将获取的数据存储到页面数据中
-        });
+      success: res => {
+        const allData = res.data?.data || {};
+        const scriptList = allData[1] || [];
+        const pushList = allData[2] || [];
+        const newsList = allData[3] || [];
+
+        const maxLen = Math.max(scriptList.length, pushList.length, newsList.length);
+        const tableData = [];
+
+        for (let i = 0; i < maxLen; i++) {
+          tableData.push({
+            script: {
+              name: scriptList[i]?.name || '',
+              current: scriptList[i]?.current || false
+            },
+            push: {
+              name: pushList[i]?.name || '',
+              current: pushList[i]?.current || false
+            },
+            news: {
+              name: newsList[i]?.name || '',
+              current: newsList[i]?.current || false
+            }
+          });
+        }
+
+        this.setData({ tableData });
       },
-      fail: function(err) {
-        console.error('获取数据失败：', err);
+      fail: err => {
+        console.error('[onLoad] 获取数据失败:', err);
+        wx.showToast({ title: '加载失败', icon: 'none' });
+      }
+    });
+  },
+
+  loadIcons: function() {
+    const resources = app.globalData.publicResources;
+
+    if(resources) {
+      this.setData({
+        icons: {
+          whiteCat: resources.whiteCat
+        }
+      })
+    }
+  },
+
+  onCellInput(e) {
+    const { index, field } = e.currentTarget.dataset;
+    const value = e.detail.value;
+    this.setData({
+      [`tableData[${index}].${field}.name`]: value
+    });
+  },
+
+  toggleEdit() {
+    this.setData({ isEditing: !this.data.isEditing });
+  },
+
+  submitEdit() {
+    const token = wx.getStorageSync(TOKEN_KEY);
+    const { tableData } = this.data;
+
+    const requestData = {
+      "1": [],
+      "2": [],
+      "3": []
+    };
+
+    tableData.forEach((row, index) => {
+      requestData["1"].push({
+        name: row.script.name,
+        order: index + 1,
+        current: row.script.current,
+        maker_id: "MK_script_" + index
+      });
+      requestData["2"].push({
+        name: row.push.name,
+        order: index + 1,
+        current: row.push.current,
+        maker_id: "MK_push_" + index
+      });
+      requestData["3"].push({
+        name: row.news.name,
+        order: index + 1,
+        current: row.news.current,
+        maker_id: "MK_news_" + index
+      });
+    });
+
+    wx.showModal({
+      title: '确认提交',
+      content: '是否提交编辑内容？',
+      success: e => {
+        if (e.confirm) {
+          wx.request({
+            url: config.arrange.batch,
+            method: 'POST',
+            header: {
+              'Authorization': `Bearer ${token}`,
+              'Content-Type': 'application/json'
+            },
+            data: requestData,
+            success: res => {
+              wx.showToast({ title: res.data.message || '提交成功', icon: 'success' });
+              this.setData({ isEditing: false });
+            },
+            fail: err => {
+              wx.showToast({ title: '上传失败', icon: 'none' });
+              console.error('[submitEdit] 上传失败:', err);
+            }
+          });
+        }
+      }
+    });
+  },
+
+  cancelEdit() {
+    wx.showModal({
+      title: '取消确认',
+      content: '是否放弃已修改内容？',
+      success: e => {
+        if (e.confirm) {
+          this.setData({ isEditing: false });
+          this.onLoad(); // 重载数据
+        }
       }
     });
   },
 
   handlerGobackClick() {
-    wx.showModal({
-      title: '你点击了返回',
-      content: '是否确认放回',
-      success: e => {
-        if (e.confirm) {
-          const pages = getCurrentPages();
-          if (pages.length >= 2) {
-            wx.navigateBack({
-              delta: 1
-            });
-          } else {
-            wx.reLaunch({
-              url: '/pages/index/index'
-            });
-          }
-        }
-      }
-    });
+    const pages = getCurrentPages();
+    if (pages.length >= 2) {
+      wx.navigateBack({ delta: 1 });
+    } else {
+      wx.reLaunch({ url: '/pages/publicity_work_page/publicity_work_page' });
+    }
   },
-  handlerGohomeClick() {
-    wx.reLaunch({
-      url: '/pages/index/index'
-    });
-  },
-
-  // 输入事件处理
-  onCellInput(e) {
-    const { index, field } = e.currentTarget.dataset;
-    const newValue = e.detail.value;
-    
-    this.setData({
-      [`tableData[${index}].${field}`]: newValue
-    })
-  },
-
-  // 切换编辑模式
-  toggleEdit() {
-    this.setData({
-      isEditing: !this.data.isEditing
-    })
-  },
-
-  // 提交编辑
-  submitEdit: function() {
-    wx.showModal({
-      title: '提交修改确认',
-      content: '学年工作安排被修改，确认提交修改？',
-      success: e => {
-        if (e.confirm) {
-          console.log('提交编辑');
-          this.setData({isEditing: false});
-        }
-        else {
-          console.log('取消提交编辑');
-        }
-      }
-    });
-    
-    wx.request({/*上传修改过后的数据*/
-      url: 'https://your-backend-server.com/api/data', // 替换为你的后端 API 地址
-      method: 'POST',
-      data: {
-        activity: that.data.tableData.activity,
-        push: that.data.tableData.push,
-        news:that.data.tableData.news
-      },
-      success: function(res) {
-        console.log('上传结果：', res.data);
-        wx.showToast({
-          title: res.data.message,
-          icon: 'success'
-        });
-      },
-      fail: function(err) {
-        console.error('上传失败：', err);
-        wx.showToast({
-          title: '上传失败',
-          icon: 'none'
-        });
-      }
-    });
-  },
-
-  // 取消编辑
-  cancelEdit: function() {
-    wx.showModal({
-      title: '取消修改确认',
-      content: '学年工作安排已被修改，取消后修改将会丢失，是否确认取消？',
-      success: e => {
-        if (e.confirm) {
-          console.log('取消编辑');
-          this.setData({isEditing: false});
-        }
-        else {
-          console.log('未取消编辑');
-        }
-      }
-    });
-  }
 });

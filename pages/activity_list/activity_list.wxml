@@ -44,6 +44,7 @@
       </view>
     </view>
   </view>
+
   <view class="list-container">
     <block wx:for="{{items}}" wx:key="event_id">
       <view class="item-container">
@@ -54,9 +55,14 @@
         </view>
         <button hover-class ="none" style = "width: 150rpx; margin:0;" bindtap="navigateToDetail" data-event-id="{{item.event_id}}">详情</button>
       </view>
-    </block>
-        <!-- <image class="bottom-image" src="/images/my_points/white_cat.svg"></image> -->
+    </block>   
   </view>
+
+  <!-- 无活动时显示“暂无活动信息”-->
+  <view wx:if="{{items.length === 0}}" class="empty-tip">
+    <text>暂无活动信息</text>
+  </view>
+
 </view>
 
 

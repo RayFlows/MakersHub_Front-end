@@ -1,60 +1,62 @@
 <view class="container">
   <navBar title='活动详情' background='#222831' color='#fff' back="{{true}}" home="{{true}}" iconTheme='white' bindback="handlerGobackClick" bindhome="handlerGohomeClick"></navBar>
 
- 
-
   <view class="postercontainer">
     <image class="poster" src="{{apiData.poster}}" />
+    <!-- <image class="poster" src="/images/activitydetail/poster.jpg" mode="widthFix"></image> -->
     <view class="box">
       <text class="boxtext">报名中</text>
     </view>
   </view>
 
   <view class="catheadcontainer">
-    <image 
-    class="background-image"
-    src="/images/activitydetail/cat_background.png" 
-    mode="aspectFit" />
+    <image class="background-image" src="{{icons.catBackground}}" mode="widthFix" />
 
-    <view class="content">
-      <view class="sections">
-        <text class="activity-title">活动名称</text>
-        <view class="center">
-          <view class="infos">
-            <text>报名截止时间：{{apiData.registration_deadline}}</text>
-          </view>
-          <view class="infos">
-            <text>参与对象：{{apiData.description}}</text>
+    <view class="content-wrapper">
+      <view class="content">
+        <view class="sections">
+          <text class="activity-title">{{apiData.event_name}}</text>
+          <view class="center">
+            <view class="infos">
+              <text>参与对象：{{apiData.participant}}</text>
+            </view>
           </view>
         </view>
       </view>
-    </view>
 
-    <view class="section">
-      <view class="rectangle"><text class="sub-title">基本信息</text></view>
-      <view class="info">
-        举办时间：{{apiData.start_time}}
+      <view class="section">
+        <view class="rectangle"><text class="sub-title">基本信息</text></view>
+        <view class="info">
+          报名截止：{{apiData.registration_deadline}}
+        </view>
+        <view class="info">
+          开始时间：{{apiData.start_time}}
+        </view>
+        <view class="info">
+          结束时间: {{apiData.end_time}}
+        </view>
+        <view class="info">
+          举办地点：{{apiData.location}}
+        </view>
       </view>
-      <view class="info">
-        举办地点：{{apiData.location}}
-      </view>
-    </view>
 
-    <view class="section">
-      <view class="rectangle"><text class="sub-title">二课报名链接</text></view>
-      <view class="info">{{apiData.link}}
-        <image class="copy-icon" bindtap="copyLink" src="/images/activitydetail/copy.svg"></image>
+      <view class="section">
+        <view class="rectangle"><text class="sub-title">二课报名链接</text></view>
+        <view class="info">{{apiData.link}}
+          <image class="copy-icon" bindtap="copyLink" src="{{icons.grayCopy}}"></image>
+        </view>
       </view>
-    </view>
 
-    <view class="section">
-      <view class="rectangle"><text class="sub-title">内容简介</text></view>
-      <view class="info">
-        <text>{{apiData.description}}</text>
+      <view class="section">
+        <view class="rectangle"><text class="sub-title">内容简介</text></view>
+        <view class="info">
+          <text>{{apiData.description}}</text>
+        </view>
       </view>
+      
+      <view class="bottom-spacing"></view>
     </view>
-
   </view>
-
-  <image class="bottom-image" src="/images/activitydetail/cat_black.svg"></image>
+  
+  <image class="bottom-image" src="{{icons.blackWhite}}"></image>
 </view>

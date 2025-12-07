@@ -1,0 +1,80 @@
+<!--pages/project_closure_material_submit/project_closure_material_submit.wxml-->
+<view class="container">
+  <navBar 
+    title='{{isEdit ? "修改结项材料" : "项目结项材料提交"}}' 
+    background='#222831' 
+    color='#fff' 
+    back="{{true}}" 
+    home="{{true}}" 
+    iconTheme='white' 
+    bindback="handlerGobackClick" 
+    bindhome="handlerGohomeClick">
+  </navBar>
+
+  <!--结项材料要求-->
+  <view class="requirement-container">
+    <view class="header">
+      <text>结项材料要求</text>
+    </view>
+    <view class="body">
+      <text>在结项成果描述部分用文字描述（500字内）你们的项目结项时已获得的成果，并提交相关材料证明。请保证材料命名能直观体现其证明的成就，比如“xxx比赛国家级一等奖奖状”
+      </text>
+    </view>
+  </view>
+  <view class="material-container">
+    <text class="form-label">结项成果描述</text>
+    <view class="textarea-wrapper">
+      <textarea 
+        class="textarea-field {{isFinishDescriptionFocused ? 'focused' : ''}}"
+        placeholder="请输入文本（500字以内）"
+        value="{{formData.finish_description}}"
+        maxlength="500"
+        bindinput="onFinishDescriptionInput"
+        bindfocus="onFinishDescriptionFocus"
+        bindblur="onFinishDescriptionBlur">
+      </textarea>
+      <view class="char-counter">
+        <text class="{{charCount > 500 ? 'exceed' : ''}}">{{charCount}}/500</text>
+      </view>
+    </view>
+    <text class="form-label">成果证明材料</text>
+
+    <!-- 已上传文件列表 -->
+    <view class="file-list" wx:if="{{uploadedFiles.length > 0}}">
+      <view class="file-item" wx:for="{{uploadedFiles}}" wx:key="index">
+        <!-- 文件类型图标 -->
+        <image 
+          src="{{item.fileType === 'pdf' ? icons.pdf : icons.word}}" 
+          class="file-type-icon">
+        </image>
+        
+        <!-- 文件名 -->
+        <text class="file-name">{{item.originalName}}</text>
+        
+        <!-- 删除按钮 -->
+        <image 
+          src="{{icons.greenCancel}}" 
+          class="delete-icon"
+          bindtap="onDeleteFile"
+          data-index="{{index}}">
+        </image>
+      </view>
+    </view>
+
+    <view class="upload-file" bindtap="onChooseFile"> 
+      <text>点击添加附件</text>
+      <image src="{{icons.upload}}" class="upload-icon"></image>
+    </view>
+    <view class="hint">
+      <text>至少上传一个文件
+      支持格式: pdf/docx/doc</text>
+    </view>
+
+  </view>
+  <!-- 在按钮部分 -->
+  <button class="submit-btn" bindtap="onSubmit" style="width: 227rpx;">
+    {{isEditMode ? '更新' : '提交'}}
+  </button>
+
+  <image class="decorative-image" src="{{icons.whiteCat}}"/>
+</view>

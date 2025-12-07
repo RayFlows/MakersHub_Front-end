@@ -18,34 +18,31 @@
     <!-- 姓名 -->
     <view class="form-item">
       <text class="form-label">姓名</text>
-      <view class="form-input"></view>
+      <view class="form-input">{{apiData.name}}</view>
     </view>
 
     <!-- 学号 -->
     <view class="form-item">
       <text class="form-label">学号</text>
-      <view class="form-input"></view>
+      <view class="form-input">{{apiData.student_id}}</view>
     </view>
 
     <!-- 电话 -->
     <view class="form-item">
       <text class="form-label">电话</text>
-      <view class="form-input"></view>
+      <view class="form-input">{{apiData.phone_num}}</view>
     </view>
 
     <!-- 邮箱 -->
     <view class="form-item">
       <text class="form-label">邮箱</text>
-      <view class="form-input"></view>
+      <view class="form-input">{{apiData.email}}</view>
     </view>
 
     <!-- 借用物资 -->
     <view class="form-item">
       <text class="form-label">借用用途</text>
-      <view class="form-input">
-        <text>准备2025年全国大学生物联网设计竞赛
-        </text>
-      </view>
+      <view class="form-input">{{apiData.purpose}}</view>
     </view>
 
     <!-- 借用区域 -->
@@ -53,28 +50,28 @@
       <text class="form-label">借用区域</text>
       <view class="time-row">
         <text class="form-label">场地</text>
-        <view class="form-input"></view>
+        <view class="form-input">{{apiData.site}}</view>
         <text class="form-label">编号</text>
-        <view class="form-input"></view>
+        <view class="form-input">{{apiData.number}}</view>
       </view>
     </view>
 
     <!-- 项目编号 -->
     <view class="form-item">
       <text class="form-label">项目编号</text>
-      <view class="form-input"></view>
+      <view class="form-input">{{apiData.project_id}}</view>
     </view>
 
     <!-- 指导老师 -->
     <view class="form-item">
       <text class="form-label">指导老师</text>
-      <view class="form-input"></view>
+      <view class="form-input">{{apiData.mentor_name}}</view>
     </view>
 
     <!-- 指导老师联系方式 -->
     <view class="form-item">
       <text class="form-label">指导老师联系方式</text>
-      <view class="form-input"></view>
+      <view class="form-input">{{apiData.mentor_phone_num}}</view>
     </view>
 
     <!-- 时间选择器组 -->
@@ -82,11 +79,11 @@
     <view class="time-group">
       <text class="form-label">起借时间</text>
       <view class="time-row">
-        <view class="form-input"></view>
+        <view class="form-input">{{startYear}}</view>
         <text class="form-label">年</text>
-        <view class="form-input"></view>
+        <view class="form-input">{{startMonth}}</view>
         <text class="form-label">月</text>
-        <view class="form-input"></view>
+        <view class="form-input">{{startDay}}</view>
         <text class="form-label">日</text>
       </view>
     </view>
@@ -95,21 +92,31 @@
     <view class="time-group">
       <text class="form-label">归还时间</text>
       <view class="time-row">
-        <view class="form-input"></view>
+        <view class="form-input">{{endYear}}</view>
         <text class="form-label">年</text>
-        <view class="form-input"></view>
+        <view class="form-input">{{endMonth}}</view>
         <text class="form-label">月</text>
-        <view class="form-input"></view>
+        <view class="form-input">{{endDay}}</view>
         <text class="form-label">日</text>
       </view>
     </view>
   </view>
 
-  <view class="reply-container">
-    <textarea class="form-input {{isLinkFocused ? 'focused' : ''}}" bindtap = "onLinkFocused" bindblur = "onLinkBlur" placeholder="若打回，请输入理由（不超过150字）" data-field="link" maxlength="150" ></textarea>
+  <!-- 操作按钮 -->
+  <view wx:if="{{apiData.state === 2}}" class="return-btn" bindtap="returnSite">确认归还</view>
+  
+  <view class="reply-container" wx:if="{{apiData.state === 0 || apiData.state === 1}}">
+    <textarea 
+    class="form-input {{isReviewFocused ? 'focused' : ''}}" 
+    bindtap = "onReviewFocused" 
+    bindblur = "onReviewBlur" 
+    placeholder="若打回，请输入理由（不超过150字）" data-field="link" maxlength="150" 
+    value="{{apiData.review}}"
+    bindinput="onReviewInput"
+    ></textarea>
     <view class="reply-buttons">
-      <button class="submit-btn" bindtap="onSubmit">通过</button>
-      <button class="submit-btn" bindtap="onSubmit">打回</button>
+      <button class="submit-btn" bindtap="onApprove">通过</button>
+      <button class="submit-btn" bindtap="onReject">打回</button>
     </view>
   </view>
   

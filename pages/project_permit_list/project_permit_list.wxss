@@ -1,0 +1,191 @@
+/* 整体背景 */
+page {
+  background-color: #222831;
+  overflow: hidden;
+}
+
+.container {
+  position: relative;
+  overflow-x: hidden;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
+  height: 100vh;
+}
+
+.tab {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 100rpx;        /* [cite: 3] 保持与 site_borrow_list 一致的间距 */
+  margin-top: 10rpx;
+  margin-bottom: 25rpx;
+}
+
+/* Tab 文字默认样式 */
+.tab text {
+  font-size: 32rpx;   /*  字体大小同步 */
+  color: #FFFFFF;
+  height: 80rpx;      /*  设定固定高度，而不是靠 padding */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box; /* 防止边框撑开高度 */
+}
+
+/* 选中态样式 - 核心修改 */
+.active {
+  position: relative;
+  border: none;       /* 先清除默认边框 */
+  color: #00ADB5 !important;
+  border-bottom: 6rpx solid #00ADB5; /* [cite: 5] 再定义底部边框，确保它最后生效 */
+}
+
+/* 列表滚动区域 */
+.list-scroll {
+  flex: 1;
+  width: 100%;
+  position: relative;
+  z-index: 10; /* 保证在图片之上 */
+}
+
+/* 列表容器 */
+.list-container {
+  display: flex;
+  flex-direction: column;
+  overflow-x: hidden;
+  height: auto;
+  gap: 24rpx; /* 项目间距 */
+  align-items: center; /* 居中卡片 */
+  padding-top: 10rpx;
+}
+
+/* 单个卡片 - 同步 site_borrow_permit_list */
+.item-container {
+  display: flex;
+  align-items: center;
+  width: 619rpx;
+  height: 183rpx; /* 高度一致 [cite: 48] */
+  justify-content: space-between; /* 左右分布 [cite: 48] */
+  background-color: #ffffff;
+  color: #393E46;
+  border-radius: 35rpx;
+  padding: 30rpx 40rpx;
+  box-sizing: border-box;
+}
+
+/* 左侧内容区域 */
+.item-details {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 10rpx; /* 使用 gap 代替 margin  */
+  flex: 1;
+  overflow: hidden; /* 防止文字溢出撑开 */
+}
+
+/* 项目名 */
+.name {
+  font-size: 32rpx; /* 参考源大小  */
+  font-weight: 600;
+  color: #393E46;
+  max-width: 100%;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  text-align: left;
+}
+
+/* 标签 */
+.label {
+  font-size: 24rpx;
+  color: #888;
+  display: flex;
+}
+
+/* 时间 + 状态行 */
+.time-and-state {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 28rpx;
+}
+
+.create-time {
+  font-size: 24rpx;
+  color: #333;
+  display: inline-block;
+  white-space: nowrap;
+}
+
+/* 状态胶囊 */
+.state {
+  display: inline-block;
+  white-space: nowrap;
+  font-size: 22rpx;
+  padding: 4rpx 12rpx;
+  border-radius: 24rpx;
+  /* 颜色逻辑保留原 css 类，结构样式同步 */
+}
+
+.state-pending {
+  background-color: #e5e5e5;
+  color: #666666;
+}
+
+.state-running {
+  background-color: #f8d27f;
+  color: #6a4e00;
+}
+
+.state-rejected {
+  background-color: #e85874;
+  color: #ffffff;
+}
+
+/* 按钮 - 样式同步 */
+.detail-btn {
+  display: flex;
+  width: 160rpx; /* 略微调整以适应“详情”两个字，参考源为 200rpx [cite: 53] */
+  height: 70rpx;
+  background: #00BAAD;
+  color: #fff;
+  border-radius: 35rpx;
+  font-size: 28rpx;
+  justify-content: center;
+  align-items: center;
+  margin-left: 20rpx; /* 增加一点左边距，防止贴太紧 */
+  flex-shrink: 0; /* 防止被挤压 */
+}
+
+.detail-btn:active {
+  filter: brightness(0.95);
+}
+
+/* 底部装饰图片 - 新增  */
+.bottom-image {
+  width: 440rpx;
+  height: 174rpx;
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 1; /* 图片层级较低 */
+  pointer-events: none; /* 防止遮挡点击 */
+}
+
+/* 空状态 */
+.empty-hint {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 60vh;
+  text-align: center;
+  font-size: 28rpx;
+  line-height: 40rpx;
+  color: #666;
+}

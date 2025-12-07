@@ -13,7 +13,7 @@ page {
 }
 
 .table {/*表格整体*/
-  border-radius: 35rpx;
+  border-radius: 25rpx;
   width: 605rpx;
   height: auto;
   position: relative;
@@ -22,7 +22,7 @@ page {
 }
 
 .table-header {/*表格的表头*/
-  border-radius: 35rpx 35rpx 0rpx 0rpx;
+  border-radius: 25rpx 25rpx 0rpx 0rpx;
   background-color: #00adb5;
   color: white;
   display: flex;
@@ -49,15 +49,17 @@ page {
   color:#222831;
 }
 
-.table-cell{/*表格主体的每个单元格*/
+.table-cell {
   text-align: center;
   border-right: 2px dotted #ccc;
   border-bottom: 2px dotted #ccc;
-  width:210.22rpx;
+  width: 210.22rpx;
   height: 72rpx;
   display: flex;
   align-items: center;
   justify-content: center;
+  padding: 0; /* 确保没有额外的padding影响对齐 */
+  line-height: 1; /* 设置行高为1，避免行高影响垂直居中 */
 }
 
 .table-cell:last-child {/*最后一个单元格*/
@@ -75,7 +77,7 @@ page {
 }
 
 .table-row:last-child {
-  border-radius: 0 0 35rpx 35rpx;
+  border-radius: 0 0 25rpx 25rpx;
 }
 
 .table-row:last-child .table-cell {
@@ -132,4 +134,12 @@ button:last-child{
   bottom: 0rpx;                   
   left: 50%;                  
   transform: translateX(-50%);
+}
+.table-cell {
+  padding: 12rpx;
+  border-bottom: 1px solid #ccc;
+}
+
+.highlight {
+  background-color: #FFE89E;
 }

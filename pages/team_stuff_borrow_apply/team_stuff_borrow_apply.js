@@ -1,381 +1,486 @@
-// pages/stuff_borrow/stuff_borrow.js
+var config = (wx.getStorageSync('config'));
+const TOKEN_KEY = "auth_token";
+const app = getApp();
 
 Page({
   data: {
-    task_name: '',
+    // 表单数据
+    isEditMode: false,
+    sb_id: '',
     name: '',
-    content: '',
-    deadline:'',
+    student_id: '',
+    leaderPhone: '', 
+    email: '', 
+    grade: '', 
+    major: '',
+    project_number: '',
+    supervisor_name: '',
+    supervisor_phone: '',
+    reason: '',
+
+    // 焦点状态
     isLeaderNameFocused: false,
+    isLeaderIdFocused: false,
     isLeaderPhoneFocused: false,
     isEmailFocused: false,
     isGradeFocused: false,
     isMajorFocused: false,
-    isProjectIdFocused: false,
-    isAdvisorNameFocused: false,
-    isAdvisorPhoneFocused: false,
-    array:[0],//默认显示一个
-    inputVal:[],//所有input的内容
-    categories: ['电子设备','办公用品','其他'],
-    namesMap: {
-      '电子设备': ['笔记本','摄像头','鼠标'],
-      '办公用品': ['笔','本子','订书机'],
-      '其他': ['水杯','钥匙扣','文件夹']
-    },
-    quantitiesMap: {
-      '笔记本': ['1台','2台','3台'],
-      '摄像头': ['1个','2个','3个'],
-      '鼠标': ['1只','2只','3只'],
-      '笔': ['1支','5支','10支'],
-      '本子': ['1本','2本','5本'],
-      '订书机': ['1个','2个','3个'],
-      '水杯': ['1个','2个','3个'],
-      '钥匙扣': ['1个','2个','3个'],
-      '文件夹': ['1个','2个','3个']
-    },
+    isProjectNumberFocused: false,
+    isSupervisorNameFocused: false,
+    isSupervisorPhoneFocused: false,
+    isDescriptionFocused: false,
 
-    multiArrayList: [],       // 每个条目的三级联动选项数组
-    multiIndexList: [],       // 每个条目的当前索引 [i,j,k]
-    selectedTextList: [],     // 每个条目的已选文本
+    // 物资选择
+    array: [{}],
+    categories: [],
+    namesMap: {},
+    quantitiesMap: {},
+    multiArrayList: [],
+    multiIndexList: [],
+    selectedTextList: [],
 
-    years: Array.from({ length: 100 }, (_, i) => 2024 + i + '年'),
-    months: ['1月', '2月', '3月', '4月', '5月', '6月', '7月', '8月', '9月', '10月', '11月', '12月'],
-    days: Array.from({ length: 31 }, (_, i) => i + 1 + '日'),
-    selectedYear: null,
-    selectedMonth: null,
-    selectedDay: null,
-
-    isDescriptionFocused: false
+    // 时间选择
+    years: [],
+    months: [],
+    days: [],
+    selectedYear: '',
+    selectedMonth: '',
+    selectedDay: '',
+    icons: {}
   },
 
-  onLoad() {
-    // 初始化 multiArray 三列
-    const firstCol = this.data.categories;
-    const secondCol = this.data.namesMap[firstCol[0]];
-    const thirdCol = this.data.quantitiesMap[secondCol[0]];
-    this.setData({
-      multiArrayList: [
-        [ firstCol, secondCol, thirdCol ]
-      ],
-      multiIndexList: [
-        [0,0,0]
-      ],
-      selectedTextList: ['']
-    });
+  onLoad(options) {
+    console.log("[Team Stuff Borrow Apply] 获取页面图标资源");
+    this.loadIcons();
+
+    this.initDatePickers();
+
+    // 先设置编辑标记
+    if (options.edit === 'true' && options.sb_id) {
+      this.setData({
+        isEditMode: true,
+        sb_id: options.sb_id
+      })
+    }
+    // 拉取可选项
+    this.fetchStuffOptions()
   },
 
-  handlerGobackClick() {
-    wx.showModal({
-      title: '你点击了返回',
-      content: '是否确认放回',
-      success: e => {
-        if (e.confirm) {
-          const pages = getCurrentPages();
-          if (pages.length >= 2) {
-            wx.navigateBack({
-              delta: 1
-            });
-          } else {
-            wx.reLaunch({
-              url: '/pages/index/index'
-            });
+  loadIcons() {
+    const resources = app.globalData.publicResources;
+
+    if(resources) {
+      this.setData({
+      icons: {
+        whiteCat: resources.whiteCat
+      }
+      })
+    }
+  },
+
+  loadFormDetail(sb_id) {
+    const token = wx.getStorageSync(TOKEN_KEY);
+    wx.request({
+      url: config.stuff_borrow.detail + `/${sb_id}`,
+      method: 'GET',
+      header: {
+        'Authorization': token ? `Bearer ${token}` : '',
+        'Content-Type': 'application/json'
+      },
+      success: (res) => {
+        if (res.statusCode === 200 && res.data.code === 200) {
+          const detail = res.data.data;
+          console.log("[loadFormDetail]", detail);
+          // 解析日期
+          const deadline = new Date(detail.deadline);
+          const selectedYear = `${deadline.getFullYear()}年`;
+          const selectedMonth = `${deadline.getMonth() + 1}月`;
+          const selectedDay = `${deadline.getDate()}日`;
+  
+          // 设置基本字段
+          this.setData({
+            name: detail.name,
+            student_id: detail.student_id,
+            leaderPhone: detail.phone_num,
+            email: detail.email,
+            grade: detail.grade,
+            major: detail.major,
+            reason: detail.reason,
+            project_number: detail.project_number,
+            supervisor_name: detail.supervisor_name,
+            supervisor_phone: detail.supervisor_phone,
+            selectedYear,
+            selectedMonth,
+            selectedDay
+          });
+  
+          // 构造物资借用条目
+          const stuffList = detail.stuff_list || [];
+          const array = stuffList.map(() => ({}));
+          const multiArrayList = [];
+          const multiIndexList = [];
+          const selectedTextList = [];
+  
+          for (let item of stuffList) {
+            const catIndex = this.data.categories.indexOf(item.category);
+            const nameList = this.data.namesMap[item.category] || [];
+            const nameIndex = nameList.indexOf(item.stuff);
+            const quantityList = this.data.quantitiesMap[item.stuff] || [];
+            const quantityIndex = 0; // 默认数量索引为0（可根据业务调整）
+  
+            const arrayItem = [
+              this.data.categories,
+              nameList,
+              quantityList
+            ];
+  
+            multiArrayList.push(arrayItem);
+            multiIndexList.push([
+              catIndex >= 0 ? catIndex : 0,
+              nameIndex >= 0 ? nameIndex : 0,
+              quantityIndex
+            ]);
+            selectedTextList.push(
+              `${item.stuff}`
+            );
           }
+  
+          this.setData({
+            array,
+            multiArrayList,     // 添加这行
+          multiIndexList,     // 添加这行
+            selectedTextList
+          });
+        } else {
+          wx.showToast({ title: '加载表单失败', icon: 'none' });
         }
+      },
+      fail: () => {
+        wx.showToast({ title: '无法连接服务器', icon: 'none' });
       }
     });
   },
-  handlerGohomeClick() {
-    wx.reLaunch({
-      url: '/pages/index/index'
+
+  fetchStuffOptions() {
+    const token = wx.getStorageSync(TOKEN_KEY);
+    wx.request({
+      url: config.stuff.get_all,
+      method: 'GET',
+      header: {
+        'Authorization': token ? `Bearer ${token}` : '',
+        'Content-Type': 'application/json'
+      },
+      success: (res) => {
+        console.log('[fetchStuffOptions] 接口响应:', res);
+        if (res.statusCode === 200 && res.data) {
+          console.log('[后端接口数据]', res.data);
+          const grouped = res.data.types;
+          const categories = grouped.map(item => item.type);
+          const namesMap = {};
+          const quantitiesMap = {};
+
+          for (const typeObj of grouped) {
+            const type = typeObj.type;
+            const details = typeObj.details || [];
+            namesMap[type] = details.map(d => d.stuff_name);
+            for (const item of details) {
+              quantitiesMap[item.stuff_name] = Array.from({ length: item.number_remain }, (_, i) => `${i + 1}`);
+            }
+          }
+
+          this.setData({
+            categories,
+            namesMap,
+            quantitiesMap
+          }, () => {
+            this.initMaterialOptions();
+            if (this.data.isEditMode && this.data.sb_id) {
+              // 这时 categories 等已经就绪，loadFormDetail 能正确地映射 index
+              this.loadFormDetail(this.data.sb_id)
+            }
+          });
+        } else {
+          wx.showToast({ title: '物资加载失败', icon: 'none' });
+        }
+      },
+      fail: () => {
+        wx.showToast({ title: '物资加载失败', icon: 'none' });
+      }
     });
   },
 
-  // 负责人姓名
-  onLeaderNameFocus: function() {
-    this.setData({
-      isLeaderNameFocused: true
-    });
-  },
-  onLeaderNameBlur: function() {
-    this.setData({
-      isLeaderNameFocused: false
-    });
+  initDatePickers() {
+    const currentYear = new Date().getFullYear();
+    const years = Array.from({ length: 6 }, (_, i) => `${currentYear + i}年`);
+    const months = Array.from({ length: 12 }, (_, i) => `${i + 1}月`);
+    const days = Array.from({ length: 31 }, (_, i) => `${i + 1}日`);
+    this.setData({ years, months, days });
   },
 
-  // 负责人电话
-  onLeaderPhoneFocus: function() {
-    this.setData({
-      isLeaderPhoneFocused: true
-    });
-  },
-  onLeaderPhoneBlur: function() {
-    this.setData({
-      isLeaderPhoneFocused: false
-    });
-  },
+  initMaterialOptions() {
+    const { categories, namesMap, quantitiesMap } = this.data;
+    if (!categories.length) return;
+    const firstCol = categories;
+    const secondCol = namesMap[firstCol[0]] || [];
+    const thirdCol = secondCol.length ? (quantitiesMap[secondCol[0]] || []) : [];
 
-  // 邮箱
-  onEmailFocus: function() {
     this.setData({
-      isEmailFocused: true
-    });
-  },
-  onEmailBlur: function() {
-    this.setData({
-      isEmailFocused: false
-    });
-  },
-
-  // 年级
-  onGradeFocus: function() {
-    this.setData({
-      isGradeFocused: true
-    });
-  },
-  onGradeBlur: function() {
-    this.setData({
-      isGradeFocused: false
-    });
-  },
-
-  // 负责人专业
-  onMajorFocus: function() {
-    this.setData({
-      isMajorFocused: true
-    });
-  },
-  onMajorBlur: function() {
-    this.setData({
-      isMajorFocused: false
-    });
-  },
-
-  // 项目编号
-  onProjectIdFocus: function() {
-    this.setData({
-      isProjectIdFocused: true
-    });
-  },
-  onProjectIdBlur: function() {
-    this.setData({
-      isProjectIdFocused: false
-    });
-  },
-
-  // 指导老师姓名
-  onAdvisorNameFocus: function() {
-    this.setData({
-      isAdvisorNameFocused: true
-    });
-  },
-  onAdvisorNameBlur: function() {
-    this.setData({
-      isAdvisorNameFocused: false
-    });
-  },
-
-  // 指导老师电话
-  onAdvisorPhoneFocus: function() {
-    this.setData({
-      isAdvisorPhoneFocused: true
-    });
-  },
-  onAdvisorPhoneBlur: function() {
-    this.setData({
-      isAdvisorPhoneFocused: false
+      multiArrayList: [[firstCol, secondCol, thirdCol]],
+      multiIndexList: [[0, 0, 0]],
+      selectedTextList: ['']
     });
   },
   
-  onInput(e) {//编辑函数
+  onInput(e) {
     const field = e.currentTarget.dataset.field;
-    this.setData({
-      [field]: e.detail.value,
-    });
+    this.setData({ [field]: e.detail.value });
   },
 
-  // 用户点击“确认”时触发
+  onLeaderNameFocus() { this.setData({ isLeaderNameFocused: true }); },
+  onLeaderNameBlur() { this.setData({ isLeaderNameFocused: false }); },
+  onleaderIdFocus() { this.setData({ isLeaderIdFocused: true }); },
+  onLeaderIdBlur() { this.setData({ isLeaderIdFocused: false }); },
+  onLeaderPhoneFocus() { this.setData({ isLeaderPhoneFocused: true }); },
+  onLeaderPhoneBlur() { this.setData({ isLeaderPhoneFocused: false }); },
+  onEmailFocus() { this.setData({ isEmailFocused: true }); },
+  onEmailBlur() { this.setData({ isEmailFocused: false }); },
+  onGradeFocus() { this.setData({ isGradeFocused: true }); },
+  onGradeBlur() { this.setData({ isGradeFocused: false }); },
+  onMajorFocus() { this.setData({ isMajorFocused: true }); },
+  onMajorBlur() { this.setData({ isMajorFocused: false }); },
+  onProjectNumberFocus() { this.setData({ isProjectNumberFocused: true }); },
+  onProjectNumberBlur() { this.setData({ isProjectNumberFocused: false }); },
+  onSupervisorNameFocus() { this.setData({ isSupervisorNameFocused: true }); },
+  onSupervisorNameBlur() { this.setData({ isSupervisorNameFocused: false }); },
+  onSupervisorPhoneFocus() { this.setData({ isSupervisorPhoneFocused: true }); },
+  onSupervisorPhoneBlur() { this.setData({ isSupervisorPhoneFocused: false }); },
+  onDescriptionFocus() { this.setData({ isDescriptionFocused: true }); },
+  onDescriptionBlur() { this.setData({ isDescriptionFocused: false }); },
+
+  onYearChange(e) { this.setData({ selectedYear: this.data.years[e.detail.value] }); },
+  onMonthChange(e) { this.setData({ selectedMonth: this.data.months[e.detail.value] }); },
+  onDayChange(e) { this.setData({ selectedDay: this.data.days[e.detail.value] }); },
+
   bindMultiPickerChange(e) {
     const idx = e.currentTarget.dataset.idx;
     const [i, j, k] = e.detail.value;
     const arr = this.data.multiArrayList[idx];
-    const cat  = arr[0][i];
+    const cat = arr[0][i];
     const name = arr[1][j];
-    const qty  = arr[2][k];
-  
-    // 更新对应条目的索引和显示文本
+    const qty = arr[2][k];
+
     this.setData({
       [`multiIndexList[${idx}]`]: [i, j, k],
       [`selectedTextList[${idx}]`]: `${cat} - ${name} - ${qty}`
     });
   },
-  
 
-  // 用户滑动某一列时触发，用来联动后面列的数据
   bindMultiPickerColumnChange(e) {
     const idx = e.currentTarget.dataset.idx;
     const col = e.detail.column;
-    const value = e.detail.value;
-  
-    // 拷贝出要操作的那条 multiArray
-    let list = this.data.multiArrayList.slice();
-    let sel  = this.data.multiIndexList.slice();
-  
-    const categories = this.data.categories;
-    const namesMap   = this.data.namesMap;
-    const quantitiesMap = this.data.quantitiesMap;
-  
-    let multiArray = list[idx];
-    let multiIndex = sel[idx];
+    const val = e.detail.value;
+    let arr = this.data.multiArrayList[idx];
+    let indices = this.data.multiIndexList[idx];
+    const { categories, namesMap, quantitiesMap } = this.data;
   
     if (col === 0) {
-      const newCat   = categories[value];
-      const newNames = namesMap[newCat];
-      const newQtys  = quantitiesMap[newNames[0]];
-      multiArray = [ categories, newNames, newQtys ];
-      multiIndex = [ value, 0, 0 ];
-    }
-    else if (col === 1) {
-      const cat  = multiArray[0][ multiIndex[0] ];
-      const name = multiArray[1][ value ];
-      const newQtys = quantitiesMap[name];
-      multiArray[1] = namesMap[cat];
-      multiArray[2] = newQtys;
-      multiIndex[1] = value;
-      multiIndex[2] = 0;
+      const newCat = categories[val];
+      const newNames = namesMap[newCat] || [];
+      const newQtys = newNames.length ? (quantitiesMap[newNames[0]] || []) : [];
+      arr = [categories, newNames, newQtys];
+      indices = [val, 0, 0];
+    } else if (col === 1) {
+      const catIdx = indices[0];
+      const cat = categories[catIdx];
+      const name = namesMap[cat][val];
+      const newQtys = quantitiesMap[name] || [];
+      arr[1] = namesMap[cat];
+      arr[2] = newQtys;
+      indices[1] = val;
+      indices[2] = 0;
+    } else if (col === 2) {
+      // 👇 正确设置数量索引
+      indices[2] = val;
     }
   
-    // 写回对应条目的数据
     this.setData({
-      [`multiArrayList[${idx}]`]: multiArray,
-      [`multiIndexList[${idx}]`]: multiIndex
+      [`multiArrayList[${idx}]`]: arr,
+      [`multiIndexList[${idx}]`]: indices
     });
   },
-  
+
   addInput() {
-    // 复制第一个条目的初始结构
-    const first = this.data.multiArrayList[0];
+    const { categories, namesMap, quantitiesMap } = this.data;
+    
+    // 创建新条目的默认选择器数据
+    const defaultFirstCol = categories;
+    const defaultSecondCol = namesMap[defaultFirstCol[0]] || [];
+    const defaultThirdCol = defaultSecondCol.length ? (quantitiesMap[defaultSecondCol[0]] || []) : [];
+    
+    const newArrayItem = [defaultFirstCol, defaultSecondCol, defaultThirdCol];
+    
     this.setData({
-      array: [...this.data.array, this.data.array.length],
-      multiArrayList: [...this.data.multiArrayList, JSON.parse(JSON.stringify(first))],
-      multiIndexList: [...this.data.multiIndexList, [0,0,0]],
+      array: [...this.data.array, {}],
+      multiArrayList: [...this.data.multiArrayList, newArrayItem],
+      multiIndexList: [...this.data.multiIndexList, [0, 0, 0]],
       selectedTextList: [...this.data.selectedTextList, '']
     });
   },
   
-  delInput(e) {
-    const idx = e.currentTarget.dataset.idx;
-    const array = this.data.array;
-    if (array.length > 1) {
-      this.setData({
-        array: this.data.array.filter((_,i) => i!==idx),
-        multiArrayList: this.data.multiArrayList.filter((_,i) => i!==idx),
-        multiIndexList: this.data.multiIndexList.filter((_,i) => i!==idx),
-        selectedTextList: this.data.selectedTextList.filter((_,i) => i!==idx),
-      });
-    }else {
-      wx.showToast({
-        title: '至少保留一个借用条目',
-        icon: 'none',
-      });
-    }
 
-  },
-
-  onYearChange(e) {//改变选择器年份
-    this.setData({
-      selectedYear: this.data.years[e.detail.value],
+  handlerGobackClick() {
+    wx.showModal({
+      title: '确认返回',
+      content: '是否确认返回？未保存的数据将丢失',
+      cancelColor:'#00adb5',
+      success: e => {
+        if (e.confirm) {
+          const pages = getCurrentPages();
+          if (pages.length >= 2) wx.navigateBack({ delta: 1 });
+          else wx.reLaunch({ url: '/pages/index/index' });
+        }
+      }
     });
   },
 
-  onMonthChange(e) {//改变选择器月份
-    this.setData({
-      selectedMonth: this.data.months[e.detail.value],
-    });
+  handlerGohomeClick() {
+    wx.reLaunch({ url: '/pages/index/index' });
   },
 
-  onDayChange(e) {//改变选择器日期
-    this.setData({
-      selectedDay: this.data.days[e.detail.value],
-    });
-  },
-
-  onDescriptionFocused : function() {
-    this.setData({
-      isDescriptionFocused: true
-    });
-  },
-
-  onDescriptionBlur : function() {
-    this.setData({
-      isDescriptionFocused: false
+  confirmAndSubmit() {
+    wx.showModal({
+      title: '借物规定',
+      content: '请阅读并同意借物规定：\n1. 借用物品需按时归还；\n2. 严禁转借他人；\n3. 如有损坏，需赔偿；\n\n是否同意以上规定？',
+      showCancel: true,
+      cancelText: '不同意',
+      confirmText: '同意',
+      success: (res) => {
+        if (res.confirm) this.onSubmit();
+        else wx.showToast({ title: '您必须同意借物规定才能提交', icon: 'none' });
+      }
     });
   },
 
   onSubmit() {
-    // 显示模态框，提示用户阅读并同意借物规定
-    wx.showModal({
-      title: '借物规定',
-      content: '请阅读并同意借物规定：\r\n1. 借用物品需按时归还；\n2. 严禁转借他人；\n3. 如有损坏，需赔偿；\n\n是否同意以上规定？',
-      showCancel: true, // 显示取消按钮
-      cancelText: '不同意',
-      confirmText: '同意',
+    const {
+      name, student_id, leaderPhone, email, grade, major,
+      project_number, supervisor_name, supervisor_phone,
+      reason, selectedYear, selectedMonth, selectedDay, selectedTextList,
+      isEditMode, sb_id
+    } = this.data;
+  
+    if (!student_id || !name || !leaderPhone || !email || !grade || !major || !reason) {
+      wx.showToast({ title: '请填写完整基本信息', icon: 'none' }); return;
+    }
+    if (!project_number || !supervisor_name || !supervisor_phone) {
+      wx.showToast({ title: '请填写完整团队信息', icon: 'none' }); return;
+    }
+    if (!selectedYear || !selectedMonth || !selectedDay) {
+      wx.showToast({ title: '请选择归还日期', icon: 'none' }); return;
+    }
+  
+    const validMaterials = selectedTextList.filter(item => item && item.trim() !== '');
+    if (validMaterials.length === 0) {
+      wx.showToast({ title: '请至少选择一项物资', icon: 'none' }); return;
+    }
+  
+    const deadline = isEditMode ? `${selectedYear.replace('年', '')}-${selectedMonth.replace('月', '').padStart(2, '0')}-${selectedDay.replace('日', '').padStart(2, '0')}`:`${selectedYear.replace('年', '')}-${selectedMonth.replace('月', '').padStart(2, '0')}-${selectedDay.replace('日', '').padStart(2, '0')} 00:00:00`;
+  
+    // 构造提交数据
+    const submitData = {
+      name,
+      student_id,
+      phone: leaderPhone,  // 注意：后端期望的字段名是 phone
+      email,
+      grade,
+      major,
+      reason,
+      deadline,
+      materials: validMaterials,
+      type: 1,  // 根据你的数据格式，这里固定为1（团队借用）
+      supervisor_name,
+      supervisor_phone,
+      project_number
+    };
+  
+    const token = wx.getStorageSync(TOKEN_KEY);
+    wx.showLoading({ title: isEditMode ? '更新提交中...' : '提交中...' });
+  
+    // 根据编辑模式选择不同的接口和方法
+    const apiUrl = isEditMode ? config.stuff_borrow.update + `/${sb_id}` : config.stuff_borrow.apply;
+    const httpMethod = isEditMode ? 'PATCH' : 'POST';
+  
+    wx.request({
+      url: apiUrl,
+      method: httpMethod,
+      data: submitData,
+      header: {
+        'Content-Type': 'application/json',
+        'Authorization': token ? `Bearer ${token}` : ''
+      },
       success: (res) => {
-        if (res.confirm) {
-          // 用户点击了“同意”，执行提交操作
-          this.submitForm();
+        wx.hideLoading();
+        if (res.statusCode === 200 || res.statusCode === 201) {
+          wx.showToast({ 
+            title: isEditMode ? '更新成功' : '提交成功', 
+            icon: 'success' 
+          });
+          setTimeout(() => {
+            if (isEditMode) {
+              // 编辑模式：返回上一个页面
+              const pages = getCurrentPages();
+              if (pages.length >= 2) {
+                wx.navigateBack({ delta: 1 });
+              } else {
+                // 如果没有上一个页面，跳转到首页
+                wx.switchTab({
+                  url: '/pages/index/index',
+                  fail: () => {
+                    wx.redirectTo({
+                      url: '/pages/index/index'
+                    });
+                  }
+                });
+              }
+            } else {
+              // 新建模式：重置表单并跳转到首页
+              this.resetForm();
+              wx.switchTab({
+                url: '/pages/index/index',
+                fail: () => {
+                  wx.redirectTo({
+                    url: '/pages/index/index'
+                  });
+                }
+              });
+            }
+          }, 1500);
         } else {
-          // 用户点击了“不同意”，提示用户
-          wx.showToast({
-            title: '您必须同意借物规定才能提交',
-            icon: 'none',
+          wx.showToast({ 
+            title: res.data?.detail || (isEditMode ? '更新失败' : '提交失败'), 
+            icon: 'none' 
           });
         }
       },
+      fail: () => {
+        wx.hideLoading();
+        wx.showToast({ title: '网络错误，请检查网络连接', icon: 'none' });
+      }
     });
   },
 
-  // 提交表单的实际操作
-  submitForm() {
-    const { task_name, name, content, deadline } = this.data;
-
-    if (!task_name || !name || !content || !deadline) {
-      wx.showToast({
-        title: '请填写完整信息',
-        icon: 'none',
-      });
-      return;
-    }
-
-    // 发送请求提交数据
-    wx.request({
-      url: 'https://example.com/submit', // 替换为实际的提交接口
-      method: 'POST',
-      data: {
-        task_name,
-        name,
-        content,
-        deadline,
-      },
-      success: (res) => {
-        wx.showToast({
-          title: '提交成功',
-          icon: 'success',
-        });
-        // 清空表单数据
-        this.setData({
-          task_name: '',
-          name: '',
-          content: '',
-          deadline: '',
-        });
-      },
-      fail: (err) => {
-        wx.showToast({
-          title: '提交失败，请稍后重试',
-          icon: 'none',
-        });
-      },
+  resetForm() {
+    this.setData({
+      name: '', student_id: '', leaderPhone: '', email: '', grade: '',
+      major: '', project_number: '', supervisor_name: '', supervisor_phone: '',
+      reason: '', selectedYear: '', selectedMonth: '', selectedDay: '',
+      array: [{}], multiIndexList: [[0, 0, 0]], selectedTextList: [''],
+      isLeaderNameFocused: false, isLeaderIdFocused: false,
+      isLeaderPhoneFocused: false, isEmailFocused: false,
+      isGradeFocused: false, isMajorFocused: false,
+      isProjectNumberFocused: false, isSupervisorNameFocused: false,
+      isSupervisorPhoneFocused: false, isDescriptionFocused: false
     });
+    this.initMaterialOptions();
   }
-  
 });

@@ -1,0 +1,181 @@
+/* pages/my_task/my_task.wxss */
+
+page {
+  background-color: #222831;
+  overflow: hidden;
+}
+
+.container {
+  position: relative;
+  overflow-x: hidden;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
+  height: 100vh;
+}
+
+.tab {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 10rpx;
+  margin-bottom: 25rpx;
+  padding: 0 50rpx 0 50rpx;
+}
+
+.tab text {
+  font-size: 32rpx;
+  color: #FFFFFF;
+  height: 80rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.list-container {
+  display: flex;
+  position: relative;
+  flex-direction: column;
+  overflow-x: hidden;
+  flex: 1;
+  /* height: 100%; */
+  width: 100%;
+  touch-action: none;
+  gap:40rpx;
+  align-items: center;
+  padding-bottom: 200rpx;
+}
+
+swiper {
+  flex: 1;
+  width: 100vw;
+
+}
+
+swiper-item {
+  overflow-x: hidden;
+  display: flex;
+  flex-direction: column;
+  height: auto;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 30rpx;
+  overflow-y: hidden;
+}
+
+.active {
+  position: relative;
+  border: none;
+  color: #00ADB5 !important;
+  border-bottom: 6rpx solid #00ADB5;
+}
+
+.item-container {
+  display: flex;
+  position: relative;
+  flex-direction: column;
+  align-items: flex-end;
+  width: 619rpx;
+  height: auto;
+  justify-content: space-between;
+  background-color: #ffffff;
+  color: #393E46;
+  border-radius: 35rpx;
+  padding:30rpx 40rpx 30rpx 40rpx;
+  gap: 20rpx;
+}
+
+.item-details {
+  height: auto;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 15rpx;
+  position: relative;
+}
+
+.title-and-state {
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+  align-items: flex-start;
+  justify-content: space-between;
+}
+
+.title {
+  width: 70%;
+  font-weight: 600;
+  margin-bottom: 20rpx;
+  font-size: 32rpx;
+}
+
+.label {
+  font-size: 28rpx;
+  font-weight: 600;
+  color:#00ADB5
+}
+
+.content {
+  font-size: 26rpx;
+}
+
+.state {
+  display: inline-block;
+  white-space: nowrap;
+  color: #fff;
+  font-size: 24rpx;
+  padding: 4rpx 12rpx;
+  border-radius: 24rpx;
+}
+
+.detail-btn {
+  display: flex;
+  width: 200rpx;
+  height: 70rpx;
+  background: #00BAAD;
+  color: #fff;
+  border-radius: 35rpx;
+  font-size: 28rpx;
+  text-align: center;
+  justify-content: center;
+  align-items: center;
+}
+
+.green-cat-pattern {
+  position: absolute;
+  width: 150rpx;
+  bottom: 0;
+}
+
+
+.cat-container {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  z-index: 10; /* 确保猫咪图片在内容上方 */
+}
+
+.bottom-image {
+  width: 440rpx;
+  height: 174rpx;
+}
+
+.empty-hint {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 75%; /* 占满 swiper-item 高度 */
+  text-align: center;
+  font-size: 28rpx;
+  line-height: 40rpx;
+  color: #666; /* 确保颜色为 #666 */
+}

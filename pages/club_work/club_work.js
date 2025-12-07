@@ -1,25 +1,41 @@
 // club_work.js
-
+const app = getApp();
 Page({
-  handlerGobackClick() {
-    wx.showModal({
-      title: '你点击了返回',
-      content: '是否确认放回',
-      success: e => {
-        if (e.confirm) {
-          const pages = getCurrentPages();
-          if (pages.length >= 2) {
-            wx.navigateBack({
-              delta: 1
-            });
-          } else {
-            wx.reLaunch({
-              url: '/pages/index/index'
-            });
-          }
+  data: {
+    icons: {}
+  },
+  onLoad: function () {
+    console.log('[Club Work] 获取本页图标资源')
+    this.loadIcons();
+  },
+
+  loadIcons: function () {
+    // 获取该页面的公共资源
+    const resources = app.globalData.publicResources;
+
+    if(resources) {
+      this.setData({
+        icons: {
+          whiteCalendar: resources.whiteCalendar,
+          broom: resources.broom,
+          remote: resources.remote,
+          badge: resources.badge
         }
-      }
-    });
+      })
+    }
+  },
+  handlerGobackClick() {
+    const pages = getCurrentPages();
+    if (pages.length >= 2) {
+      wx.navigateBack({
+        delta: 1
+      });
+    } else {
+      wx.reLaunch({
+        url: '/pages/index/index'
+      });
+    }
+
   },
   handlerGohomeClick() {
     wx.reLaunch({
@@ -57,5 +73,13 @@ Page({
       wx.navigateTo({
         url: '/pages/operation_maintenance_work_page/operation_maintenance_work_page',
       })
+  },
+  // 在 Page({...}) 中添加此函数即可
+  jumpToDutyApplicationPage: function () {
+    console.log('跳转值班申请页面');
+    wx.navigateTo({
+      url: '/pages/duty_application/duty_application',
+    });
   }
+
 })

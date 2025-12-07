@@ -1,169 +1,167 @@
-const api = require('../../API/me.js')
+// pages/me/me.js
+
+const { getUserProfile, USER_PROFILE_KEY } = require('../index/index.js');
+const app = getApp();
 
 Page({
   data: {
-    isAssociationMember:2, // 判断是否是协会成员
-    textToCopy: '这是要复制的文本',//用于复制的文本
+    textToCopy: "",
     userInfo: {
-      avatar: '', // 头像
-      real_name: '',          // 用户名
-      phone_num: '',         // 用户电话
-      score: '',     // 积分
-      role: '' // 用户身份，0是社团外人员，1是干事，2是部长
+      profile_photo: "/images/me/avatar.png",
+      real_name: "新来的猫猫",
+      phone_num: "",
+      qq: "",
+      student_id: "",
+      college: "",
+      grade: "",
+      motto: "什么都没有捏",
+      score: 0,
+      role: 0,
     },
-    // 按钮处理函数映射
+    isAssociationMember: false,
     itemHandler: [
-      'goToBorrowPage',
-      'goToProjectPage',
-      'goToVenuePage',
-      'goToHonorWallPage'
+      "goToBorrowPage",
+      "goToProjectPage",
+      "goToVenuePage",
+      "goToHonorWallPage",
     ],
-    items: ['我的借物','我的项目','我的场地','荣誉墙','协会工作'],
-    activeTab: 'me' // 当前页面为我的
+    items: ["我的借物", "我的项目", "我的场地", "荣誉墙", "协会工作"],
+    activeTab: "me",
+    icons: {}
   },
 
-  // 点击底部导航项时调用
-  switchPage(e) {
-    const target = e.currentTarget.dataset.page;
-    if (target === this.data.activeTab) {
-      return; // 点击的是当前页面，无需跳转
-    }
-
-    let url = '';
-    switch (target) {
-      case 'community':
-        url = '/pages/community/community'; // 社区页面（此处用community页面占位）
-        break;
-      case 'index':
-        url = '/pages/index/index'; // 首页
-        break;
-      case 'me':
-        url = '/pages/me/me'; // 我的页面
-        break;
-    }
-
-    // 使用 wx.redirectTo 或 wx.reLaunch 进行页面跳转，防止页面堆栈积累
-    wx.redirectTo({
-      url: url,
-      fail: () => {
-        wx.showToast({
-          title: '页面跳转失败',
-          icon: 'none'
-        });
-      },
-      complete: () => {
-        // 可在此处添加统一的清理或提示操作
-      }
-    });
+  onShow() {
+    console.log('[Me] onShow 被调用');
+    this.loadUserProfileFromCache();
   },
 
-  onLoad: function (options) {
-    // 获取用户信息，包括用户名、电话、个性签名、积分
-    api.fetchUserData(this, 
-      (data) => console.log('成功:', data),
-      (err) => console.error('失败:', err)
-    )
-    console.log(this.data.userInfo.role);
-    switch(this.data.userInfo.role) {
-      case 0:
-        isAssociationMember = false;
-        break;
-      case 1:
-        isAssociationMember = true;
-        break;
-      case 2:
-        isAssociationMember = true;
-        break;
-      default:
-        wx.showToast({
-          title: '权限异常',
-          icon:'error',
-        });
-        console.log('获取权限异常');
+  onLoad: function() {
+    console.log('[Me] 页面加载');
+    this.loadIcons();
+    this.loadUserProfileFromCache();
+  },
+
+  loadIcons: function() {
+    console.log('[Me] 获取本页图标资源');
+    const resources = app.globalData.publicResources;
+
+    if (resources) {
+      this.setData({
+        icons: {
+          whiteArrow: resources.whiteArrow,
+          blackArrow: resources.blackArrow,
+          whiteEdit: resources.whiteEdit,
+          circuitSplit: resources.circuitSplit,
+          catIconChosen: resources.catIconChosen,
+          catIconUnchosen: resources.catIconUnchosen,
+          meChosen: resources.meChosen,
+        }
+      });
     }
   },
 
-  
-
-  // 复制文本到剪贴板
-  copyText: function () {
-    // 使用 wx.setClipboardData 方法将指定的文本复制到剪贴板
-    wx.setClipboardData({
-      data: this.data.textToCopy,// 需要复制的文本，从页面的data中获取
-      success: () => {// 复制成功时的回调函数
-        // 显示复制成功的提示
-        wx.showToast({
-          title: '复制成功',// 提示内容
-          icon: 'success',// 显示成功图标
-          duration: 2000// 提示显示时长，单位为毫秒
-        });
-      },
-      fail: () => {// 复制失败时的回调函数
-        // 显示复制失败的提示
-        wx.showToast({
-          title: '复制失败',// 提示内容
-          icon: 'none',// 不显示图标
-          duration: 2000// 提示显示时长
-        });
-      }
-    });
+  /**
+   * 从缓存加载用户信息
+   */
+  loadUserProfileFromCache() {
+    console.log('[Me] 从缓存加载用户信息');
+    
+    const cachedProfile = getUserProfile();
+    
+    if (cachedProfile) {
+      console.log('[Me] 缓存中的用户信息:', cachedProfile);
+      
+      this.setData({
+        userInfo: {
+          profile_photo: cachedProfile.profile_photo || this.data.userInfo.profile_photo,
+          real_name: cachedProfile.real_name || this.data.userInfo.real_name,
+          phone_num: cachedProfile.phone_num || this.data.userInfo.phone_num,
+          qq: cachedProfile.qq || this.data.userInfo.qq,
+          student_id: cachedProfile.student_id || this.data.userInfo.student_id,
+          college: cachedProfile.college || this.data.userInfo.college,
+          grade: cachedProfile.grade || this.data.userInfo.grade,
+          motto: cachedProfile.motto || this.data.userInfo.motto,
+          score: cachedProfile.score || this.data.userInfo.score,
+          role: cachedProfile.role || this.data.userInfo.role,
+        },
+        isAssociationMember: cachedProfile.role > 0,
+      });
+      
+      console.log('[Me] 用户信息已加载:', this.data.userInfo);
+    } else {
+      console.warn('[Me] 缓存中没有用户信息,使用默认值');
+      wx.showToast({
+        title: '用户信息加载失败',
+        icon: 'none',
+        duration: 2000
+      });
+    }
   },
 
-  // 封装页面跳转函数
-  navigateToPage: function (url) {
+  /**
+   * 跳转到编辑页面 - 不再传递参数
+   */
+  goToEditPage() {
+    console.log('[Me] 跳转到编辑页面');
+    // 直接跳转,编辑页面会自己从缓存读取用户信息
     wx.navigateTo({
-      url: url ,
-      // + '?avatar=' + avatar + '&real_name=' + real_name + '&phone_name=' + phone_num,
-      fail: () => {
-        wx.showToast({
-          title: '页面跳转失败',
-          icon: 'none'
-        });
-      },
-      complete: () => {
-        // 可在此处添加统一的清理或提示操作
-      }
+      url: '/pages/editPage/editPage'
     });
   },
 
-  // 页面跳转到编辑页面的函数
-  goToEditPage: function () {
-    this.navigateToPage('/pages/editPage/editPage');
+  navigateToPage(url) {
+    wx.navigateTo({ url });
   },
 
-  // 页面跳转到积分页面的函数
-  goToMyPointPage: function () {
-    this.navigateToPage('/pages/MyPoints/MyPoints');
+  goToMyPointPage() {
+    this.navigateToPage("/pages/MyPoints/MyPoints");
   },
 
-  // 页面跳转到借物页面的函数
-  goToBorrowPage: function () {
-    this.navigateToPage('/pages/borrow/borrow');
+  goToBorrowPage() {
+    this.navigateToPage("/pages/my_stuff_borrow_list/my_stuff_borrow_list");
   },
 
-  // 页面跳转到项目页面的函数
-  goToProjectPage: function () {
-    this.navigateToPage('/pages/project/project');
+  goToProjectPage() {
+    this.navigateToPage("/pages/project/project");
   },
 
-  // 页面跳转到我的场地页面的函数
-  goToVenuePage: function () {
-    this.navigateToPage('/pages/venue/venue');
+  goToVenuePage() {
+    this.navigateToPage("/pages/my_site_borrow_list/my_site_borrow_list");
   },
 
-  // 页面跳转到协会工作页面的函数
-  goToWorkPage: function () {
-    this.navigateToPage('/pages/club_work/club_work');
+  goToHonorWallPage() {
+    this.navigateToPage("/pages/honor-wall/honor-wall");
   },
 
-  // 页面跳转到荣誉墙页面的函数
-  goToHonorWallPage: function () {
-    this.navigateToPage('/pages/honor-wall/honor-wall');
+  goToWorkPage() {
+    this.navigateToPage("/pages/club_work/club_work");
   },
 
-  // 页面跳转到社区页面的函数
-  goToCommunityPage: function () {
-    this.navigateToPage('/pages/CommunityPage/CommunityPage');
+  /**
+   * 底部导航切换页面
+   */
+  switchPage(e) {
+    const page = e.currentTarget.dataset.page;
+    
+    if (page === this.data.activeTab) {
+      return; // 已经在当前页,不需要跳转
+    }
+
+    this.setData({ activeTab: page });
+
+    const urlMap = {
+      community: "/pages/community/community",
+      index: "/pages/index/index",
+      me: "/pages/me/me"
+    };
+
+    const url = urlMap[page];
+    if (url && page !== 'me') {
+      wx.redirectTo({ url });
+    }
+  },
+
+  handlerGobackClick() {
+    wx.navigateBack({ delta: 1 });
   },
 });
-

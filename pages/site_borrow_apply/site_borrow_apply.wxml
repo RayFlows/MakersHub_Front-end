@@ -1,0 +1,182 @@
+<!--pages/site_borrow_apply/site_borrow_apply.wxml-->
+
+<view class="container">
+  <navBar 
+    title='{{isEdit ? "修改申请" : "申请借用场地"}}' 
+    background='#222831' 
+    color='#fff' 
+    back="{{true}}" 
+    home="{{true}}" 
+    iconTheme='white' 
+    bindback="handlerGobackClick" 
+    bindhome="handlerGohomeClick">
+  </navBar>
+
+  <view class="form-container">
+    <text class="form-label">借用人姓名</text>
+    <input
+      class="input-field {{ isLeaderNameFocused ? 'focused' : '' }}"
+      placeholder="借用人姓名"
+      value="{{formData.name}}"
+      data-field="leaderName"
+      bindfocus="onLeaderNameFocus"
+      bindblur="onLeaderNameBlur" />
+    
+    <text class="form-label">借用人学号</text>
+    <input
+      class="input-field {{ isGradeFocused ? 'focused' : '' }}"
+      placeholder="借用人学号"
+      value="{{formData.student_id}}"
+      data-field="grade"
+      bindfocus="onGradeFocus"
+      bindblur="onGradeBlur" />
+
+    <text class="form-label">借用人电话</text>
+    <input
+      class="input-field {{ isLeaderPhoneFocused ? 'focused' : '' }}"
+      placeholder="借用人电话"
+      value="{{formData.phone_num}}"
+      data-field="leaderPhone"
+      bindfocus="onLeaderPhoneFocus"
+      bindblur="onLeaderPhoneBlur" />
+
+    <text class="form-label">借用人邮箱</text>
+    <input
+      class="input-field {{ isEmailFocused ? 'focused' : '' }}"
+      placeholder="借用人邮箱地址"
+      value="{{formData.email}}"
+      data-field="email"
+      bindfocus="onEmailFocus"
+      bindblur="onEmailBlur" />
+
+    <text class="form-label">场地借用用途</text>
+    <textarea 
+      class="input-field textarea-field {{isDescriptionFocused ? 'focused' : ''}}" 
+      placeholder="请输入借用用途" 
+      value="{{formData.purpose}}"
+      data-field="taskContent" 
+      bindtap="onDescriptionFocused" 
+      bindblur="onDescriptionBlur">
+    </textarea>
+
+    <text class="form-label">项目编号</text>
+    <input
+      class="input-field {{ isProjectIdFocused ? 'focused' : '' }}"
+      placeholder="项目编号"
+      value="{{formData.project_id}}"
+      data-field="ProjectId"
+      bindfocus="onProjectIdFocus"
+      bindblur="onProjectIdBlur" />
+
+    <text class="form-label">指导老师姓名</text>
+    <input
+      class="input-field {{ isAdvisorNameFocused ? 'focused' : '' }}"
+      placeholder="指导老师姓名"
+      value="{{formData.mentor_name}}"
+      data-field="advisorName"
+      bindfocus="onAdvisorNameFocus"
+      bindblur="onAdvisorNameBlur" />
+
+    <text class="form-label">指导老师电话</text>
+    <input
+      class="input-field {{ isAdvisorPhoneFocused ? 'focused' : '' }}"
+      placeholder="指导老师电话"
+      value="{{formData.mentor_phone_num}}"
+      data-field="advisorPhone"
+      bindfocus="onAdvisorPhoneFocus"
+      bindblur="onAdvisorPhoneBlur" />
+
+    <view class="site-title">
+      <text class="form-label">场地借用区域选择</text>
+      <text class="strategy" bindtap="showSiteNumberRule">点击查看场地编号规则</text>
+    </view>
+    <view class="site-picker-group">
+      <text class="site-label">场地：</text>
+      <picker 
+        class="site-picker"
+        mode="selector" 
+        range="{{siteNames}}" 
+        bindchange="onSiteChange"
+        value="{{selectedSiteIndex}}">
+        <view class="picker-content">{{selectedSiteName || '请选择'}}</view>
+      </picker>
+      <text class="site-label">工位：</text>
+      <picker 
+        class="site-picker"
+        mode="selector" 
+        range="{{displayNumbers}}" 
+        bindchange="onSiteNumberChange"
+        disabled="{{selectedSiteIndex < 0}}">
+        <view class="picker-content" 
+        style="background-color: {{isSelectedOccupied? '#FFDBE4' : ''}}; color: {{isSelectedOccupied ? '#E33C64' : ''}}; text-decoration: {{isSelectedOccupied? 'line-through' : ''}};">
+            {{selectedNumberDisplay || '请选择'}}
+        </view>
+      </picker>
+    </view>
+  </view>
+
+  <view class="form-label">起借日期</view>
+
+  <view class="time-picker-group">
+    <picker 
+      mode="selector" 
+      range="{{options.years}}" 
+      bindchange="onYearChange"
+      data-type="start"
+      value="{{options.years.indexOf(startSelectedYear)}}">
+      <view>{{startSelectedYear || '年份'}}</view>
+    </picker>
+    <picker 
+      mode="selector" 
+      range="{{options.months}}" 
+      bindchange="onMonthChange"
+      data-type="start"
+      value="{{options.months.indexOf(startSelectedMonth)}}">
+      <view>{{startSelectedMonth || '月份'}}</view>
+    </picker>
+    <picker 
+      mode="selector" 
+      range="{{options.days}}" 
+      bindchange="onDayChange"
+      data-type="start"
+      value="{{options.days.indexOf(startSelectedDay)}}">
+      <view>{{startSelectedDay || '日期'}}</view>
+    </picker>
+  </view>
+
+  <view class="form-label">归还日期</view>
+
+  <view class="time-picker-group">
+    <picker 
+      mode="selector" 
+      range="{{options.years}}" 
+      bindchange="onYearChange"
+      data-type="end"
+      value="{{options.years.indexOf(endSelectedYear)}}">
+      <view>{{endSelectedYear || '年份'}}</view>
+    </picker>
+    <picker 
+      mode="selector" 
+      range="{{options.months}}" 
+      bindchange="onMonthChange"
+      data-type="end"
+      value="{{options.months.indexOf(endSelectedMonth)}}">
+      <view>{{endSelectedMonth || '月份'}}</view>
+    </picker>
+    <picker 
+      mode="selector" 
+      range="{{options.days}}" 
+      bindchange="onDayChange"
+      data-type="end"
+      value="{{options.days.indexOf(endSelectedDay)}}">
+      <view>{{endSelectedDay || '日期'}}</view>
+    </picker>
+  </view>
+
+  <!-- 在按钮部分 -->
+  <button class="submit-btn" bindtap="onSubmit" style="width: 227rpx;">
+    {{isEditMode ? '更新' : '提交'}}
+  </button>
+
+  <image class="decorative-image" src="{{icons.whiteCat}}"/>
+</view>

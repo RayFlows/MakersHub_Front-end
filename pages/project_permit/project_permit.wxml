@@ -1,0 +1,120 @@
+<view class="container">
+  <navBar
+    title="项目审核详情"
+    background="#191d27"
+    color="#ffffff"
+    back="{{true}}"
+    home="{{true}}"
+    iconTheme="white"
+    bindback="handlerGobackClick"
+    bindhome="handlerGohomeClick"
+  />
+
+  <view class="form-container">
+    <view class="form-header">项目立项申请</view>
+
+    <view class="form-item">
+      <text class="form-label">项目负责人</text>
+      <view class="form-input">{{project.owner}}</view>
+    </view>
+
+    <view class="form-item">
+      <text class="form-label">负责人学院</text>
+      <view class="form-input">{{project.college}}</view>
+    </view>
+
+    <view class="form-item">
+      <text class="form-label">负责人学号</text>
+      <view class="form-input">{{project.studentId}}</view>
+    </view>
+
+    <view class="form-item">
+      <text class="form-label">负责人电话</text>
+      <view class="form-input">{{project.phone}}</view>
+    </view>
+
+    <view class="form-item">
+      <text class="form-label">负责人QQ</text>
+      <view class="form-input">{{project.qq}}</view>
+    </view>
+
+    <view class="form-item">
+      <text class="form-label">项目名称</text>
+      <view class="form-input">{{project.name}}</view>
+    </view>
+
+    <view class="form-item">
+      <text class="form-label">项目类型</text>
+      <view class="form-input">{{project.type}}</view>
+    </view>
+
+    <view class="form-item">
+      <text class="form-label">项目简介</text>
+      <view class="form-input">{{project.intro}}</view>
+    </view>
+
+    <view class="form-item">
+      <text class="form-label">项目成员</text>
+      <view class="form-input">{{project.members}}</view>
+    </view>
+
+    <view class="form-item">
+      <text class="form-label">是否招募成员</text>
+      <view class="form-input">{{project.recruitText}}</view>
+    </view>
+
+    <view class="form-item">
+      <text class="form-label">指导老师姓名</text>
+      <view class="form-input">{{project.mentorName}}</view>
+    </view>
+
+    <view class="form-item">
+      <text class="form-label">指导老师电话</text>
+      <view class="form-input">{{project.mentorPhone}}</view>
+    </view>
+
+    <view class="form-item">
+      <text class="form-label">项目周期</text>
+      <view class="form-input">{{project.duration}}</view>
+    </view>
+  </view>
+
+  <view class="feedback-section">
+    <block wx:if="{{status === 'pending'}}">
+      <textarea
+        class="textarea feedback"
+        placeholder="如要打回，请输入审核反馈"
+        placeholder-style="color: rgba(0,0,0,0.35);"
+        value="{{feedback}}"
+        bindinput="onFeedbackInput"
+      ></textarea>
+    </block>
+
+    <block wx:elif="{{status === 'rejected'}}">
+      <view class="status-card status-card-reject">
+        <view class="status-title">该项目已被打回</view>
+        <view class="status-text">{{feedback ? feedback : '审核未通过'}}</view>
+      </view>
+    </block>
+
+    <block wx:elif="{{status === 'approved'}}">
+      <view class="status-card status-card-pass">
+        <view class="status-title">该项目已经被通过，正在进行中</view>
+        <view class="status-text">(≧∀≦)ゞ</view>
+      </view>
+    </block>
+  </view>
+
+  <view class="btn-block">
+    <view wx:if="{{status === 'pending'}}" class="btn-row">
+      <button class="btn btn-primary" bindtap="onTapPass">通过</button>
+      <button class="btn btn-reject" bindtap="onTapReject">打回</button>
+    </view>
+
+    <view wx:elif="{{status === 'rejected'}}" class="btn-row single-btn">
+      <button class="btn" bindtap="onTapPass">通过</button>
+    </view>
+  </view>
+
+  <image class="bottom-image" src="{{icons.whiteCat}}"></image>
+</view>

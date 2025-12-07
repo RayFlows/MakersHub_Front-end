@@ -11,12 +11,12 @@ page{
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: space-between;
+  justify-content: flex-start;
   height: 100vh;
 }
 
 .swiper-container {
-  width: 100vh;
+  width: 100%;
   height: 500rpx;
   /* background-color: #00ADB5; */
   display: flex;
@@ -48,7 +48,7 @@ swiper-item {
   margin-top:10rpx;
   font-size: 30rpx;
   color:#00ADB5;
-  border-bottom: 2px solid #00ADB5;
+  border-bottom: 6rpx solid #00ADB5;
 }
 
 .choser {
@@ -121,6 +121,7 @@ swiper-item {
   gap:30rpx;
   overflow-y: auto; 
   padding:25rpx;
+  margin-bottom: 15rpx;
 }
 
 /* 活动列表容器 */
@@ -159,8 +160,6 @@ swiper-item {
   font-weight: 600;
   color: #393E46; 
   max-width: 100%; /* 最大宽度为100%，防止溢出 */
-  overflow: hidden; /* 隐藏溢出部分 */
-  text-overflow: ellipsis; /* 使用省略号表示溢出部分 */
   text-align: left; /* 设置文本左对齐 */
 }
 
@@ -190,14 +189,11 @@ button:active {
   filter: brightness(0.95)
 }
 
-
-
-/* 底部图片样式 */
-/* .bottom-image {
-  position: absolute;
-  bottom: 0rpx;
-  left: 50%;
-  transform: translateX(-50%);
-  width: 440.5rpx;
-  height: 174rpx;
-} */
+/* 没有活动时提示信息的样式 */
+.empty-tip {
+  width: 100%;
+  padding: 100rpx 0;
+  text-align: center;
+  color: #EEEEEE;
+  font-size: 30rpx;
+}

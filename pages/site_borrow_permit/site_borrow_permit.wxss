@@ -6,7 +6,7 @@
   background: #222831;
   min-height: 100vh;
   padding: 30rpx;
-  padding-bottom: 0;
+  /* padding-bottom: 0; */
   justify-content: space-between; 
   position: relative;
   gap: 40rpx;
@@ -105,6 +105,27 @@
   gap: 20rpx;
   margin: 20rpx 0;
   align-items: center;
+}
+
+/*归还按钮*/
+.return-btn {
+  /* flex: 1; */
+  height: 80rpx;
+  width: 250rpx;
+  font-size: 32rpx;
+  font-weight: 400;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 40rpx;
+  color: #FFFFFF;
+  background-color: #00ADB5;
+  margin-bottom: 60rpx;
+}
+
+.return-btn:active {
+  transform: scale(0.98);
+  filter:brightness(0.95);
 }
 
 /* 提交按钮 */

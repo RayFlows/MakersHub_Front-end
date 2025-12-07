@@ -1,12 +1,10 @@
-// ========================================
-// 合并后的 index.js 文件
-// 包含原 login.js 和 index.js 的功能
-// ========================================
-
-// ======== 原 login.js 部分开始 ========
 let authInProgress = false;
 const TOKEN_KEY = 'auth_token';
 const USER_INFO_KEY = 'userInfo';
+const USER_PROFILE_KEY = 'userProfile'; // 新增:存储完整用户信息的键
+const LAST_CLEAN_TIME_KEY = 'last_clean_time';
+var config = wx.getStorageSync('config');
+const app = getApp();
 
 /**
  * 获取本地存储的令牌
@@ -21,44 +19,145 @@ function getAuthToken() {
 function storeAuthToken(token) {
   wx.setStorageSync(TOKEN_KEY, token);
   wx.setStorageSync(USER_INFO_KEY, { logged: true });
+  
+  // 新增:获取到令牌后立即请求用户信息
+  fetchAndStoreUserProfile(token);
+}
+
+/**
+ * 新增:获取并存储用户个人信息
+ */
+function fetchAndStoreUserProfile(token) {
+  console.log('[Auth] 开始获取用户个人信息');
+  
+  // 确保 config 是最新的
+  const currentConfig = wx.getStorageSync('config');
+  if (!currentConfig || !currentConfig.users || !currentConfig.users.profile) {
+    console.error('[Auth] 配置信息不完整,无法获取用户信息');
+    return;
+  }
+
+  wx.request({
+    url: currentConfig.users.profile,
+    method: "GET",
+    header: {
+      "Content-Type": "application/json",
+      'Authorization': `Bearer ${token}`,
+    },
+    success: (res) => {
+      console.log('[Auth] 用户信息响应:', res);
+      if (res.statusCode === 200 && res.data.data) {
+        const info = res.data.data;
+        const userProfile = {
+          profile_photo: info.profile_photo || '',
+          real_name: info.real_name || '',
+          phone_num: info.phone_num || '',
+          qq: info.qq || '',
+          student_id: info.student_id || '',
+          college: info.college || '',
+          grade: info.grade || '',
+          motto: info.motto || '',
+          score: info.score || 0,
+          role: info.role || 0,
+        };
+        
+        // 存储到缓存
+        wx.setStorageSync(USER_PROFILE_KEY, userProfile);
+        console.log('[Auth] 用户信息已缓存:', userProfile);
+        
+        // 触发自定义事件通知其他页面更新
+        if (typeof app.onUserProfileUpdated === 'function') {
+          app.onUserProfileUpdated(userProfile);
+        }
+      } else {
+        console.warn('[Auth] 获取用户信息失败:', res.data);
+      }
+    },
+    fail: (err) => {
+      console.error('[Auth] 请求用户信息失败:', err);
+    }
+  });
+}
+
+/**
+ * 新增:从缓存获取用户信息
+ */
+function getUserProfile() {
+  return wx.getStorageSync(USER_PROFILE_KEY);
+}
+
+/**
+ * 检查并执行24小时缓存清理
+ */
+function checkAndCleanCache() {
+  const now = Date.now();
+  const lastCleanTime = wx.getStorageSync(LAST_CLEAN_TIME_KEY) || 0;
+  const twentyFourHours = 24 * 60 * 60 * 1000;
+  
+  if (now - lastCleanTime > twentyFourHours) {
+    console.log('[Cache] 执行24小时缓存清理');
+    
+    // 获取需要保留的数据
+    const token = wx.getStorageSync(TOKEN_KEY);
+    const userInfo = wx.getStorageSync(USER_INFO_KEY);
+    const userProfile = wx.getStorageSync(USER_PROFILE_KEY);
+    const configData = wx.getStorageSync('config');
+    
+    // 清理所有缓存
+    wx.clearStorageSync();
+    
+    // 恢复需要保留的数据
+    if (token) wx.setStorageSync(TOKEN_KEY, token);
+    if (userInfo) wx.setStorageSync(USER_INFO_KEY, userInfo);
+    if (userProfile) wx.setStorageSync(USER_PROFILE_KEY, userProfile);
+    if (configData) wx.setStorageSync('config', configData);
+    
+    // 更新最后清理时间
+    wx.setStorageSync(LAST_CLEAN_TIME_KEY, now);
+    
+    console.log('[Cache] 缓存清理完成');
+  }
 }
 
 /**
  * 检查令牌有效性
- * 如果本地无令牌或验证失败，则触发授权流程
  */
 const checkTokenValidity = () => {
   console.log('[Auth] 开始检查授权状态');
-  const promise = new Promise((resolve, reject) => {
+  
+  return new Promise((resolve, reject) => {
     if (authInProgress) {
       console.warn('[Auth] 已有授权请求进行中');
-      // 此处直接 reject，但 Promise 对象仍然返回
       reject('REQUEST_IN_PROGRESS');
       return;
     }
-    authInProgress = true;
-    console.log('[Auth] 设置 authInProgress = true');
-
+    
     const token = getAuthToken();
     if (token) {
-      console.log('[Auth] 发现本地令牌，token =', token);
-      authInProgress = false;
+      console.log('[Auth] 发现本地令牌', token);
+      console.log('[Auth] 本地令牌', token)
+      // 检查是否已有用户信息,没有则重新获取
+      const userProfile = getUserProfile();
+      if (!userProfile || !userProfile.real_name) {
+        console.log('[Auth] 用户信息不完整,重新获取');
+        fetchAndStoreUserProfile(token);
+      }
+      
       resolve(token);
     } else {
-      console.log('[Auth] 本地无令牌，需要授权');
+      console.log('[Auth] 本地无令牌,需要授权');
       triggerAuthFlow(resolve, reject);
     }
   });
-  console.log('[Auth] 返回 Promise 对象:', promise);
-  return promise;
 };
 
 /**
  * 触发授权流程
- * 设置全局 authResolver，在用户点击授权组件时调用相应的 resolve/reject
  */
 const triggerAuthFlow = (resolve, reject) => {
-  console.log('[Auth] triggerAuthFlow: 开始触发授权流程');
+  console.log('[Auth] 开始触发授权流程');
+  authInProgress = true;
+  
   wx.showModal({
     title: '授权提示',
     content: '需要授权以使用完整功能',
@@ -67,305 +166,264 @@ const triggerAuthFlow = (resolve, reject) => {
     success: (res) => {
       if (res.confirm) {
         console.log('[Auth] 用户同意授权');
-        // 用户同意，继续执行微信登录
-        handleUserAuth(true);
+        handleUserAuth(true, resolve, reject);
       } else {
         console.log('[Auth] 用户拒绝授权');
-        authInProgress = false; // 重置标志
+        authInProgress = false;
         reject('USER_DENIED');
       }
     },
     fail: (err) => {
       console.error('[Auth] 弹窗显示失败:', err);
-      authInProgress = false; // 重置标志
+      authInProgress = false;
       reject('MODAL_ERROR');
     }
   });
 };
 
 /**
- * 用户点击授权弹窗后调用
- * 如果用户同意授权，则通过 wx.login 获取 code，再调用后端接口换取令牌
+ * 用户点击授权后调用(改进版)
  */
-const handleUserAuth = (confirmed) => {
+const handleUserAuth = (confirmed, resolve, reject) => {
   if (!confirmed) {
     console.log('[Auth] 用户拒绝授权');
-    const app = getApp();
-    if (app.globalData.authResolver) {
-      app.globalData.authResolver.reject('USER_DENIED');
-    }
-    authInProgress = false; // 重置标志
+    authInProgress = false;
+    if (reject) reject('USER_DENIED');
     return;
   }
+  
   console.log('[Auth] 开始执行 wx.login');
   wx.login({
     success: (res) => {
       if (!res.code) {
         console.error('[Auth] wx.login失败:', res.errMsg);
-        authInProgress = false; // 重置标志
-        if (getApp().globalData.authResolver) {
-          getApp().globalData.authResolver.reject('LOGIN_FAILED');
-        }
+        authInProgress = false;
+        if (reject) reject('LOGIN_FAILED');
         return;
       }
+      
       console.log('[Auth] 获取 code 成功:', res.code);
+      
+      // 确保使用最新的 config
+      const currentConfig = wx.getStorageSync('config');
+      
       wx.request({
-        url: 'http://146.56.227.73:8000/users/wx-login',
+        url: currentConfig.users.login,
         method: 'POST',
         data: { code: res.code },
         success: (response) => {
           console.log('[Auth] 后端响应:', response.data);
           if (response.statusCode === 200 && response.data.code === 200) {
             const token = response.data.data.token;
-            console.log('[Auth] 后端返回令牌，token =', token);
+            console.log('[Auth] 后端返回令牌', token);
+            
+            // 存储令牌(会自动触发获取用户信息)
             storeAuthToken(token);
             
-            // 重要：在重定向前重置标志
             authInProgress = false;
             
-            if (getApp().globalData.authResolver) {
-              getApp().globalData.authResolver.resolve(token);
-            }
+            if (resolve) resolve(token);
             
-            // 使用延时重定向，避免状态冲突
+            // 延时重定向
             setTimeout(() => {
               wx.redirectTo({ url: '/pages/index/index' });
             }, 100);
           } else {
-            console.warn('[Auth] 后端返回错误代码:', response.data.data.code);
-            authInProgress = false; // 重置标志
-            if (getApp().globalData.authResolver) {
-              getApp().globalData.authResolver.reject('LOGIN_FAILED');
-            }
+            console.warn('[Auth] 后端返回错误:', response.data);
+            authInProgress = false;
+            if (reject) reject('LOGIN_FAILED');
           }
         },
         fail: (err) => {
           console.error('[Auth] 请求后端失败:', err);
-          authInProgress = false; // 重置标志
-          if (getApp().globalData.authResolver) {
-            getApp().globalData.authResolver.reject('NETWORK_ERROR');
-          }
+          authInProgress = false;
+          if (reject) reject('NETWORK_ERROR');
         }
       });
     },
     fail: (err) => {
       console.error('[Auth] wx.login异常:', err);
-      authInProgress = false; // 重置标志
-      if (getApp().globalData.authResolver) {
-        getApp().globalData.authResolver.reject('LOGIN_ERROR');
-      }
+      authInProgress = false;
+      if (reject) reject('LOGIN_ERROR');
     }
   });
 };
-// ======== 原 login.js 部分结束 ========
 
-// ======== 原 index.js 部分开始 ========
-// 注: 不再需要导入login.js，因为已经合并到同一文件
-// 原导入语句：
-// const loginJS = require("../../API/login.js");
-// const { TOKEN_KEY, USER_INFO_KEY } = require("../../API/login.js");
-
+// ======== 页面逻辑 ========
 Page({
   data: {
-    activeTab: "index", // 当前页面为首页
+    activeTab: "index",
     showAuthModal: false,
-    hasUserInfo: !!wx.getStorageSync(USER_INFO_KEY), // 使用合并后的常量
+    hasUserInfo: !!wx.getStorageSync(USER_INFO_KEY),
+    icons: {},
+    userProfile: null // 新增:存储用户信息
   },
 
   onShow: function () {
-    console.log("[Page] 初始化令牌检查");
+    console.log("[Page] 页面显示");
+    
+    // 检查并执行缓存清理
+    checkAndCleanCache();
+    
+    // 加载用户信息到页面
+    const cachedProfile = getUserProfile();
+    if (cachedProfile) {
+      this.setData({ 
+        userProfile: cachedProfile,
+        hasUserInfo: true 
+      });
+    }
 
-    // 使用本文件中的函数，不再需要通过loginJS访问
+    // 检查令牌状态
     checkTokenValidity()
       .then((token) => {
-        console.log("[Page] 令牌状态正常，token =", token);
+        console.log("[Page] 令牌状态正常");
         this.setData({ hasUserInfo: true });
       })
       .catch((err) => {
         console.warn("[Page] 令牌验证错误:", err);
         this.setData({ hasUserInfo: false });
-        // 如果在 index 页面需要提示用户授权，这里可以增加相应处理逻辑
       });
   },
 
+  onLoad: function () {
+    console.log('[Index] 页面加载');
+    this.loadIcons();
+  },
+
+  loadIcons: function () {
+    const resources = app.globalData.publicResources;
+    if (resources) {
+      this.setData({
+        icons: {
+          spanner: resources.spanner,
+          peoples: resources.peoples,
+          grayHouse: resources.grayHouse,
+          activity: resources.activity,
+          project: resources.project,
+          lookup: resources.lookup,
+          catIconChosen: resources.catIconChosen,
+          catIconUnChosen: resources.catIconUnChosen,
+          meChosen: resources.meChosen,
+          meUnchosen: resources.meUnchosen
+        }
+      });
+    }
+  },
+
   /**
-   * 用户点击授权按钮时调用，显示授权弹窗
+   * 显示授权弹窗(优化版)
    */
   showAuthModal: function () {
     console.log("[Page] 显示授权弹窗");
-    wx.showModal({
-      title: "提示",
-      content: "授权以使用完整功能，是否同意授权？",
-      confirmText: "同意",
-      cancelText: "拒绝",
-      success: (res) => {
-        if (res.confirm) {
-          // 使用本文件中的函数
-          handleUserAuth(true);
-        } else {
-          console.log("[Page] 用户拒绝授权");
-          wx.showToast({ title: "功能需要授权才能使用", icon: "none" });
-        }
+    
+    // 避免重复弹窗
+    if (authInProgress) {
+      console.warn("[Page] 授权流程进行中,不重复显示");
+      return;
+    }
+    
+    triggerAuthFlow(
+      (token) => {
+        console.log("[Page] 授权成功");
+        this.setData({ hasUserInfo: true });
       },
-    });
+      (err) => {
+        console.warn("[Page] 授权失败:", err);
+        wx.showToast({ title: "授权失败,请重试", icon: "none" });
+      }
+    );
   },
 
-  // 点击底部导航项时调用
+  /**
+   * 统一的导航前置检查(新增,减少代码重复)
+   */
+  checkAuthAndNavigate: function(callback) {
+    console.log("[Auth] 检查授权状态");
+    if (!this.data.hasUserInfo) {
+      this.showAuthModal();
+    } else {
+      callback.call(this);
+    }
+  },
+
+  // 底部导航切换
   switchPage(e) {
     const target = e.currentTarget.dataset.page;
-    let url = "";
+    
+    this.checkAuthAndNavigate(() => {
+      if (target === this.data.activeTab) return;
 
-    console.log("[Auth] 尝试更换导航栏");
-    if (!this.data.hasUserInfo) {
-      this.showAuthModal(); // 抽离授权逻辑
-    } else {
-      if (target === this.data.activeTab) {
-        return; // 点击的是当前页面，无需跳转
+      const urlMap = {
+        community: "/pages/community/community",
+        index: "/pages/index/index",
+        me: "/pages/me/me"
+      };
+
+      const url = urlMap[target];
+      if (url) {
+        wx.redirectTo({ url });
       }
-
-      switch (target) {
-        case "community":
-          url = "/pages/community/community"; // 社区页面（此处用community页面占位）
-          break;
-        case "index":
-          url = "/pages/index/index"; // 首页
-          break;
-        case "me":
-          url = "/pages/me/me"; // 我的页面
-          break;
-      }
-    }
-
-    // 使用 wx.redirectTo 或 wx.reLaunch 进行页面跳转，防止页面堆栈积累
-    wx.redirectTo({
-      url: url,
     });
   },
 
-  //跳转申请借物的逻辑
-  navigateToBorrow: function () {
-    console.log("[Auth] 尝试访问功能");
-    if (!this.data.hasUserInfo) {
-      this.showAuthModal(); // 抽离授权逻辑
-    } else {
-      this.actuallyNavigateToBorrow();
-    }
-  },
-
-  actuallyNavigateToBorrow: function () {
-    wx.navigateTo({
-      url: "/pages",
-      success: () => console.log("跳转成功"),
-      fail: (err) => {
-        console.error("跳转失败:", err);
-        wx.showToast({ title: "页面跳转失败", icon: "none" });
-      },
+  // 各类导航方法(简化版)
+  navigateToPersonalStuffBorrow: function () {
+    this.checkAuthAndNavigate(() => {
+      wx.navigateTo({ 
+        url: "/pages/personal_stuff_borrow_apply/personal_stuff_borrow_apply" 
+      });
     });
   },
 
-  //跳转申请场地的逻辑
   navigateToVenue: function () {
-    console.log("[Auth] 尝试访问功能");
-    if (!this.data.hasUserInfo) {
-      this.showAuthModal(); // 抽离授权逻辑
-    } else {
-      this.actuallyNavigateToVenue();
-    }
-  },
-
-  actuallyNavigateToVenue: function () {
-    wx.navigateTo({
-      url: "/pages",
-      success: () => console.log("跳转成功"),
-      fail: (err) => {
-        console.error("跳转失败:", err);
-        wx.showToast({ title: "页面跳转失败", icon: "none" });
-      },
+    this.checkAuthAndNavigate(() => {
+      wx.navigateTo({ 
+        url: "/pages/site_borrow_apply/site_borrow_apply" 
+      });
     });
   },
 
-  //跳转项目立项的逻辑
   navigateToProject: function () {
-    console.log("[Auth] 尝试访问功能");
-    if (!this.data.hasUserInfo) {
-      this.showAuthModal(); // 抽离授权逻辑
-    } else {
-      this.actuallyNavigateToProject();
-    }
-  },
-
-  actuallyNavigateToProject: function () {
-    wx.navigateTo({
-      url: "/pages",
-      success: () => console.log("跳转成功"),
-      fail: (err) => {
-        console.error("跳转失败:", err);
-        wx.showToast({ title: "页面跳转失败", icon: "none" });
-      },
+    this.checkAuthAndNavigate(() => {
+      wx.navigateTo({ 
+        url: "/pages/project_create_apply/project_create_apply" 
+      });
     });
   },
 
-  //跳转协会活动的逻辑
   navigateToActivity: function () {
-    console.log("[Auth] 尝试访问功能");
-    if (!this.data.hasUserInfo) {
-      this.showAuthModal(); // 抽离授权逻辑
-    } else {
-      this.actuallyNavigate();
-    }
-  },
-
-  actuallyNavigate: function () {
-    wx.navigateTo({
-      url: "/pages/activity_list/activity_list",
-      success: () => console.log("跳转成功"),
-      fail: (err) => {
-        console.error("跳转失败:", err);
-        wx.showToast({ title: "页面跳转失败", icon: "none" });
-      },
+    this.checkAuthAndNavigate(() => {
+      wx.navigateTo({ 
+        url: "/pages/activity_list/activity_list" 
+      });
     });
   },
 
-  //跳转查看项目的逻辑
   navigateToViewProject: function () {
-    console.log("[Auth] 尝试访问功能");
-    if (!this.data.hasUserInfo) {
-      this.showAuthModal(); // 抽离授权逻辑
-    } else {
-      this.actuallyNavigateToViewProject();
-    }
-  },
-
-  actuallyNavigateToViewProject: function () {
-    wx.navigateTo({
-      url: "/pages",
-      success: () => console.log("跳转成功"),
-      fail: (err) => {
-        console.error("跳转失败:", err);
-        wx.showToast({ title: "页面跳转失败", icon: "none" });
-      },
+    this.checkAuthAndNavigate(() => {
+      wx.navigateTo({ 
+        url: "/pages/my_project_list/my_project_list" 
+      });
     });
   },
 
-  //跳转近期赛事的逻辑
-  navigateToEvents: function () {
-    console.log("[Auth] 尝试访问功能");
-    if (!this.data.hasUserInfo) {
-      this.showAuthModal(); // 抽离授权逻辑
-    } else {
-      this.actuallyNavigateToEvents();
-    }
-  },
-
-  actuallyNavigateToEvents: function () {
-    wx.navigateTo({
-      url: "/pages",
-      success: () => console.log("跳转成功"),
-      fail: (err) => {
-        console.error("跳转失败:", err);
-        wx.showToast({ title: "页面跳转失败", icon: "none" });
-      },
+  navigateToTeamStuffBorrow: function () {
+    this.checkAuthAndNavigate(() => {
+      wx.navigateTo({ 
+        url: "/pages/team_stuff_borrow_apply/team_stuff_borrow_apply" 
+      });
     });
   },
 });
-// ======== 原 index.js 部分结束 ========
+
+// 导出函数供其他页面使用
+module.exports = {
+  TOKEN_KEY,
+  USER_INFO_KEY,
+  USER_PROFILE_KEY,
+  getAuthToken,
+  getUserProfile,
+  checkTokenValidity,
+  fetchAndStoreUserProfile
+};

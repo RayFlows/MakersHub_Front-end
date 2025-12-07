@@ -1,0 +1,71 @@
+<view class="container">
+  <navBar
+    class="navbar"
+    title="我的项目"
+    background="#222831"
+    color="#fff"
+    back="{{true}}"
+    home="{{true}}"
+    iconTheme="white"
+    bindback="handlerGobackClick"
+    bindhome="handlerGohomeClick"
+  />
+
+  <view class="tab">
+    <text
+      bindtap="onTabChange"
+      data-tab="0"
+      class="{{activeTab==0?'active':''}}"
+    >待审核</text>
+    <text
+      bindtap="onTabChange"
+      data-tab="1"
+      class="{{activeTab==1?'active':''}}"
+    >进行中</text>
+    <text
+      bindtap="onTabChange"
+      data-tab="2"
+      class="{{activeTab==2?'active':''}}"
+    >已打回</text>
+  </view>
+
+  <scroll-view scroll-y="true" class="list-scroll">
+    <view class="list-container">
+      <block wx:if="{{filteredList.length > 0}}">
+        <block wx:for="{{filteredList}}" wx:key="project_id">
+          <view class="item-container">
+            <view class="item-details">
+              <text class="name">{{item.project_name || '无项目名称'}}</text>
+              <text class="label">申请创建时间：</text>
+              
+              <view class="time-and-state">
+                <text class="create-time">{{item.created_at}}</text>
+                <view class="state {{item.state==0?'state-pending':(item.state==1?'state-running':'state-rejected')}}">
+                  {{item.state==0?'待审核':(item.state==1?'进行中':'已打回')}}
+                </view>
+              </view>
+            </view>
+
+            <view
+              class="detail-btn"
+              data-id="{{item.project_id}}"
+              bindtap="goDetail"
+            >
+              详情
+            </view>
+          </view>
+        </block>
+      </block>
+
+      <block wx:else>
+        <view class="empty-hint">
+          <text>(≧∀≦)ゞ{'\n'}当前状态下暂无项目</text>
+        </view>
+      </block>
+
+      <view style="height: 200rpx;"></view>
+    </view>
+  </scroll-view>
+
+  <image class="bottom-image" src="{{icons.whiteCat}}" mode="widthFix" />
+</view>

@@ -1,0 +1,271 @@
+<view class="page-container">
+  <!-- 导航栏 -->
+  <navBar
+    title="项目详情"
+    background="#00adb5"
+    color="#fff"
+    back="{{true}}"
+    home="{{true}}"
+    iconTheme="white"
+    bindback="handlerGobackClick"
+    bindhome="handlerGohomeClick"
+  >
+  </navBar>
+
+  <!-- 顶部青色区域：项目名称 + 编号 -->
+  <view class="header">
+    <!-- 项目名称 -->
+    <view class="header-row">
+      <text class="project-name">{{apiData.project_name || '项目名称'}}</text>
+      <image
+        class="copy-icon-header"
+        bindtap="copyProjectName"
+        src="{{icons.grayCopy}}"
+      ></image>
+    </view>
+
+    <!-- 项目编号 -->
+    <view class="header-row">
+      <text class="project-id">编号：{{apiData.project_id}}</text>
+      <image
+        class="copy-icon-header"
+        bindtap="copyProjectId"
+        src="{{icons.grayCopy}}"
+      ></image>
+    </view>
+  </view>
+
+  <!-- 白色内容区域 -->
+  <view class="detail-container">
+    <!-- 项目状态标签 -->
+    <view class="box" style="background-color: {{stateColors[apiData.state]}}">
+      <text class="boxtext" style="color: {{stateText[apiData.state]}}">
+        {{stateTag[apiData.state]}}
+      </text>
+    </view>
+
+    <!-- 顶部提示文字 -->
+    <text class="tip-text">
+      *有意加入项目者请自行联系项目成员
+    </text>
+
+    <!-- 项目负责人 -->
+    <view class="section">
+      <text class="sub-title">项目负责人</text>
+
+      <view class="info">
+        姓名：{{apiData.leader_name}}
+      </view>
+
+      <view class="info">
+        学院：{{apiData.college}}
+      </view>
+
+      <view class="info">
+        年级：{{apiData.leader_grade}}
+      </view>
+
+      <view class="info">
+        学号：{{apiData.leader_student_id}}
+      </view>
+
+      <view class="info">
+        电话：{{apiData.leader_phone}}
+        <image
+          class="copy-icon"
+          bindtap="copyLeaderPhone"
+          src="{{icons.grayCopy}}"
+        ></image>
+      </view>
+
+      <view class="info">
+        QQ：{{apiData.leader_qq}}
+        <image
+          class="copy-icon"
+          bindtap="copyLeaderQQ"
+          src="{{icons.grayCopy}}"
+        ></image>
+      </view>
+    </view>
+
+    <!-- 项目成员 -->
+    <view class="section">
+      <!-- 标题 + 按钮同一行 -->
+      <view class="section-header">
+        <text class="sub-title">项目成员</text>
+
+        <!-- 删除模式：隐藏右侧按钮 -->
+        <view class="member-actions" wx:if="{{!deleteMode}}">
+          <view class="action-btn add-btn" bindtap="addMember">添加</view>
+          <view class="action-btn delete-btn" bindtap="deleteMember">删除</view>
+        </view>
+      </view>
+
+
+      <!-- 普通模式：仅展示成员列表 -->
+      <block wx:if="{{!deleteMode}}">
+        <view class="info" wx:for="{{apiData.members}}" wx:key="index">
+          {{item.real_name}} - {{item.college}} - {{item.phone_num}}
+        </view>
+      </block>
+
+      <!-- 删除模式：自定义勾选框 + 下方确认/取消 -->
+      <block wx:elif="{{deleteMode}}">
+        <view
+          class="info member-item"
+          wx:for="{{apiData.members}}"
+          wx:key="index"
+        >
+          <!-- 自定义勾选框：青色底 + 白色勾 -->
+          <view
+            class="custom-checkbox"
+            data-index="{{index}}"
+            bindtap="toggleMemberSelect"
+          >
+            <view class="checkbox-box {{item._selected ? 'checkbox-box--checked' : ''}}">
+              <view class="checkbox-tick" wx:if="{{item._selected}}"></view>
+            </view>
+          </view>
+
+          <text class="member-text">
+            {{item.real_name}} - {{item.college}} - {{item.phone_num}}
+          </text>
+        </view>
+
+        <!-- 下方确认 / 取消按钮 -->
+        <view class="delete-actions">
+          <view
+            class="delete-action-btn delete-confirm-btn"
+            bindtap="confirmDeleteSelected"
+          >
+            确认
+          </view>
+          <view
+            class="delete-action-btn delete-cancel-btn"
+            bindtap="cancelDeleteMode"
+          >
+            取消
+          </view>
+        </view>
+      </block>
+    </view>
+
+    <!-- 项目简介 -->
+    <view class="section">
+      <text class="sub-title">项目简介</text>
+      <view class="info intro-text">
+        {{apiData.introduction}}
+      </view>
+    </view>
+
+    <!-- 指导老师 -->
+    <view class="section">
+      <text class="sub-title">指导老师</text>
+      <view class="info">
+        {{apiData.mentor_name}} - {{apiData.mentor_phone}}
+      </view>
+    </view>
+
+    <!-- 项目招募情况 -->
+    <view class="section">
+      <text class="sub-title">项目招募情况</text>
+
+      <!-- 一行：是否招募 + 是/否 + 开关 -->
+      <view class="recruit-row">
+        <text class="recruit-label">是否招募：</text>
+
+        <view class="recruit-status">
+          <text class="recruit-status-text">
+            {{apiData.is_recruit ? '是' : '否'}}
+          </text>
+        </view>
+
+        <view
+          class="recruit-switch {{apiData.is_recruit ? 'recruit-switch--on' : 'recruit-switch--off'}}"
+          bindtap="toggleRecruitCustom"
+        >
+          <view class="recruit-switch__circle"></view>
+        </view>
+      </view>
+    </view>
+
+    <!-- 结束项目按钮 -->
+    <view class="action-buttons">
+      <view class="action-btn finish-btn" bindtap="finishProject">结束项目</view>
+    </view>
+  </view>
+
+  <image
+    class="bottom-image"
+    src="{{icons.blackCat}}"
+    mode="aspectFit"
+  ></image>
+
+  <!-- =================== 添加成员弹窗 =================== -->
+  <view class="modal-mask" wx:if="{{showModal}}" bindtap="hideModal">
+    <view class="modal-content" catchtap="stopPropagation">
+      <text class="modal-title">添加项目成员</text>
+
+      <!-- 搜索输入框 -->
+      <view class="search-container">
+        <image src="{{icons.find}}" class="find-icon"></image>
+        <input
+          class="search-input"
+          placeholder="请输入成员电话号码"
+          type="number"
+          value="{{searchPhone}}"
+          bindinput="onSearchInput"
+          bindfocus="onSearchFocus"
+          bindblur="onSearchBlur"
+        />
+        <image
+          src="{{icons.cancel}}"
+          class="delete-icon"
+          wx:if="{{searchPhone.length > 0}}"
+          bindtap="clearSearch"
+        ></image>
+      </view>
+
+      <!-- 下拉结果：未找到 -->
+      <view
+        class="dropdown-results"
+        wx:if="{{hasSearched && searchResults.length === 0 && !selectedMember}}"
+      >
+        <view class="dropdown-item">
+          <text>该用户不存在QAQ</text>
+        </view>
+      </view>
+
+      <!-- 下拉结果：有匹配 -->
+      <view
+        class="dropdown-results"
+        wx:elif="{{searchResults.length > 0 && !selectedMember}}"
+      >
+        <view
+          class="dropdown-item"
+          wx:for="{{searchResults}}"
+          wx:key="phone_num"
+          bindtap="selectMember"
+          data-index="{{index}}"
+        >
+          <text>{{item.real_name}} - {{item.phone_num}} - {{item.college}}</text>
+        </view>
+      </view>
+
+      <!-- 已选择成员提示 -->
+      <view class="selected-member" wx:if="{{selectedMember}}">
+        <text class="selected-label">已选择：</text>
+        <text class="selected-name">
+          {{selectedMember.real_name}} - {{selectedMember.phone_num}} - {{selectedMember.college}}
+        </text>
+      </view>
+
+      <!-- 按钮组 -->
+      <view class="modal-buttons">
+        <button class="modal-btn cancel-btn" bindtap="hideModal">取消</button>
+        <button class="modal-btn confirm-btn" bindtap="confirmAddMember">确认</button>
+      </view>
+    </view>
+  </view>
+  <!-- =================== 弹窗结束 =================== -->
+</view>

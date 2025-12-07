@@ -1,0 +1,185 @@
+<!--pages/task_management/task_management.wxml-->
+<view class="container">
+  <!-- 顶部导航栏 -->
+  <navBar
+    class="navbar"
+    title="任务委派管理"
+    background="#222831"
+    color="#fff"
+    back="{{true}}"
+    home="{{true}}"
+    iconTheme="white"
+    bindback="handlerGobackClick"
+    bindhome="handlerGohomeClick"
+  />
+
+  <!-- tab 切换 -->
+  <view class="tab">
+    <text bindtap="changeItem" data-item="0" class="{{tab==0?'active':''}}">待完成</text>
+    <text bindtap="changeItem" data-item="1" class="{{tab==1?'active':''}}">已完成</text>
+    <text bindtap="changeItem" data-item="2" class="{{tab==2?'active':''}}">已取消</text>
+    <view class="add-button" bindtap="navigateToPost">+</view>
+  </view>
+
+  <!-- 内容区域 -->
+  <swiper current="{{tab}}" bindchange="onSwiperChange">
+    <!-- 待完成 -->
+    <swiper-item>
+      <view class="list-container">
+        <block wx:if="{{unfinishedList.length > 0}}">
+          <block wx:for="{{unfinishedList}}" wx:key="task_id">
+            <view class="item-container">
+              <view class="item-details">
+                <view class="title-and-state">
+                  <text class="title">{{item.task_name}}</text>
+                  <view
+                    class="state"
+                    style="background-color: {{stateColors[item.state]}}; color: #fff"
+                  >
+                    {{stateTag[item.state]}}
+                  </view>
+                </view>
+                <text class="label">负责人：</text>
+                <text class="content">{{department[item.department]}}-{{item.name}}-{{item.maker_id}}</text>
+                <text class="label">任务内容：</text>
+                <text class="content">{{item.content}}</text>
+                <text class="label">发布时间：</text>
+                <text class="content">{{item.formatted_create_time}}</text>
+                <text class="label">截止时间：</text>
+                <text class="content">{{item.formatted_deadline}}</text>
+              </view>
+              <view class="button-container">
+                <view
+                  class="detail-btn"
+                  style="background-color: #e33c64;"
+                  data-task-name="{{item.task_name}}"
+                  data-task-id="{{item.task_id}}"
+                  data-department="{{item.department}}"
+                  data-maker-id="{{item.maker_id}}"
+                  data-name="{{item.name}}"
+                  data-content="{{item.content}}"
+                  data-state="{{item.state}}"
+                  bindtap="cancelTask"
+                >取消</view>
+                <view
+                  class="detail-btn"
+                  data-task-name="{{item.task_name}}"
+                  data-task-id="{{item.task_id}}"
+                  data-department="{{item.department}}"
+                  data-maker-id="{{item.maker_id}}"
+                  data-name="{{item.name}}"
+                  data-content="{{item.content}}"
+                  data-state="{{item.state}}"
+                  bindtap="finishTask"
+                >完成</view>
+              </view>
+            </view>
+          </block>
+        </block>
+        <block wx:else>
+          <view class="empty-hint">
+            <text>(≧∀≦)ゞ\n目前没有待完成任务喵~</text>
+          </view>
+        </block>
+      </view>
+    </swiper-item>
+
+    <!-- 已完成 -->
+    <swiper-item>
+      <view class="list-container">
+        <block wx:if="{{finishedList.length > 0}}">
+          <block wx:for="{{finishedList}}" wx:key="task_id">
+            <view class="item-container">
+              <view class="item-details">
+                <view class="title-and-state">
+                  <text class="title">{{item.task_name}}</text>
+                  <view
+                    class="state"
+                    style="background-color: {{stateColors[item.state]}}; color: #fff"
+                  >
+                    {{stateTag[item.state]}}
+                  </view>
+                </view>
+                <text class="label">负责人：</text>
+                <text class="content">{{department[item.department]}}-{{item.name}}-{{item.maker_id}}</text>
+                <text class="label">任务内容：</text>
+                <text class="content">{{item.content}}</text>
+                <text class="label">发布时间：</text>
+                <text class="content">{{item.formatted_create_time}}</text>
+                <text class="label">截止时间：</text>
+                <text class="content">{{item.formatted_deadline}}</text>
+              </view>
+              <image
+                class="green-cat-pattern"
+                src="{{icons.catPattern}}"
+                mode="widthFix"
+              />
+            </view>
+          </block>
+        </block>
+        <block wx:else>
+          <view class="empty-hint">
+            <text>目前没有已完成任务喵~</text>
+          </view>
+        </block>
+      </view>
+    </swiper-item>
+
+    <!-- 已取消 -->
+    <swiper-item>
+      <view class="list-container">
+        <block wx:if="{{cancelledList.length > 0}}">
+          <block wx:for="{{cancelledList}}" wx:key="task_id">
+            <view class="item-container">
+              <view class="item-details">
+                <view class="title-and-state">
+                  <text class="title">{{item.task_name}}</text>
+                  <view
+                    class="state"
+                    style="background-color: {{stateColors[item.state]}}; color: #fff"
+                  >
+                    {{stateTag[item.state]}}
+                  </view>
+                </view>
+                <text class="label">负责人：</text>
+                <text class="content">{{department[item.department]}}-{{item.name}}-{{item.maker_id}}</text>
+                <text class="label">任务内容：</text>
+                <text class="content">{{item.content}}</text>
+                <text class="label">发布时间：</text>
+                <text class="content">{{item.formatted_create_time}}</text>
+                <text class="label">截止时间：</text>
+                <text class="content">{{item.formatted_deadline}}</text>
+              </view>
+              <view 
+                    class="detail-btn"
+                    bindtap="postAgain"
+                    data-task-id="{{item.task_id}}"
+                    data-task-type="{{item.task_type}}"
+                    data-department="{{item.department}}"
+                    data-maker-id="{{item.maker_id}}"
+                    data-name="{{item.name}}"
+                    data-content="{{item.content}}"
+                    data-deadline="{{item.deadline}}">
+                重新委派
+              </view>
+
+            </view>
+          </block>
+        </block>
+        <block wx:else>
+          <view class="empty-hint">
+            <text>目前没有已取消任务喵~</text>
+          </view>
+        </block>
+      </view>
+    </swiper-item>
+  </swiper>
+  <!-- 底部装饰 -->
+  <!-- <view class="cat-container">
+    <image
+      class="bottom-image"
+      src="{{icons.whiteCat}}"
+      mode="aspectFit"
+    />
+  </view> -->
+</view>

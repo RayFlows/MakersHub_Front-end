@@ -8,6 +8,8 @@
   display: flex;
   flex-direction: column;
   justify-content: space-between;
+  position: relative;
+  color: #7D8592;
 }
 
 
@@ -23,17 +25,59 @@
   padding: 40rpx;
   box-shadow: 0 8rpx 24rpx rgba(0, 0, 0, 0.1);
   width: 95%;
+  position: relative;
 }
 
-/* 统一输入框样式 */
-.input-field {
+/* 人员选择组布局 - 修改后 */
+.person-select-group {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: space-between;
+  width: 100%;
+  gap: 25rpx;
+  color: #7D8592;
+}
+
+/* 部门选择器 - 占25%宽度 */
+.department-picker {
+  display: flex;
   height: 90rpx;
   background: #e5e5e5;
   border-radius: 35rpx;
   font-size: 28rpx;
   padding: 0 28rpx;
   margin-bottom: 30rpx;
-  transition: all 0.3s;
+  align-items: center;
+  justify-content: flex-start;
+  width: 100%;  /* 占据25%宽度 */
+  box-sizing: border-box;
+}
+
+/* 负责人选择器 - 占65%宽度 */
+.director-picker {
+  display: flex;
+  height: 90rpx;
+  background: #e5e5e5;
+  border-radius: 35rpx;
+  font-size: 28rpx;
+  padding: 0 28rpx;
+  margin-bottom: 30rpx;
+  align-items: center;
+  width: 100%;  /* 占据65%宽度 */
+  box-sizing: border-box;
+}
+
+/* 统一输入框样式 */
+.input-field {
+  display: flex;
+  height: 90rpx;
+  background: #e5e5e5;
+  border-radius: 35rpx;
+  font-size: 28rpx;
+  padding: 0 28rpx;
+  margin-bottom: 30rpx;
+  align-items: center; 
 }
 
 /* .input-field:focus {
@@ -41,16 +85,21 @@
 } */
 
 picker:active {
-  background-color: rgba(0, 173, 181, 0.2);
+  background-color: rgba(229, 229, 229, 0.9);
 }
 
 /* 文本域样式 */
 .textarea-field {
-  height: 200rpx;
+  min-height: 200rpx;
+  max-height: 300rpx;
   padding: 20rpx 28rpx;
   line-height: 1.5;
   width: 100%;
   box-sizing: border-box; /* 新增 */
+  background: #e5e5e5;
+  border-radius: 35rpx;
+  font-size: 28rpx;
+  margin-bottom: 30rpx;
 }
 
 /* 选择器组布局 */

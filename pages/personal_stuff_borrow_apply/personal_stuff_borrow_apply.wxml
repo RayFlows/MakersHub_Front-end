@@ -1,4 +1,3 @@
-<!--pages/personal_stuff_borrow_apply/personal_stuff_borrow_apply.wxml-->
 <view class="container">
   <navBar 
     title='个人借物' 
@@ -13,19 +12,41 @@
 
   <view class="form-container">
 
+    <!-- <text class="form-label">借用任务名称</text>
+    <input
+      class="input-field"
+      placeholder="任务名称"
+      value="{{task_name}}"
+      data-field="task_name"
+      bindinput="onInput" /> -->
+
     <text class="form-label">借用人姓名</text>
     <input
       class="input-field {{ isLeaderNameFocused ? 'focused' : '' }}"
-      placeholder="负责人姓名"
-      data-field="leaderName"
+      placeholder="借用人姓名"
+      value="{{name}}"
+      data-field="name"
+      bindinput="onInput"
       bindfocus="onLeaderNameFocus"
       bindblur="onLeaderNameBlur" />
+
+      <text class="form-label">借用人学号</text>
+    <input
+      class="input-field {{ isLeaderNameFocused ? 'focused' : '' }}"
+      placeholder="借用人学号"
+      value="{{student_id}}"
+      data-field="student_id"
+      bindinput="onInput"
+      bindfocus="onLeaderIdFocus"
+      bindblur="onLeaderIdBlur" />
 
     <text class="form-label">借用人电话</text>
     <input
       class="input-field {{ isLeaderPhoneFocused ? 'focused' : '' }}"
-      placeholder="负责人电话"
+      placeholder="借用人电话"
+      value="{{leaderPhone}}"
       data-field="leaderPhone"
+      bindinput="onInput"
       bindfocus="onLeaderPhoneFocus"
       bindblur="onLeaderPhoneBlur" />
 
@@ -33,7 +54,9 @@
     <input
       class="input-field {{ isEmailFocused ? 'focused' : '' }}"
       placeholder="邮箱地址"
+      value="{{email}}"
       data-field="email"
+      bindinput="onInput"
       bindfocus="onEmailFocus"
       bindblur="onEmailBlur" />
 
@@ -41,7 +64,9 @@
     <input
       class="input-field {{ isGradeFocused ? 'focused' : '' }}"
       placeholder="年级（例如：2023级）"
+      value="{{grade}}"
       data-field="grade"
+      bindinput="onInput"
       bindfocus="onGradeFocus"
       bindblur="onGradeBlur" />
 
@@ -49,7 +74,9 @@
     <input
       class="input-field {{ isMajorFocused ? 'focused' : '' }}"
       placeholder="专业（例如：计算机科学）"
+      value="{{major}}"
       data-field="major"
+      bindinput="onInput"
       bindfocus="onMajorFocus"
       bindblur="onMajorBlur" />
 
@@ -60,7 +87,6 @@
   <view class="material-details">
     <view class="box" wx:for="{{array}}" wx:key="index">
       <view class="del" bindtap="delInput" data-idx="{{index}}">-</view>
-      <!-- 只保留一个 multiSelector -->
       <picker
         mode="multiSelector"
         range="{{multiArrayList[index]}}"
@@ -73,43 +99,50 @@
           {{ selectedTextList[index] || '请选择 借用类别 - 物品名称 - 数量' }}
         </view>
       </picker>
-
     </view>
     <view class="add" bindtap="addInput">增加条目</view>
-    
   </view>
 
   <view class="form-label">归还日期</view>
-
   <view class="time-picker-group">
-      <picker 
-        mode="selector" 
-        range="{{years}}" 
-        bindchange="onYearChange"
-        data-type="deadline">  <!-- 新增 -->
-        <view>{{selectedYear || '年份'}}</view>
-      </picker>
-      <picker 
-        mode="selector" 
-        range="{{months}}" 
-        bindchange="onMonthChange"
-        data-type="deadline">  <!-- 新增 -->
-        <view>{{selectedMonth || '月份'}}</view>
-      </picker>
-      <picker 
-        mode="selector" 
-        range="{{days}}" 
-        bindchange="onDayChange"
-        data-type="deadline">  <!-- 新增 -->
-        <view>{{selectedDay || '日期'}}</view>
-      </picker>
-    </view>
+    <picker 
+      mode="selector" 
+      range="{{years}}" 
+      bindchange="onYearChange"
+      data-type="deadline">
+      <view>{{selectedYear || '年份'}}</view>
+    </picker>
+    <picker 
+      mode="selector" 
+      range="{{months}}" 
+      bindchange="onMonthChange"
+      data-type="deadline">
+      <view>{{selectedMonth || '月份'}}</view>
+    </picker>
+    <picker 
+      mode="selector" 
+      range="{{days}}" 
+      bindchange="onDayChange"
+      data-type="deadline">
+      <view>{{selectedDay || '日期'}}</view>
+    </picker>
+  </view>
 
   <view class="form-label">借用理由</view>
+  <textarea
+    class="input-field textarea-field {{isDescriptionFocused ? 'focused' : ''}}"
+    placeholder="请输入借用理由"
+    value="{{reason}}"
+    data-field="reason"
+    bindinput="onInput"
+    bindtap="onDescriptionFocused"
+    bindblur="onDescriptionBlur">
+  </textarea>
 
-  <textarea class="input-field textarea-field {{isDescriptionFocused ? 'focused' : ''}}" placeholder="请输入借用理由" data-field="taskContent" bindtap = "onDescriptionFocused" bindblur = "onDescriptionBlur"/>
+    <!-- 在按钮部分 -->
+  <button class="submit-btn" bindtap="onSubmit" style="width: 227rpx;">
+    {{isEditMode ? '更新' : '提交'}}
+  </button>
 
-  <button class="submit-btn" bindtap="onSubmit" style="width: 227rpx;">提交</button>
-
-  <image class="decorative-image" src="/images/activity/white_cat.svg"/>
+  <image class="decorative-image" src="{{icons.whiteCat}}"/>
 </view>

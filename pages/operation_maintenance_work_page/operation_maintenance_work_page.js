@@ -1,38 +1,48 @@
 // pages/operation_maintenance_work_page/operation_maintenance_work_page.js
+const app = getApp();
+
 Page({
   data: {
-    level: 2 // 默认权限级别，需根据接口动态更新
+    level: 2, // 默认权限级别，需根据接口动态更新
+    icons: {}
   },
   
   onLoad() {
+    console.log("[Operation Maintenance Work Page] 获取页面图标资源");
+    this.loadIcons();
     // 这里模拟从后端获取权限级别
     this.fetchUserLevel()
   },
 
-  handlerGobackClick() {
-    wx.showModal({
-      title: '你点击了返回',
-      content: '是否确认放回',
-      success: e => {
-        if (e.confirm) {
-          const pages = getCurrentPages();
-          if (pages.length >= 2) {
-            wx.navigateBack({
-              delta: 1
-            });
-          } else {
-            wx.reLaunch({
-              url: '/pages/index/index'
-            });
-          }
-        }
+  loadIcons() {
+    const resources = app.globalData.publicResources;
+
+    if(resources) {
+      this.setData({
+      icons: {
+        monitor: resources.monitor,
+        web: resources.web,
+        printer: resources.printer,
+        blackArrow: resources.blackArrow,
+        whiteArrow: resources.whiteArror,
+        whiteCat: resources.whiteCat
       }
-    });
+      })
+    }
   },
-  handlerGohomeClick() {
-    wx.reLaunch({
-      url: '/pages/index/index'
-    });
+
+  handlerGobackClick() {
+    const pages = getCurrentPages();
+    if (pages.length >= 2) {
+      wx.navigateBack({
+        delta: 1
+      });
+    } else {
+      wx.reLaunch({
+        url: '/pages/index/index'
+      });
+    }
+
   },
 
   // 示例：获取用户权限

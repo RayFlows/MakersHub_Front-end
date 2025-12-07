@@ -2,48 +2,72 @@
 
 <view class="container">
   <navBar title='宣传部' background='rgba(0,0,0,0)' color='#fff' back="{{true}}" home="{{true}}" iconTheme='white' bindback="handlerGobackClick" bindhome="handlerGohomeClick"></navBar>
-  <!-- 第1个容器：学年工作安排 -->
-  <view class="button-container btn1" bindtap="navigate1" wx:if="{{level >= 1}}">
+  <!-- 第1个容器：活动宣传发布 -->
+  <view class="button-container" bindtap="navigateToActivitySubmit" wx:if="{{level >= 1}}">
     <view class="left-image-container">
-      <image class="left-image" src="/images/pubulicity_work_page/1.svg"  mode="aspectFit"></image>
+      <image class="left-image" src="{{icons.ticket}}" mode="aspectFit"></image>
     </view>
-    <view class="text-container text1">学年工作安排</view>
+    <view class="text-container">活动宣传发布</view>
     <view class="arrow-container">
-      <image class="arrow-image" src="/images/pubulicity_work_page/icon_arrow_chevron-right_black.svg" mode="aspectFit"></image>
+      <image class="arrow-image" src="{{icons.whiteArrow}}" mode="aspectFit"></image>
     </view>
   </view>
 
-  <!-- 第2个容器：活动宣传发布 -->
-  <view class="button-container btn2" bindtap="navigate2" wx:if="{{level >= 1}}">
+  <!-- 第2个容器：学年工作安排 -->
+  <view class="button-container" bindtap="navigateToSchedule" wx:if="{{level >= 1}}">
     <view class="left-image-container">
-      <image class="left-image" src="/images/pubulicity_work_page/2.svg" mode="aspectFit"></image>
+      <image class="left-image" src="{{icons.arrange}}"  mode="aspectFit"></image>
     </view>
-    <view class="text-container text2">活动宣传发布</view>
+    <view class="text-container">学年工作安排</view>
     <view class="arrow-container">
-      <image class="arrow-image" src="/images/pubulicity_work_page/icon_arrow_chevron-right_white.svg" mode="aspectFit"></image>
+      <image class="arrow-image" src="{{icons.blackArrow}}" mode="aspectFit"></image>
+    </view>
+  </view>
+  
+  <!-- 第3个容器：我的秀米链接 -->
+  <view class="button-container" bindtap="navigateToMyXiumiLink" wx:if="{{level >= 1}}">
+    <view class="left-image-container">
+      <image class="left-image" src="{{icons.history}}" mode="aspectFit"></image>
+    </view>
+    <view class="text-container">我的秀米链接</view>
+    <view class="arrow-container">
+      <image class="arrow-image" src="{{icons.whiteArrow}}" mode="aspectFit"></image>
     </view>
   </view>
 
-  <!-- 第3个容器：秀米链接提交 -->
-  <view class="button-container btn3" bindtap="navigate3" wx:if="{{level >= 1}}">
+    <!-- 第4容器：我的任务 -->
+  <view class="button-container" bindtap="navigateToMyTask" wx:if="{{level >= 1}}">
     <view class="left-image-container">
-      <image class="left-image" src="/images/pubulicity_work_page/4.svg" mode="aspectFit"></image>
+      <image class="left-image" src="{{icons.checklist}}" mode="aspectFit"></image>
     </view>
-    <view class="text-container text3">秀米链接提交</view>
+    <view class="text-container">我的任务</view>
     <view class="arrow-container">
-      <image class="arrow-image" src="/images/pubulicity_work_page/icon_arrow_chevron-right_black.svg" mode="aspectFit"></image>
+      <image class="arrow-image" src="{{icons.blackArrow}}" mode="aspectFit"></image>
     </view>
   </view>
-    <!-- 第4容器：发布任务 -->
-  <view class="button-container btn4" bindtap="navigate4" wx:if="{{level >= 2}}">
+
+    <!-- 第5容器：发布任务 -->
+  <view class="button-container" bindtap="navigateToTaskManagement" wx:if="{{level >= 2}}">
     <view class="left-image-container">
-      <image class="left-image" src="/images/pubulicity_work_page/3.svg" mode="aspectFit"></image>
+      <image class="left-image" src="{{icons.task}}" mode="aspectFit"></image>
     </view>
-    <view class="text-container text4">发布任务</view>
+    <view class="text-container">任务委派管理</view>
     <view class="arrow-container">
-      <image class="arrow-image" src="/images/pubulicity_work_page/icon_arrow_chevron-right_white.svg" mode="aspectFit"></image>
+      <image class="arrow-image" src="{{icons.whiteArrow}}" mode="aspectFit"></image>
     </view>
   </view>
+  
+  <!-- 第6个容器：秀米链接审核 -->
+  <view class="button-container" bindtap="navigateToXiumiLinkPermit" wx:if="{{level >= 2}}">
+    <view class="left-image-container">
+      <image class="left-image" src="{{icons.inspect}}" mode="aspectFit"></image>
+    </view>
+    <view class="text-container">秀米链接审核</view>
+    <view class="arrow-container">
+      <image class="arrow-image" src="{{icons.whiteCat}}" mode="aspectFit"></image>
+    </view>
+  </view>
+  
 </view>
 
 

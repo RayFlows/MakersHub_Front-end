@@ -1,0 +1,152 @@
+/* 值班申请页面 WXSS 样式文件 */
+/* 整体容器 */
+.container {
+  position: relative;
+  min-height: 100vh;
+  background-color: #222831;
+  padding-top: 45rpx;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+}
+
+/* 顶部区域 */
+.header {
+  padding: 60rpx 0 0 0;
+  text-align: center;
+}
+
+.title {
+  color: white;
+  font-size: 34rpx;
+  font-weight: bold;
+}
+
+/* 表单容器 */
+.form-container {
+  position: absolute;
+  top: 200rpx;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 600rpx;
+  background: #00ADB5;
+  border-radius: 40rpx;
+  padding: 40rpx 40rpx 0 40rpx;
+  margin: 0;
+}
+
+/* 时段选择区域 */
+.time-section {
+  margin-bottom: 50rpx;
+}
+
+.section-title {
+  display: block;
+  color: white;
+  font-size: 32rpx;
+  font-weight: 600;
+  margin-bottom: 30rpx;
+}
+
+/* 选择器行 */
+.picker-row {
+  display: flex;
+  justify-content: space-between;
+  gap: 20rpx;
+}
+
+/* 选择器项 */
+.picker-item {
+  background: white;
+  border-radius: 20rpx;
+  overflow: hidden;
+}
+
+/* 星期选择器略短 */
+.picker-item.week {
+  flex: 0 0 40%;
+}
+
+/* 时段选择器略长 */
+.picker-item.time {
+  flex: 0 0 55%;
+}
+
+/* 选择器内容居中样式 - 使用table-cell方法实现完美垂直居中 */
+.picker-content {
+  padding: 0 24rpx;
+  background: white;
+  border-radius: 20rpx;
+  height: 70rpx;
+  box-sizing: border-box;
+  display: table;
+  width: 100%;
+}
+
+.picker-text {
+  color: #666;
+  font-size: 28rpx;
+  text-align: center;
+  display: table-cell;
+  vertical-align: middle;
+  width: calc(100% - 40rpx);
+  transform: translateY(-18rpx); /* 微调向上移动 */
+}
+
+
+.picker-arrow {
+  color: #999;
+  font-size: 22rpx;
+  display: table-cell;
+  vertical-align: middle;
+  text-align: right;
+  width: 40rpx;
+}
+
+/* 提交按钮容器 */
+.submit-container {
+  position: absolute;
+  top: 930rpx;
+  left: 50%;
+  transform: translateX(-50%);
+  margin: 0;
+  padding: 0;
+}
+
+/* 提交按钮 */
+.submit-btn {
+  width: 92%;               /* 比原来 100% 稍微窄一点 */
+  height: 88rpx;            /* 原来是 100rpx，缩小一点 */
+  line-height: 88rpx;       /* 设置与高度一致，使文字垂直居中 */
+  background: #00ADB5;
+  color: white;
+  font-size: 34rpx;         /* 字体略微缩小 */
+  font-weight: bold;
+  border: none;
+  border-radius: 45rpx;
+  padding: 0;               /* 不需要上下 padding，防止影响居中 */
+  text-align: center;
+  box-shadow: 0 8rpx 20rpx rgba(45, 212, 191, 0);
+  margin: 0 auto;           /* 居中显示 */
+}
+
+.submit-btn:active {
+  background: #14b8a6;
+  transform: translateY(2rpx);
+}
+
+/* 激活状态 */
+.picker-item:active .picker-content {
+  background: #f8f9fa;
+}
+
+/* 底部装饰图 */
+.bottom-image {
+  width: 440rpx;
+  height: 174rpx;
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 99;
+}

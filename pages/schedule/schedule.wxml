@@ -1,64 +1,59 @@
 <view class="container">
-  <navBar title='学年工作安排' background='#222831' color='#fff' back="{{true}}" home="{{true}}" iconTheme='white' bindback="handlerGobackClick" bindhome="handlerGohomeClick"></navBar>
-  <!-- 表格 -->
-  <view class="table" >
+  <navBar title="学年工作安排" background="#222831" color="#fff"
+          back="{{true}}" home="{{true}}" iconTheme="white"
+          bindback="handlerGobackClick" bindhome="handlerGohomeClick" />
+
+  <view class="table">
     <!-- 表头 -->
     <view class="table-header">
       <view class="table-header-cell">活动文案</view>
       <view class="table-header-cell">推文</view>
       <view class="table-header-cell">新闻稿</view>
     </view>
-    <!-- 表格内容 -->
+
+    <!-- 内容 -->
     <view class="table-body">
       <view class="table-row" wx:for="{{tableData}}" wx:key="index">
         <!-- 活动文案列 -->
-    <input 
-      class="table-cell" 
-      wx:if="{{isEditing}}" 
-      value="{{item.script}}" 
-      bindinput="onCellInput"
-      data-field="script" 
-      data-index="{{index}}"
-      placeholder="{{item.script}}"
-    />
-    <text wx:else class="table-cell">{{item.script}}</text>
+        <input wx:if="{{isEditing}}" class="table-cell {{item.script.current ? 'highlight' : ''}}"
+               value="{{item.script.name}}" data-field="script" data-index="{{index}}"
+               placeholder="请输入文案" bindinput="onCellInput" />
+        <!-- 将 text 改为 view -->
+        <view wx:else class="table-cell {{item.script.current ? 'highlight' : ''}}">
+          {{item.script.name}}
+        </view>
+        <!-- 推文列 -->
+        <input wx:if="{{isEditing}}" class="table-cell {{item.push.current ? 'highlight' : ''}}"
+               value="{{item.push.name}}" data-field="push" data-index="{{index}}"
+               placeholder="请输入推文" bindinput="onCellInput" />
+        <!-- 将 text 改为 view -->
+        <view wx:else class="table-cell {{item.push.current ? 'highlight' : ''}}">
+          {{item.push.name}}
+        </view>
 
-    <!-- 推文列 -->
-    <input 
-      class="table-cell" 
-      wx:if="{{isEditing}}" 
-      value="{{item.push}}" 
-      bindinput="onCellInput"
-      data-field="push" 
-      data-index="{{index}}"
-      placeholder="{{item.push}}"
-    />
-    <text wx:else class="table-cell">{{item.push}}</text>
-
-    <!-- 新闻稿列 -->
-    <input 
-      class="table-cell" 
-      wx:if="{{isEditing}}" 
-      value="{{item.news}}" 
-      bindinput="onCellInput"
-      data-field="news" 
-      data-index="{{index}}"
-      placeholder="{{item.news}}"
-    />
-    <text wx:else class="table-cell">{{item.news}}</text>
+        <!-- 新闻稿列 -->
+        <input wx:if="{{isEditing}}" class="table-cell {{item.news.current ? 'highlight' : ''}}"
+               value="{{item.news.name}}" data-field="news" data-index="{{index}}"
+               placeholder="请输入新闻稿" bindinput="onCellInput" />
+        <!-- 将 text 改为 view -->
+        <view wx:else class="table-cell {{item.news.current ? 'highlight' : ''}}">
+          {{item.news.name}}
+        </view>
       </view>
     </view>
   </view>
 
-  <!-- 按钮 -->
-  <view class=" edit-container edit"  wx:if="{{!isEditing||level==3}}" bindtap="toggleEdit" >
-    <image class="icon-edit" src = "/images/schedule/edit.svg"></image>
-  </view>
+  <!-- 提交/取消按钮 -->
+  <!-- <view class="edit-container btn" wx:if="{{isEditing}}">
+    <button style="width: 186.6rpx;" bindtap="submitEdit">提交</button>
+    <button style="width: 186.6rpx;" bindtap="cancelEdit">取消</button>
+  </view> -->
 
-  <!-- 提交和取消按钮 -->
-  <view class="edit-container btn" wx:if="{{isEditing}}">
-    <button  style = "width: 186.6rpx; margin:0rpx;" bindtap="submitEdit">提交</button>
-    <button style = "width: 186.6rpx; margin:0;" bindtap="cancelEdit" >取消</button>
-  </view>
-  <image src = "/images/schedule/white_cat.svg" class="bottom-image" mode="widthFix"></image>
+
+  <!-- 编辑按钮（非编辑状态显示） -->
+  <!-- <view class="edit-container edit" wx:if="{{!isEditing || level == 3}}" bindtap="toggleEdit">
+    <image class="icon-edit" src="/images/schedule/edit.svg"></image>
+  </view> -->
+
+  <image class="bottom-image" src="{{icons.whiteCat}}" mode="widthFix" />
 </view>
