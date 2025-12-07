@@ -23,23 +23,15 @@ Page({
     this.getProjectList();
   },
 
-  /** 顶部 navBar 返回按钮 */
-  handlerGobackClick() {
-    wx.showModal({
-      title: '提示',
-      content: '确认返回上一页？',
-      success: (e) => {
-        if (e.confirm) {
-          const pages = getCurrentPages();
-          if (pages.length >= 2) {
-            wx.navigateBack({ delta: 1 });
-          } else {
-            wx.reLaunch({ url: '/pages/index/index' });
-          }
-        }
+    // 返回按钮
+    handlerGobackClick() {
+      const pages = getCurrentPages();
+      if (pages.length >= 2) {
+        wx.navigateBack({ delta: 1 });
+      } else {
+        wx.reLaunch({ url: '/pages/index/index' });
       }
-    });
-  },
+    },
 
   /** 顶部 navBar 首页按钮 */
   handlerGohomeClick() {

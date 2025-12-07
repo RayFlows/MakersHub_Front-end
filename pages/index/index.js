@@ -1,8 +1,9 @@
 let authInProgress = false;
 const TOKEN_KEY = 'auth_token';
 const USER_INFO_KEY = 'userInfo';
-const USER_PROFILE_KEY = 'userProfile'; // 新增:存储完整用户信息的键
+const USER_PROFILE_KEY = 'userProfile';
 const LAST_CLEAN_TIME_KEY = 'last_clean_time';
+const PROFILE_CHECK_FLAG = 'profile_check_flag'; // 新增：防止重复检查标志
 var config = wx.getStorageSync('config');
 const app = getApp();
 
@@ -20,17 +21,78 @@ function storeAuthToken(token) {
   wx.setStorageSync(TOKEN_KEY, token);
   wx.setStorageSync(USER_INFO_KEY, { logged: true });
   
-  // 新增:获取到令牌后立即请求用户信息
   fetchAndStoreUserProfile(token);
 }
 
 /**
- * 新增:获取并存储用户个人信息
+ * 新增：检查用户信息完整性
+ */
+function checkProfileCompleteness(userProfile) {
+  if (!userProfile) {
+    console.log('[Profile] 用户信息不存在');
+    return false;
+  }
+
+  const requiredFields = ['real_name', 'phone_num', 'qq', 'student_id', 'grade', 'college'];
+  
+  for (let field of requiredFields) {
+    const value = userProfile[field];
+    // 检查字段是否为空、null、undefined或空字符串
+    if (!value || value === '' || value === null || value === undefined) {
+      console.log(`[Profile] 字段 ${field} 为空，需要完善信息`);
+      return false;
+    }
+  }
+  
+  console.log('[Profile] 用户信息完整');
+  return true;
+}
+
+/**
+ * 新增：强制跳转到编辑页面（带新用户标识）
+ */
+function forceNavigateToEditPage() {
+  console.log('[Profile] 跳转到编辑页面完善信息');
+  
+  // 设置标志，避免重复检查
+  wx.setStorageSync(PROFILE_CHECK_FLAG, true);
+  
+  wx.showModal({
+    title: '完善个人信息',
+    content: '请先完善个人信息，以便后续功能的使用',
+    showCancel: false,
+    confirmText: '去完善',
+    success: (res) => {
+      if (res.confirm) {
+        // 添加 isNewMember=true 参数
+        wx.redirectTo({
+          url: '/pages/editPage/editPage?isNewMember=true',
+          fail: (err) => {
+            console.error('[Profile] redirectTo跳转失败:', err);
+            // 如果redirectTo失败，尝试使用navigateTo
+            wx.navigateTo({
+              url: '/pages/editPage/editPage?isNewMember=true'
+            });
+          }
+        });
+      }
+    }
+  });
+}
+
+/**
+ * 新增：清除检查标志（在editPage保存成功后调用）
+ */
+function clearProfileCheckFlag() {
+  wx.removeStorageSync(PROFILE_CHECK_FLAG);
+}
+
+/**
+ * 获取并存储用户个人信息
  */
 function fetchAndStoreUserProfile(token) {
   console.log('[Auth] 开始获取用户个人信息');
   
-  // 确保 config 是最新的
   const currentConfig = wx.getStorageSync('config');
   if (!currentConfig || !currentConfig.users || !currentConfig.users.profile) {
     console.error('[Auth] 配置信息不完整,无法获取用户信息');
@@ -61,11 +123,24 @@ function fetchAndStoreUserProfile(token) {
           role: info.role || 0,
         };
         
-        // 存储到缓存
         wx.setStorageSync(USER_PROFILE_KEY, userProfile);
         console.log('[Auth] 用户信息已缓存:', userProfile);
         
-        // 触发自定义事件通知其他页面更新
+        // 新增：检查用户信息完整性
+        const isComplete = checkProfileCompleteness(userProfile);
+        if (!isComplete) {
+          const checkFlag = wx.getStorageSync(PROFILE_CHECK_FLAG);
+          if (!checkFlag) {
+            // 延迟执行，确保页面已加载
+            setTimeout(() => {
+              forceNavigateToEditPage();
+            }, 500);
+          }
+        } else {
+          // 信息完整，清除检查标志
+          clearProfileCheckFlag();
+        }
+        
         if (typeof app.onUserProfileUpdated === 'function') {
           app.onUserProfileUpdated(userProfile);
         }
@@ -80,7 +155,7 @@ function fetchAndStoreUserProfile(token) {
 }
 
 /**
- * 新增:从缓存获取用户信息
+ * 从缓存获取用户信息
  */
 function getUserProfile() {
   return wx.getStorageSync(USER_PROFILE_KEY);
@@ -97,22 +172,18 @@ function checkAndCleanCache() {
   if (now - lastCleanTime > twentyFourHours) {
     console.log('[Cache] 执行24小时缓存清理');
     
-    // 获取需要保留的数据
     const token = wx.getStorageSync(TOKEN_KEY);
     const userInfo = wx.getStorageSync(USER_INFO_KEY);
     const userProfile = wx.getStorageSync(USER_PROFILE_KEY);
     const configData = wx.getStorageSync('config');
     
-    // 清理所有缓存
     wx.clearStorageSync();
     
-    // 恢复需要保留的数据
     if (token) wx.setStorageSync(TOKEN_KEY, token);
     if (userInfo) wx.setStorageSync(USER_INFO_KEY, userInfo);
     if (userProfile) wx.setStorageSync(USER_PROFILE_KEY, userProfile);
     if (configData) wx.setStorageSync('config', configData);
     
-    // 更新最后清理时间
     wx.setStorageSync(LAST_CLEAN_TIME_KEY, now);
     
     console.log('[Cache] 缓存清理完成');
@@ -136,11 +207,22 @@ const checkTokenValidity = () => {
     if (token) {
       console.log('[Auth] 发现本地令牌', token);
       console.log('[Auth] 本地令牌', token)
-      // 检查是否已有用户信息,没有则重新获取
+      
       const userProfile = getUserProfile();
       if (!userProfile || !userProfile.real_name) {
         console.log('[Auth] 用户信息不完整,重新获取');
         fetchAndStoreUserProfile(token);
+      } else {
+        // 新增：即使有用户信息，也要检查完整性
+        const isComplete = checkProfileCompleteness(userProfile);
+        if (!isComplete) {
+          const checkFlag = wx.getStorageSync(PROFILE_CHECK_FLAG);
+          if (!checkFlag) {
+            setTimeout(() => {
+              forceNavigateToEditPage();
+            }, 500);
+          }
+        }
       }
       
       resolve(token);
@@ -182,7 +264,7 @@ const triggerAuthFlow = (resolve, reject) => {
 };
 
 /**
- * 用户点击授权后调用(改进版)
+ * 用户点击授权后调用
  */
 const handleUserAuth = (confirmed, resolve, reject) => {
   if (!confirmed) {
@@ -204,7 +286,6 @@ const handleUserAuth = (confirmed, resolve, reject) => {
       
       console.log('[Auth] 获取 code 成功:', res.code);
       
-      // 确保使用最新的 config
       const currentConfig = wx.getStorageSync('config');
       
       wx.request({
@@ -217,14 +298,12 @@ const handleUserAuth = (confirmed, resolve, reject) => {
             const token = response.data.data.token;
             console.log('[Auth] 后端返回令牌', token);
             
-            // 存储令牌(会自动触发获取用户信息)
             storeAuthToken(token);
             
             authInProgress = false;
             
             if (resolve) resolve(token);
             
-            // 延时重定向
             setTimeout(() => {
               wx.redirectTo({ url: '/pages/index/index' });
             }, 100);
@@ -256,25 +335,44 @@ Page({
     showAuthModal: false,
     hasUserInfo: !!wx.getStorageSync(USER_INFO_KEY),
     icons: {},
-    userProfile: null // 新增:存储用户信息
+    userProfile: null
   },
 
   onShow: function () {
     console.log("[Page] 页面显示");
     
-    // 检查并执行缓存清理
     checkAndCleanCache();
     
-    // 加载用户信息到页面
+    // 新增：从editPage返回时，清除检查标志并重新验证
+    const pages = getCurrentPages();
+    const currentPage = pages[pages.length - 1];
+    const prevPage = pages.length > 1 ? pages[pages.length - 2] : null;
+    
+    // 如果是从editPage返回的，清除标志并重新检查
+    if (prevPage && prevPage.route === 'pages/editPage/editPage') {
+      console.log('[Page] 从编辑页返回，清除检查标志');
+      clearProfileCheckFlag();
+    }
+    
     const cachedProfile = getUserProfile();
     if (cachedProfile) {
       this.setData({ 
         userProfile: cachedProfile,
         hasUserInfo: true 
       });
+      
+      // 新增：检查信息完整性
+      const isComplete = checkProfileCompleteness(cachedProfile);
+      if (!isComplete) {
+        const checkFlag = wx.getStorageSync(PROFILE_CHECK_FLAG);
+        if (!checkFlag) {
+          setTimeout(() => {
+            forceNavigateToEditPage();
+          }, 300);
+        }
+      }
     }
 
-    // 检查令牌状态
     checkTokenValidity()
       .then((token) => {
         console.log("[Page] 令牌状态正常");
@@ -311,13 +409,9 @@ Page({
     }
   },
 
-  /**
-   * 显示授权弹窗(优化版)
-   */
   showAuthModal: function () {
     console.log("[Page] 显示授权弹窗");
     
-    // 避免重复弹窗
     if (authInProgress) {
       console.warn("[Page] 授权流程进行中,不重复显示");
       return;
@@ -335,9 +429,6 @@ Page({
     );
   },
 
-  /**
-   * 统一的导航前置检查(新增,减少代码重复)
-   */
   checkAuthAndNavigate: function(callback) {
     console.log("[Auth] 检查授权状态");
     if (!this.data.hasUserInfo) {
@@ -347,7 +438,6 @@ Page({
     }
   },
 
-  // 底部导航切换
   switchPage(e) {
     const target = e.currentTarget.dataset.page;
     
@@ -367,7 +457,6 @@ Page({
     });
   },
 
-  // 各类导航方法(简化版)
   navigateToPersonalStuffBorrow: function () {
     this.checkAuthAndNavigate(() => {
       wx.navigateTo({ 
@@ -403,7 +492,7 @@ Page({
   navigateToViewProject: function () {
     this.checkAuthAndNavigate(() => {
       wx.navigateTo({ 
-        url: "/pages/my_project_list/my_project_list" 
+        url: "" 
       });
     });
   },
@@ -422,8 +511,11 @@ module.exports = {
   TOKEN_KEY,
   USER_INFO_KEY,
   USER_PROFILE_KEY,
+  PROFILE_CHECK_FLAG,
   getAuthToken,
   getUserProfile,
   checkTokenValidity,
-  fetchAndStoreUserProfile
+  fetchAndStoreUserProfile,
+  checkProfileCompleteness,
+  clearProfileCheckFlag  // 新增：供editPage调用
 };

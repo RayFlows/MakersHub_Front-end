@@ -122,7 +122,7 @@ Page({
   },
 
   goToProjectPage() {
-    this.navigateToPage("/pages/project/project");
+    this.navigateToPage("/pages/my_project_list/my_project_list");
   },
 
   goToVenuePage() {

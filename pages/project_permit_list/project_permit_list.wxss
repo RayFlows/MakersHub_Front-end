@@ -16,9 +16,9 @@ page {
 }
 
 .tab {
-  width: 100%;
+  width: 80%;
   display: flex;
-  justify-content: center;
+  justify-content: space-between;
   align-items: center;
   gap: 100rpx;        /* [cite: 3] 保持与 site_borrow_list 一致的间距 */
   margin-top: 10rpx;
@@ -133,17 +133,17 @@ page {
 }
 
 .state-pending {
-  background-color: #e5e5e5;
-  color: #666666;
+  background-color: #666666;
+  color: #fff;
 }
 
 .state-running {
-  background-color: #f8d27f;
-  color: #6a4e00;
+  background-color: #FFE89E;
+  color: #222831;
 }
 
 .state-rejected {
-  background-color: #e85874;
+  background-color: #E33C64;
   color: #ffffff;
 }
 
