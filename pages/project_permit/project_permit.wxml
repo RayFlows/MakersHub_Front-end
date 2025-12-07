@@ -112,7 +112,7 @@
     </view>
 
     <view wx:elif="{{status === 'rejected'}}" class="btn-row single-btn">
-      <button class="btn" bindtap="onTapPass">通过</button>
+      <button class="btn btn-pass" bindtap="onTapPass">通过</button>
     </view>
   </view>
 
