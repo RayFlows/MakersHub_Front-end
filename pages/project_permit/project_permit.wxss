@@ -60,11 +60,14 @@
 .textarea,
 .feedback {
   width: 100%;
-  background-color: #f1f2f4;
-  border-radius: 12rpx;
-  font-size: 26rpx;
-  color: #333;
+  min-height: 80rpx;
+  background: #F5F5F5;
+  border: 2rpx solid #D8E0F0;
+  border-radius: 24.5rpx;
+  padding: 20rpx 20rpx;
+  font-size: 28rpx;
   box-sizing: border-box;
+  color:#7D8592;
 }
 
 .input {
@@ -169,12 +172,31 @@
 }
 
 .btn-primary {
-  background-color: #00bcd4;
-  color: #ffffff;
+  flex:2;
+  background: #00ADB5;
+  color: #fff;
+  border-radius: 50rpx;
+  margin: 10rpx auto;
+  width: 70%;
+  height: 90rpx;
+  line-height: 60rpx;
+  font-size: 32rpx;
+}
+
+.btn-primary:activate{
+  transform: scale(0.98);
+  filter:brightness(0.95);
 }
 
 .btn-reject {
-  background-color: #ff4b7d !important;
+  flex:2;
+  border-radius: 50rpx;
+  margin: 10rpx auto;
+  width: 70%;
+  height: 90rpx;
+  line-height: 60rpx;
+  font-size: 32rpx;
+  background-color: #E33C64 !important;
   color: #ffffff !important;
 }
 
@@ -184,8 +206,15 @@
 }
 
 .single-btn .btn {
-  margin: 0;
+  flex:2;
+  background: #00ADB5;
+  color: #fff;
+  border-radius: 50rpx;
+  margin: 10rpx auto;
   width: 30%;
+  height: 90rpx;
+  line-height: 60rpx;
+  font-size: 32rpx;
 }
 
 /* scroll-view 内底部占位，避免按钮被猫挡住 */
