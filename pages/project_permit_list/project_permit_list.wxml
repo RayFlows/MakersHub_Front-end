@@ -1,7 +1,7 @@
 <view class="container">
   <navBar
     class="navbar"
-    title="我的项目"
+    title="项目立项审核"
     background="#222831"
     color="#fff"
     back="{{true}}"
