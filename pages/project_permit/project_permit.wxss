@@ -83,9 +83,8 @@
 
 /* 审核反馈区 */
 .feedback-section {
-  width: 95%;
+  width: 100%;
   margin-top: 24rpx;
-  margin:0 auto;
 }
 
 .feedback {
@@ -94,17 +93,15 @@
 
 /* 状态卡片 */
 .status-card {
-  width: 95%;
+  width: 100%;
   border-radius: 40rpx;
   padding: 32rpx 40rpx;
   text-align: center;
   box-sizing: border-box;
-  margin: 0 auto;
 }
 
 .status-card-reject {
   background-color: #ffd6e2;
-  width:100%;
 }
 
 .status-card-pass {
@@ -143,7 +140,6 @@
   justify-content: space-between;
   column-gap: 100rpx;
   padding: 0 50rpx;
-  margin-bottom:30rpx;
 }
 
 .btn {
@@ -204,18 +200,6 @@
   color: #ffffff !important;
 }
 
-.btn-pass {
-  flex:2;
-  background: #00ADB5;
-  color: #fff;
-  border-radius: 50rpx;
-  margin: 10rpx auto;
-  width: 30%;
-  height: 90rpx;
-  line-height: 60rpx;
-  font-size: 32rpx;
-}
-
 /* 单按钮居中 */
 .single-btn {
   justify-content: center;
@@ -231,7 +215,6 @@
   height: 90rpx;
   line-height: 60rpx;
   font-size: 32rpx;
-  max-width: 30%;
 }
 
 /* scroll-view 内底部占位，避免按钮被猫挡住 */

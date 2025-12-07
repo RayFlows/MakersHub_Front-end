@@ -252,6 +252,13 @@
         </view>
       </view>
 
+      <!-- 已选择成员提示 -->
+      <view class="selected-member" wx:if="{{selectedMember}}">
+        <text class="selected-label">已选择：</text>
+        <text class="selected-name">
+          {{selectedMember.real_name}} - {{selectedMember.phone_num}} - {{selectedMember.college}}
+        </text>
+      </view>
 
       <!-- 按钮组 -->
       <view class="modal-buttons">
