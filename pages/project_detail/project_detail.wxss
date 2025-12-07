@@ -335,13 +335,11 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  /* margin-bottom: 20rpx; */
   padding: 0rpx 30rpx 0rpx 30rpx;
-  border: 3rpx solid #e5e5e5;   /* 四边 */
-  border-left: none;             /* 去掉左右 */
+  border: 2rpx solid #e5e5e5;
+  border-left: none;
   border-right: none;
   width: 90%;
-  color:#808080;
 }
 
 .search-input {

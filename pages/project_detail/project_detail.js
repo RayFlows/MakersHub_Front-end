@@ -14,12 +14,12 @@ Page({
    */
   data: {
     apiData: {},
-    stateTag: ["待审核", "进行中", "已打回", "已完成"],
-    stateText: ['#FFFFFF', '#222831', '#FFFFFF', '#FFFFFF'],
+    stateTag: ["待审核", "已打回", "进行中", "已完成"],
+    stateText: ['#FFFFFF', '#FFFFFF', '#222831', '#FFFFFF'],
     stateColors: {
       0: "#666",
-      1: "#ffeaa7",
-      2: "#E33C64",
+      1: "#E33C64",
+      2: "#ffeaa7",
       3: "#00adb5"
     },
     project_id: '',
@@ -566,8 +566,8 @@ Page({
    * 返回首页
    */
   handlerGohomeClick() {
-    wx.navigateTo({
-      url: 'pages/index/index'
+    wx.switchTab({
+      url: '/pages/index/index'
     });
   },
 

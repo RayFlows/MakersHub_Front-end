@@ -4,10 +4,10 @@
 <!--上方导航栏-->
   <view class='nav'>
         <navBar 
-        title="{{isNewMember ? '完善个人信息' : '编辑个人信息'}}" 
+        title='编辑个人信息' 
         background='#222831' 
         color='#FFFFFF' 
-        back="{{!isNewMember}}" 
+        back="{{true}}" 
         home="{{false}}" 
         iconTheme='white' 
         bindback="handlerGobackClick"
@@ -102,9 +102,7 @@
 
     <!-- 保存按钮 -->
     <view class="save-button">
-      <button bindtap="saveChanges" style="width:488rpx;">
-        {{isNewMember ? '保存个人信息' : '保存更改'}}
-      </button>
+      <button bindtap="saveChanges" style="width:488rpx;">保存更改</button>
     </view>
       <view wx:if="{{showSuccessMessage}}" class="success-message">
         <text>保存成功</text>
