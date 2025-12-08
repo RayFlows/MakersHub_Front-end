@@ -93,15 +93,14 @@
       <!-- 标题 + 按钮同一行 -->
       <view class="section-header">
         <text class="sub-title">项目成员</text>
-
         <!-- 删除模式：隐藏右侧按钮 -->
-        <view class="member-actions" wx:if="{{!deleteMode}}">
+        <view class="member-actions" wx:if="{{isLeader && !deleteMode}}">
           <view class="action-btn add-btn" bindtap="addMember">添加</view>
           <view class="action-btn delete-btn" bindtap="deleteMember">删除</view>
         </view>
       </view>
-
-
+      <!--没有成员默认状态-->
+      <text class="info" wx:if="{{!apiData.members || apiData.members.length === 0}}">该项目暂无成员</text>
       <!-- 普通模式：仅展示成员列表 -->
       <block wx:if="{{!deleteMode}}">
         <view class="info" wx:for="{{apiData.members}}" wx:key="index">
@@ -154,7 +153,7 @@
     <view class="section">
       <text class="sub-title">项目简介</text>
       <view class="info intro-text">
-        {{apiData.introduction}}
+        {{apiData.description}}
       </view>
     </view>
 
@@ -180,7 +179,7 @@
           </text>
         </view>
 
-        <view
+        <view wx:if="{{isLeader}}"
           class="recruit-switch {{apiData.is_recruit ? 'recruit-switch--on' : 'recruit-switch--off'}}"
           bindtap="toggleRecruitCustom"
         >
@@ -190,7 +189,7 @@
     </view>
 
     <!-- 结束项目按钮 -->
-    <view class="action-buttons">
+    <view class="action-buttons" wx:if="{{isLeader}}">
       <view class="action-btn finish-btn" bindtap="finishProject">结束项目</view>
     </view>
   </view>

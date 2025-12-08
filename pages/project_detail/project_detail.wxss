@@ -220,8 +220,8 @@
   margin: 0 auto; /* 水平居中 */
   display: block;
   padding-bottom: 0rpx; /* 底部留白 */
-  /* background-color: #00adb5; */
 }
+
 
 /* “项目招募情况”下面这一行：是否招募 + 是/否 + 开关 */
 .recruit-row {

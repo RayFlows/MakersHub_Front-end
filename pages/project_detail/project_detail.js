@@ -4,14 +4,12 @@ var config = wx.getStorageSync('config');
 const token = wx.getStorageSync('auth_token');
 const DEBUG = false; // 调试模式标志
 const app = getApp();
+const { getUserProfile, USER_PROFILE_KEY, clearProfileCheckFlag } = require('../index/index.js');
 
 // 成员人数上限
 const MAX_MEMBERS = 15;
 
 Page({
-  /**
-   * 页面的初始数据
-   */
   data: {
     apiData: {},
     stateTag: ["待审核", "进行中", "已打回", "已完成"],
@@ -24,23 +22,17 @@ Page({
     },
     project_id: '',
     icons: {},
-
-    // 成员搜索弹窗相关
     showModal: false,
     searchPhone: '',
     searchResults: [],
     selectedMember: null,
     searchTimer: null,
     hasSearched: false,
-
-    // 删除模式相关
-    deleteMode: false,              // 是否处于删除选择模式
-    selectedDeleteIndexes: []       // 被勾选准备删除的成员索引
+    isLeader: false,
+    deleteMode: false,
+    selectedDeleteIndexes: []
   },
 
-  /**
-   * 生命周期函数--监听页面加载
-   */
   onLoad(options) {
     console.log("[Project Detail] 获取页面图标资源");
     this.loadIcons();
@@ -60,13 +52,10 @@ Page({
       project_id: projectIdFromOption
     });
 
-    // 正常从后端获取
+    // ✅ 只调用获取数据，判断逻辑在回调中处理
     this.fetchProjectDetail(projectIdFromOption);
   },
 
-  /**
-   * 加载图标资源
-   */
   loadIcons() {
     const resources = app.globalData.publicResources;
 
@@ -84,9 +73,36 @@ Page({
   },
 
   /**
-   * 获取项目详情（带简单 mock fallback）
-   * 接口：GET /project/{project_id}
+   * ✅ 新增：判断当前用户是否为项目负责人
    */
+  checkIfLeader(leaderName) {
+    const cachedProfile = getUserProfile();
+    
+    if (!cachedProfile || !cachedProfile.real_name) {
+      console.warn('[Project Detail] 缓存中没有用户信息');
+      this.setData({
+        isLeader: false
+      });
+      return;
+    }
+
+    const userRealName = cachedProfile.real_name;
+    console.log('[Project Detail] 用户真实姓名:', userRealName);
+    console.log('[Project Detail] 项目负责人姓名:', leaderName);
+
+    if (userRealName === leaderName) {
+      console.log('[Project Detail] ✅ 用户是项目负责人');
+      this.setData({
+        isLeader: true
+      });
+    } else {
+      console.log('[Project Detail] ❌ 用户不是项目负责人');
+      this.setData({
+        isLeader: false
+      });
+    }
+  },
+
   fetchProjectDetail(project_id, forceMock = false) {
     wx.showLoading({
       title: '加载中...',
@@ -118,6 +134,8 @@ Page({
       this.setData({
         apiData: mockData
       });
+      // ✅ Mock 模式也要判断是否为负责人
+      this.checkIfLeader(mockData.leader_name);
       wx.hideLoading();
       return;
     }
@@ -127,6 +145,8 @@ Page({
       this.setData({
         apiData: mockData
       });
+      // ✅ Mock 模式也要判断是否为负责人
+      this.checkIfLeader(mockData.leader_name);
       wx.hideLoading();
       return;
     }
@@ -163,11 +183,18 @@ Page({
           this.setData({
             apiData: normalized
           });
+
+          // ✅ 数据获取成功后，判断是否为负责人
+          this.checkIfLeader(normalized.leader_name);
+
         } else {
           console.warn("[Project Detail] 后端返回异常，使用 mockData:", res);
           this.setData({
             apiData: mockData
           });
+          // ✅ 使用 mock 数据时也要判断
+          this.checkIfLeader(mockData.leader_name);
+          
           wx.showToast({
             title: res.data.msg || res.data.message || '使用示例数据',
             icon: 'none'
@@ -179,6 +206,9 @@ Page({
         this.setData({
           apiData: mockData
         });
+        // ✅ 请求失败使用 mock 数据时也要判断
+        this.checkIfLeader(mockData.leader_name);
+        
         wx.showToast({
           title: '连接失败，显示示例数据',
           icon: 'none'
@@ -190,16 +220,10 @@ Page({
     });
   },
 
-  /**
-   * 自定义招募开关点击事件
-   * 接口：PUT /project/{project_id}/action/toggle-recruit
-   * body: { is_recruiting: true/false } （这里同时传 is_recruit，双保险）
-   */
   toggleRecruitCustom() {
     const current = !!this.data.apiData.is_recruit;
     const next = !current;
 
-    // DEBUG：本地切换
     if (DEBUG) {
       this.setData({
         'apiData.is_recruit': next
@@ -240,7 +264,6 @@ Page({
         'Authorization': 'Bearer ' + token
       },
       data: {
-        // ⭐ 两个字段一起传，兼容后端可能的命名
         is_recruiting: next,
         is_recruit: next
       },
@@ -274,9 +297,6 @@ Page({
     });
   },
 
-  /**
-   * 复制项目名称
-   */
   copyProjectName() {
     wx.setClipboardData({
       data: this.data.apiData.project_name || '',
@@ -289,9 +309,6 @@ Page({
     });
   },
 
-  /**
-   * 复制项目编号
-   */
   copyProjectId() {
     wx.setClipboardData({
       data: this.data.apiData.project_id || '',
@@ -304,9 +321,6 @@ Page({
     });
   },
 
-  /**
-   * 复制负责人电话
-   */
   copyLeaderPhone() {
     wx.setClipboardData({
       data: this.data.apiData.leader_phone || '',
@@ -319,9 +333,6 @@ Page({
     });
   },
 
-  /**
-   * 复制负责人 QQ
-   */
   copyLeaderQQ() {
     wx.setClipboardData({
       data: this.data.apiData.leader_qq || '',
@@ -334,9 +345,6 @@ Page({
     });
   },
 
-  /**
-   * 添加成员：弹出搜索弹窗 + 人数上限
-   */
   addMember() {
     const members = (this.data.apiData.members || []);
     if (members.length >= MAX_MEMBERS) {
@@ -351,9 +359,6 @@ Page({
     this.showMemberModal();
   },
 
-  /**
-   * 点击“删除”：进入删除选择模式
-   */
   deleteMember() {
     const members = this.data.apiData.members || [];
 
@@ -365,16 +370,12 @@ Page({
       return;
     }
 
-    // 进入删除模式，清空之前的选择
     this.setData({
       deleteMode: true,
       selectedDeleteIndexes: []
     });
   },
 
-  /**
-   * 删除模式下：点击勾选框，切换某个成员的选中状态
-   */
   toggleMemberSelect(e) {
     const index = e.currentTarget.dataset.index;
     const apiData = this.data.apiData || {};
@@ -398,9 +399,6 @@ Page({
     });
   },
 
-  /**
-   * 删除模式：取消按钮
-   */
   cancelDeleteMode() {
     const apiData = this.data.apiData || {};
     const members = (apiData.members || []).map(m => ({
@@ -418,9 +416,6 @@ Page({
     });
   },
 
-  /**
-   * 删除模式：确认按钮 -> 弹窗确认并删除
-   */
   confirmDeleteSelected() {
     const members = this.data.apiData.members || [];
     const indexes = this.data.selectedDeleteIndexes || [];
@@ -449,7 +444,6 @@ Page({
       success: (modalRes) => {
         if (!modalRes.confirm) return;
 
-        // 调试 or 未配置接口：本地删除
         if (DEBUG || !config || !config.project || !config.project.delete_mem) {
           console.warn('[Project Detail] 删除成员接口未配置或调试模式，本地删除');
           const updatedLocal = members.filter((_, idx) => !indexes.includes(idx));
@@ -534,9 +528,6 @@ Page({
     });
   },
 
-  /**
-   * 结束项目：不直接调接口，跳转到结项页面
-   */
   finishProject() {
     const project_id = this.data.project_id;
 
@@ -553,35 +544,24 @@ Page({
     });
   },
 
-  /**
-   * 返回上一页
-   */
   handlerGobackClick() {
     wx.navigateBack({
       delta: 1
     });
   },
 
-  /**
-   * 返回首页
-   */
   handlerGohomeClick() {
     wx.navigateTo({
       url: 'pages/index/index'
     });
   },
 
-  /**
-   * 下拉刷新
-   */
   onPullDownRefresh() {
     if (this.data.project_id) {
       this.fetchProjectDetail(this.data.project_id);
     }
     wx.stopPullDownRefresh();
   },
-
-  // ============== 成员搜索弹窗逻辑（与创建页类似） ==============
 
   getMockSearchResults(phone) {
     const allMockUsers = [
@@ -788,7 +768,7 @@ Page({
     console.log('[Project Detail] 添加成员请求体:', reqBody);
 
     wx.request({
-      url: `${config.project.add_mem}/${this.data.project_id}`,   // /project/member/add/{project_id}
+      url: `${config.project.add_mem}/${this.data.project_id}`,
       method: 'POST',
       header: {
         'content-type': 'application/json',
@@ -800,7 +780,6 @@ Page({
         console.log('[Project Detail] 422 detail:', res.data && res.data.detail);
 
         if (res.statusCode === 200 && res.data && res.data.code === 200) {
-          // 成功后从后端重新拉一遍，保证和数据库一致
           this.fetchProjectDetail(this.data.project_id);
           wx.showToast({
             title: '成员已添加',
