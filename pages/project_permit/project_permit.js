@@ -5,13 +5,8 @@ const host = config.host || '';
 
 Page({
   data: {
-    // 资源图标
     icons: {},
-
-    // 当前项目 ID
     projectId: "",
-
-    // 项目详情（展示用）
     project: {
       owner: "",
       college: "",
@@ -27,11 +22,7 @@ Page({
       mentorPhone: "",
       duration: ""
     },
-
-    // 项目状态：pending / approved / rejected
     status: "pending",
-
-    // 审核反馈内容
     feedback: ""
   },
 
@@ -73,7 +64,7 @@ Page({
     });
   },
 
-  /* 点击“打回” - 使用原生 wx.showModal */
+  /* 点击"打回" */
   onTapReject() {
     if (!this.data.feedback.trim()) {
       wx.showToast({
@@ -86,16 +77,17 @@ Page({
     wx.showModal({
       title: '确认打回',
       content: '确定要打回该项目申请吗？',
-      confirmColor: '#ff4b7d', // 红色警示
+      confirmColor: '#ff4b7d',
       success: (res) => {
         if (res.confirm) {
+          // ✅ 只调用 submitAudit，toast 和跳转逻辑在回调中处理
           this.submitAudit(2); // 2 = 已打回
         }
       }
     });
   },
 
-  /* 点击“通过” - 使用原生 wx.showModal */
+  /* 点击"通过" */
   onTapPass() {
     wx.showModal({
       title: '确认通过',
@@ -103,6 +95,7 @@ Page({
       confirmColor: '#00B8A9',
       success: (res) => {
         if (res.confirm) {
+          // ✅ 只调用 submitAudit，toast 和跳转逻辑在回调中处理
           this.submitAudit(1); // 1 = 通过/进行中
         }
       }
@@ -152,25 +145,34 @@ Page({
         console.log('审核响应:', res);
 
         if (res.statusCode === 200 && res.data && res.data.code === 200) {
-          // 成功逻辑
+          // ✅ 成功逻辑：更新状态
           if (state === 1) {
             this.setData({
               status: 'approved'
-            });
-            wx.showToast({
-              title: '审核已通过',
-              icon: 'success'
             });
           } else {
             this.setData({
               status: 'rejected'
             });
-            wx.showToast({
-              title: '项目已打回',
-              icon: 'success'
-            });
           }
+
+          // ✅ 显示成功提示
+          wx.showToast({
+            title: state === 1 ? '成功通过该项目' : '成功打回该项目',
+            icon: 'success',
+            duration: 1500,
+            mask: true
+          });
+
+          // ✅ 延迟返回上一页，让用户看到 toast
+          setTimeout(() => {
+            wx.navigateBack({
+              delta: 1
+            });
+          }, 1500);
+
         } else {
+          // ❌ 失败提示
           wx.showModal({
             title: state === 1 ? '通过失败' : '打回失败',
             content: (res.data && res.data.msg) || '操作失败,请重试',
@@ -260,7 +262,6 @@ Page({
      数据映射与处理
   ====================== */
   mapProjectData(d) {
-    // 1. 成员显示逻辑
     const membersArr = d.members || [];
     const membersStr = membersArr.length ?
       membersArr
@@ -268,7 +269,6 @@ Page({
       .join("\n") :
       "暂无成员";
 
-    // 2. 项目类型文案
     const typeText =
       d.project_type === 0 ?
       "个人项目" :
@@ -276,26 +276,20 @@ Page({
       "比赛项目" :
       String(d.project_type);
 
-    // 3. 日期处理逻辑
-    // 需求：显示格式为 "2023/01/01 - 2023/05/01"
-    let startDate = (d.start_time || "").split(" ")[0]; // 取出 "2023-01-01"
+    let startDate = (d.start_time || "").split(" ")[0];
     let endDate = (d.end_time || "").split(" ")[0];
 
-    // 将 "-" 替换为 "/"
     if (startDate) startDate = startDate.replace(/-/g, '/');
     if (endDate) endDate = endDate.replace(/-/g, '/');
 
-    // 拼接，保留中间的 " - "
     const duration =
       startDate && endDate ? `${startDate} - ${endDate}` : startDate || "";
 
-    // 4. 审核状态
     const status =
       d.state === 1 ? "approved" :
       d.state === 2 ? "rejected" :
       "pending";
 
-    // 5. 写入页面数据
     this.setData({
       project: {
         owner: d.leader_name,
@@ -310,10 +304,9 @@ Page({
         recruitText: d.is_recruiting ? "是" : "否",
         mentorName: d.mentor_name,
         mentorPhone: d.mentor_phone,
-        duration: duration // 直接使用处理好的字符串
+        duration: duration
       },
       status,
-      // 这里的 review 是后端返回的历史审核意见
       feedback: d.review || ""
     });
   }

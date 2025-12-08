@@ -109,6 +109,7 @@
 
 .status-card-pass {
   background-color: #d9ffff;
+  width: 100%;
 }
 
 .status-title {
