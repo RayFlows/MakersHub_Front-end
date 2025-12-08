@@ -41,6 +41,12 @@
   align-items: center;
 }
 
+input.input-field {
+  display: block;  /* 改为 block，移除 flex */
+  line-height: 90rpx;  /* 使用 line-height 实现垂直居中 */
+  box-sizing: border-box;  /* 确保 padding 不会影响宽度 */
+}
+
 .selector-field {
   height: 90rpx;
   padding-top: 25rpx;
