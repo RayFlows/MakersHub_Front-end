@@ -16,7 +16,7 @@ Page({
       name: "",
       type: "",
       intro: "",
-      members: "",
+      members: [],
       recruitText: "",
       mentorName: "",
       mentorPhone: "",
@@ -263,33 +263,31 @@ Page({
   ====================== */
   mapProjectData(d) {
     const membersArr = d.members || [];
-    const membersStr = membersArr.length ?
-      membersArr
-      .map((m) => `${m.real_name} - ${m.college} - ${m.phone_num}`)
-      .join("\n") :
-      "暂无成员";
-
+    
+    // ✅ 保持数组格式，不转换为字符串
+    const membersData = membersArr.length ? membersArr : [];
+  
     const typeText =
       d.project_type === 0 ?
       "个人项目" :
       d.project_type === 1 ?
       "比赛项目" :
       String(d.project_type);
-
+  
     let startDate = (d.start_time || "").split(" ")[0];
     let endDate = (d.end_time || "").split(" ")[0];
-
+  
     if (startDate) startDate = startDate.replace(/-/g, '/');
     if (endDate) endDate = endDate.replace(/-/g, '/');
-
+  
     const duration =
       startDate && endDate ? `${startDate} - ${endDate}` : startDate || "";
-
+  
     const status =
       d.state === 1 ? "approved" :
       d.state === 2 ? "rejected" :
       "pending";
-
+  
     this.setData({
       project: {
         owner: d.leader_name,
@@ -300,7 +298,7 @@ Page({
         name: d.project_name,
         type: typeText,
         intro: d.description,
-        members: membersStr,
+        members: membersData, // ✅ 改为数组
         recruitText: d.is_recruiting ? "是" : "否",
         mentorName: d.mentor_name,
         mentorPhone: d.mentor_phone,
@@ -310,4 +308,5 @@ Page({
       feedback: d.review || ""
     });
   }
+  
 });

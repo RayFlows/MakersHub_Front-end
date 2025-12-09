@@ -55,7 +55,14 @@
 
     <view class="form-item">
       <text class="form-label">项目成员</text>
-      <view class="form-input">{{project.members}}</view>
+      <view class="form-input">
+        <block wx:if="{{project.members && project.members.length > 0}}">
+          <view class="member-item" wx:for="{{project.members}}" wx:key="phone_num">
+            {{item.real_name}} - {{item.college}} - {{item.phone_num}}
+          </view>
+        </block>
+        <text wx:else>暂无成员</text>
+      </view>
     </view>
 
     <view class="form-item">
@@ -105,15 +112,17 @@
     </block>
   </view>
 
-  <view class="btn-block">
-    <view wx:if="{{status === 'pending'}}" class="btn-row">
-      <button class="btn btn-primary" bindtap="onTapPass">通过</button>
-      <button class="btn btn-reject" bindtap="onTapReject">打回</button>
-    </view>
-
-    <view wx:elif="{{status === 'rejected'}}" class="btn-row single-btn">
-      <button class="btn btn-pass" bindtap="onTapPass">通过</button>
-    </view>
+  <view  class="btn-row">
+    <button 
+      style="width: 280rpx;"
+      class="btn" 
+      bindtap="onTapPass" 
+      wx:if="{{status === 'pending' || status === 'rejected'}}">通过</button>
+    <button 
+      style="width: 280rpx;"
+      class="btn" 
+      bindtap="onTapReject" 
+      wx:if="{{status === 'pending'}}">打回</button>
   </view>
 
   <image class="bottom-image" src="{{icons.whiteCat}}"></image>
