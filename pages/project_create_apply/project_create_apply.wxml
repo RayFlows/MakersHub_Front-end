@@ -47,7 +47,7 @@
     <input
       class="input-field {{ isProjectNameFocused ? 'focused' : '' }}"
       placeholder="请输入项目名称"
-      value="{{formData.project_in.project_name}}"
+      value="{{formData.project_info.project_name}}"
       data-field="projectName"
       bindfocus="onProjectNameFocus"
       bindblur="onProjectNameBlur" />
@@ -67,7 +67,7 @@
     <textarea 
       class="input-field textarea-field {{isDescriptionFocused ? 'focused' : ''}}" 
       placeholder="请输入项目简介" 
-      value="{{formData.project_in.description}}"
+      value="{{formData.project_info.description}}"
       data-field="description" 
       bindtap="onDescriptionFocused" 
       bindblur="onDescriptionBlur">
@@ -101,7 +101,7 @@
     <input
       class="input-field {{ isMentorNameFocused ? 'focused' : '' }}"
       placeholder="请输入指导老师姓名"
-      value="{{formData.project_in.mentor_name}}"
+      value="{{formData.project_info.mentor_name}}"
       data-field="mentorName"
       bindfocus="onMentorNameFocus"
       bindblur="onMentorNameBlur" />
@@ -110,7 +110,7 @@
     <input
       class="input-field {{ isMentorPhoneFocused ? 'focused' : '' }}"
       placeholder="请输入指导老师电话"
-      value="{{formData.project_in.mentor_phone}}"
+      value="{{formData.project_info.mentor_phone}}"
       data-field="mentorPhone"
       bindfocus="onMentorrPhoneFocus"
       bindblur="onMentorPhoneBlur" />

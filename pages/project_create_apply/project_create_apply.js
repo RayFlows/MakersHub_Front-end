@@ -31,7 +31,7 @@ Page({
         mentor_name: '',
         mentor_phone: '',
         start_time: '',
-        ent_time: ''
+        end_time: ''
       },
       participants: []
     },
@@ -792,7 +792,7 @@ Page({
     } else {
       // ====== 生产模式:调用真实接口 ======
       wx.request({
-        url: config.project.update + `/${project_id}`,
+        url: config.project.detail + `/${project_id}`,
         method: 'GET',
         header: {
           'Authorization': 'Bearer ' + token,
@@ -1200,8 +1200,8 @@ Page({
     } else {
       console.log("[Create Mode] 进入创建模式");
       // 创建模式:加载用户信息
-      this.loadUserProfileFromCache();
     }
+    this.loadUserProfileFromCache();
   },
 
   /**
