@@ -83,7 +83,6 @@
   justify-content: center;
   align-items: center;
   background-color: #ffd66b; /* 默认黄色，实际颜色由 js 覆盖 */
-  box-shadow: 0 4rpx 10rpx rgba(0, 0, 0, 0.1);
 }
 
 .boxtext {
@@ -107,6 +106,8 @@
   color: #444444;
   line-height: 1.8;
   position: relative;
+  display: flex;
+  align-items: center;
 }
 
 /* 原生 switch 的统一缩放（目前没用到可以留着） */
@@ -137,10 +138,7 @@
 .copy-icon {
   width: 32rpx;
   height: 32rpx;
-  position: absolute;
-  right: 0;
-  top: 50%;
-  transform: translateY(-50%);
+  margin-left: 15rpx;
 }
 
 /* “项目成员”标题 + 按钮同一行 */
@@ -181,6 +179,59 @@
 .delete-btn {
   background-color: #e33c64;
 }
+
+/* =================== 项目状态提示容器 =================== */
+
+/* 基础样式 */
+.status-notice {
+  margin: 40rpx 0;
+  padding: 30rpx;
+  border-radius: 20rpx;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 20rpx;
+}
+
+/* 标题样式 */
+.status-notice__title {
+  font-size: 32rpx;
+  font-weight: 700;
+  text-align: center;
+  display: block;
+}
+
+/* 内容样式 */
+.status-notice__content {
+  font-size: 28rpx;
+  font-weight: 400;
+  text-align: center;
+  line-height: 1.6;
+  display: block;
+  word-wrap: break-word;
+  word-break: break-all;
+  white-space: pre-wrap;
+}
+
+/* 待审核状态 (state === 0) */
+.status-notice--pending {
+  background-color: #E5E5E5;
+  color: #808080;
+}
+
+/* 已打回状态 (state === 2) */
+.status-notice--rejected {
+  background-color: #FFDBE4;
+  color: #E33C64;
+}
+
+/* 已结束状态 (state === 3) */
+.status-notice--finished {
+  background-color: #CFF8FA;
+  color: #00ADB5;
+}
+
 
 /* 底部“结束项目”大按钮容器 */
 .action-buttons {

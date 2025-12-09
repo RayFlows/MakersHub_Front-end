@@ -94,7 +94,7 @@
       <view class="section-header">
         <text class="sub-title">项目成员</text>
         <!-- 删除模式：隐藏右侧按钮 -->
-        <view class="member-actions" wx:if="{{isLeader && !deleteMode}}">
+        <view class="member-actions" wx:if="{{isLeader && !deleteMode && apiData.state === 1}}">
           <view class="action-btn add-btn" bindtap="addMember">添加</view>
           <view class="action-btn delete-btn" bindtap="deleteMember">删除</view>
         </view>
@@ -179,7 +179,7 @@
           </text>
         </view>
 
-        <view wx:if="{{isLeader}}"
+        <view wx:if="{{isLeader && apiData.state === 1}}"
           class="recruit-switch {{apiData.is_recruit ? 'recruit-switch--on' : 'recruit-switch--off'}}"
           bindtap="toggleRecruitCustom"
         >
@@ -188,9 +188,39 @@
       </view>
     </view>
 
+    <!-- ✅ 新增：项目状态提示容器 -->
+    <!-- 待审核状态 (state === 0) -->
+    <view class="status-notice status-notice--pending" wx:if="{{apiData.state === 0}}">
+      <text class="status-notice__title">温馨提示</text>
+      <text class="status-notice__content">项目正在审核中，请耐心等待~</text>
+    </view>
+
+    <!-- 已打回状态 (state === 2) -->
+    <view class="status-notice status-notice--rejected" wx:elif="{{apiData.state === 2}}">
+      <text class="status-notice__title">反馈信息</text>
+      <text class="status-notice__content">{{apiData.review || '暂无反馈信息'}}</text>
+    </view>
+
+    <!-- 已结束状态 (state === 3) -->
+    <view class="status-notice status-notice--finished" wx:elif="{{apiData.state === 3}}">
+      <text class="status-notice__title">完结撒花</text>
+      <text class="status-notice__content">此项目已被成功结束，辛苦啦~(≧∀≦)ゞ</text>
+    </view>
+
     <!-- 结束项目按钮 -->
-    <view class="action-buttons" wx:if="{{isLeader}}">
-      <view class="action-btn finish-btn" bindtap="finishProject">结束项目</view>
+    <view class="action-buttons" wx:if="{{isLeader && apiData.state != 3}}">
+      <view 
+        class="action-btn finish-btn" 
+        bindtap="modifyProject" 
+        wx:if="{{apiData.state === 0 || apiData.state === 2}}">
+        修改申请
+      </view>
+      <view 
+        class="action-btn finish-btn" 
+        bindtap="finishProject" 
+        wx:if="{{apiData.state === 1}}">
+        结束项目
+      </view>
     </view>
   </view>
 

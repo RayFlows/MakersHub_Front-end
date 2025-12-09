@@ -12,7 +12,7 @@ const MAX_MEMBERS = 15;
 Page({
   data: {
     apiData: {},
-    stateTag: ["待审核", "进行中", "已打回", "已完成"],
+    stateTag: ["待审核", "进行中", "已打回", "已结束"],
     stateText: ['#FFFFFF', '#222831', '#FFFFFF', '#FFFFFF'],
     stateColors: {
       0: "#666",
@@ -54,6 +54,10 @@ Page({
 
     // ✅ 只调用获取数据，判断逻辑在回调中处理
     this.fetchProjectDetail(projectIdFromOption);
+  },
+
+  onShow(options) {
+    this.fetchProjectDetail(this.data.project_id);
   },
 
   loadIcons() {
@@ -525,6 +529,26 @@ Page({
           }
         });
       }
+    });
+  },
+
+  modifyProject() {
+    const project_id = this.data.project_id;
+
+    if (!project_id) {
+      console.warn('[Project Detail] 缺少项目ID，无法修改申请');
+      wx.showToast({
+        title: '缺少项目ID',
+        icon: 'none'
+      });
+      return;
+    }
+
+    console.log('[Project Detail] 跳转到项目申请页面进行修改, project_id:', project_id);
+
+    // 跳转到项目创建/申请页面，传递项目ID和编辑模式标识
+    wx.navigateTo({
+      url: `/pages/project_create_apply/project_create_apply?project_id=${project_id}&mode=edit`
     });
   },
 
