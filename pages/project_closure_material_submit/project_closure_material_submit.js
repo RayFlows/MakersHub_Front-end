@@ -122,9 +122,9 @@ Page({
         this.uploadFile(file);
       },
       fail: (err) => {
-        console.error('[选择文件失败]', err);
+        console.error('[未选择任何文件]', err);
         wx.showToast({
-          title: '选择文件失败',
+          title: '未选择任何文件',
           icon: 'none',
           duration: 1500
         });
@@ -499,7 +499,7 @@ Page({
           success: () => {
             // 提交成功后返回上一页或跳转到项目详情页
             wx.navigateBack({
-              delta: 1
+              delta: 2
             });
           }
         });
@@ -608,18 +608,40 @@ Page({
     },
 
   /**
-   * 生命周期函数--监听页面加载
-   */
-  onLoad(options) {
-    console.log("[Project Closure Material Submit] 获取页面图标资源");
-    
-    // 显示调试模式状态
-    if (DEBUG_MODE) {
-      console.log('%c[调试模式已开启] 文件上传、删除和提交将被模拟', 'color: #00adb5; font-weight: bold; font-size: 14px;');
-    }
-    
-    this.loadIcons();
-  },
+ * 生命周期函数--监听页面加载
+ */
+onLoad(options) {
+  console.log("[Project Closure Material Submit] 页面加载, options:", options);
+  
+  // ✅ 获取路径参数中的 project_id
+  if (options.project_id) {
+    this.setData({
+      projectId: options.project_id
+    });
+    console.log("[Project Closure Material Submit] 已获取项目ID:", options.project_id);
+  } else {
+    // ❌ 缺少项目ID，提示并返回
+    console.error("[Project Closure Material Submit] 缺少项目ID参数！");
+    wx.showModal({
+      title: '参数错误',
+      content: '缺少项目ID，无法提交结项材料',
+      showCancel: false,
+      success: () => {
+        wx.navigateBack({ delta: 1 });
+      }
+    });
+    return;
+  }
+  
+  // 显示调试模式状态
+  if (DEBUG_MODE) {
+    console.log('%c[调试模式已开启] 文件上传、删除和提交将被模拟', 'color: #00adb5; font-weight: bold; font-size: 14px;');
+  }
+  
+  // 加载图标资源
+  this.loadIcons();
+},
+
 
   /**
    * 生命周期函数--监听页面初次渲染完成
