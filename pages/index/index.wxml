@@ -65,7 +65,8 @@
         </button>
         <button class="func-button" bindtap="navigateToViewProject">
           <image src="{{icons.lookup}}" class="button-icon" />
-          <text class="text5">查看项目</text>
+          <text class="text5">查看赛事</text> 
+          <!--原来是查看项目-->
         </button>
         
       </view>
