@@ -48,6 +48,12 @@ Page({
     isDescriptionFocused: false,
     isMentorNameFocused: false,
     isMentorPhoneFocused: false,
+    // 输入验证错误状态
+    projectNameError: false,
+    descriptionError: false,
+    mentorPhoneError: false,
+    // 项目简介字数
+    descriptionLength: 0,
     // 弹窗相关
     showModal: false,
     searchPhone: '',
@@ -165,6 +171,14 @@ Page({
     });
     console.log("更新项目名: ", value);
   },
+  onProjectNameInput(e) {
+    const value = e.detail.value;
+    this.setData({
+      'formData.project_info.project_name': value,
+      // 只有有内容时才检查是否超过15个字
+      projectNameError: value.length > 0 && value.length > 15
+    });
+  },  
   
   onDescriptionFocused() {
     this.setData({ isDescriptionFocused: true });
@@ -177,6 +191,15 @@ Page({
     });
     console.log("更新项目描述：", value);
   },
+  onDescriptionInput(e) {
+    const value = e.detail.value;
+    this.setData({
+      'formData.project_info.description': value,
+      descriptionLength: value.length,
+      // 只有有内容时才检查是否少于20个字
+      descriptionError: value.length > 0 && value.length < 20
+    });
+  },  
 
   onMentorNameFocused() {
     this.setData({ isMentorNameFocused: true });
@@ -201,6 +224,17 @@ Page({
     });
     console.log("更新指导导师电话：", value);
   },
+  onMentorPhoneInput(e) {
+    const value = e.detail.value;
+    // 检查是否为11位纯数字
+    const isValidPhone = /^\d{11}$/.test(value);
+    this.setData({
+      'formData.project_info.mentor_phone': value,
+      // 只有有内容时才检查是否合法
+      mentorPhoneError: value.length > 0 && !isValidPhone
+    });
+  },
+  
 
   // ========== Mock 数据 ==========
   getMockSearchResults(phone) {
@@ -469,7 +503,6 @@ Page({
     console.log('搜索框获得焦点');
   },
 
-
   // 初始化日期选择器
   initDatePickers() {
     const now = new Date();
@@ -480,22 +513,19 @@ Page({
     this.setData({
       currentYear: currentYear,
       currentMonth: currentMonth,
-      currentDay: currentDay
-    });
-    
-    // 初始化起始日期选择器(从当前日期开始)
-    this.updateStartYearOptions();
-    this.updateStartMonthOptions();
-    this.updateStartDayOptions();
-    
-    // 设置起始日期默认值为当前日期
-    this.setData({
+      currentDay: currentDay,
+      // ✅ 先设置默认值
       startSelectedYear: currentYear + '年',
       startSelectedMonth: currentMonth + '月',
       startSelectedDay: currentDay + '日'
     });
     
-    // 初始化结束日期选择器(从当前日期开始)
+    // ✅ 再更新选项（此时已有默认值）
+    this.updateStartYearOptions();
+    this.updateStartMonthOptions();
+    this.updateStartDayOptions();
+    
+    // 初始化结束日期选择器
     this.updateEndYearOptions();
     this.updateEndMonthOptions();
     this.updateEndDayOptions();
@@ -853,7 +883,8 @@ Page({
         start_time: startDate.dateStr,
         end_time: endDate.dateStr
       },
-      
+      // 同步简介字数
+      descriptionLength: (projectData.description || '').length,
       // 填充个人信息(负责人信息)
       'formData.personal_info': {
         name: projectData.leader_name || '',
@@ -1042,6 +1073,11 @@ Page({
       return { valid: false, message: '请输入项目名称' };
     }
     
+    // 验证项目名称长度不超过15个字
+    if (project_info.project_name.length > 15) {
+      return { valid: false, message: '项目名称不能超过15个字' };
+    }
+    
     // 验证项目类型
     if (project_info.project_type === '' || project_info.project_type === null) {
       return { valid: false, message: '请选择项目类型' };
@@ -1052,9 +1088,9 @@ Page({
       return { valid: false, message: '请输入项目简介' };
     }
     
-    // 验证项目简介长度(建议至少20字)
+    // 验证项目简介长度(必须大于20字)
     if (project_info.description.trim().length < 20) {
-      return { valid: false, message: '项目简介至少需要20字' };
+      return { valid: false, message: '项目简介必须大于20个字' };
     }
     
     // 验证开始日期
@@ -1089,14 +1125,15 @@ Page({
       return { valid: false, message: '请输入指导老师电话' };
     }
     
-    // 验证电话格式(11位数字)
-    const phoneRegex = /^1[3-9]\d{9}$/;
+    // 验证电话格式(必须是11位纯数字)
+    const phoneRegex = /^\d{11}$/;
     if (!phoneRegex.test(project_info.mentor_phone)) {
-      return { valid: false, message: '指导老师电话格式不正确' };
+      return { valid: false, message: '电话不合法' };
     }
     
     return { valid: true, message: '验证通过' };
   },
+  
 
   /**
    * 构造提交数据

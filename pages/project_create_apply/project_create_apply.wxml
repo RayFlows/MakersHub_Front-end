@@ -44,13 +44,18 @@
     </view>
 
     <text class="form-label">项目名称</text>
-    <input
-      class="input-field {{ isProjectNameFocused ? 'focused' : '' }}"
-      placeholder="请输入项目名称"
-      value="{{formData.project_info.project_name}}"
-      data-field="projectName"
-      bindfocus="onProjectNameFocus"
-      bindblur="onProjectNameBlur" />
+    <view class="input-wrapper">
+      <input
+        class="input-field {{ isProjectNameFocused ? 'focused' : '' }} {{ projectNameError ? 'input-error' : '' }}"
+        placeholder="请输入项目名称"
+        value="{{formData.project_info.project_name}}"
+        data-field="projectName"
+        bindinput="onProjectNameInput"
+        bindfocus="onProjectNameFocus"
+        bindblur="onProjectNameBlur" />
+      <text class="error-hint" wx:if="{{projectNameError}}">项目名称不能超过15个字</text>
+    </view>
+
 
     <text class="form-label">项目类型</text>
     <picker
@@ -64,14 +69,22 @@
 
 
     <text class="form-label">项目简介</text>
-    <textarea 
-      class="input-field textarea-field {{isDescriptionFocused ? 'focused' : ''}}" 
-      placeholder="请输入项目简介" 
-      value="{{formData.project_info.description}}"
-      data-field="description" 
-      bindtap="onDescriptionFocused" 
-      bindblur="onDescriptionBlur">
-    </textarea>
+    <view class="input-wrapper">
+      <view class="textarea-container">
+        <textarea 
+          class="input-field textarea-field {{isDescriptionFocused ? 'focused' : ''}} {{ descriptionError ? 'input-error' : '' }}" 
+          placeholder="请输入项目简介（至少20字）" 
+          value="{{formData.project_info.description}}"
+          data-field="description" 
+          maxlength="250"
+          bindinput="onDescriptionInput"
+          bindtap="onDescriptionFocused" 
+          bindblur="onDescriptionBlur">
+        </textarea>
+        <text class="word-counter">{{descriptionLength}}/250</text>
+      </view>
+      <text class="error-hint" wx:if="{{descriptionError}}">项目简介必须大于20个字</text>
+    </view>
 
     <text class="form-label">项目成员</text>
     <view class="members-container">
@@ -107,13 +120,17 @@
       bindblur="onMentorNameBlur" />
 
     <text class="form-label">指导老师电话</text>
-    <input
-      class="input-field {{ isMentorPhoneFocused ? 'focused' : '' }}"
-      placeholder="请输入指导老师电话"
-      value="{{formData.project_info.mentor_phone}}"
-      data-field="mentorPhone"
-      bindfocus="onMentorrPhoneFocus"
-      bindblur="onMentorPhoneBlur" />
+    <view class="input-wrapper">
+      <input
+        class="input-field {{ isMentorPhoneFocused ? 'focused' : '' }} {{ mentorPhoneError ? 'input-error' : '' }}"
+        placeholder="请输入指导老师电话"
+        value="{{formData.project_info.mentor_phone}}"
+        data-field="mentorPhone"
+        bindinput="onMentorPhoneInput"
+        bindfocus="onMentorrPhoneFocus"
+        bindblur="onMentorPhoneBlur" />
+      <text class="error-hint" wx:if="{{mentorPhoneError}}">电话不合法</text>
+    </view>
   </view>
 
   <view class="form-label">开始日期</view>

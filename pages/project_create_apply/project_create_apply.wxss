@@ -475,3 +475,43 @@ input.input-field {
 .modal-btn:active {
   opacity: 0.8;
 }
+
+/* 输入框包装器 */
+.input-wrapper {
+  width: 100%;
+  margin-bottom: 30rpx;
+}
+
+.input-wrapper .input-field {
+  margin-bottom: 0;
+}
+
+/* 错误状态样式 */
+.input-error {
+  border: 2rpx solid #E33C64 !important;
+  box-shadow: 0 0 8rpx rgba(227, 60, 100, 0.4) !important;
+}
+
+/* 错误提示文字 */
+.error-hint {
+  display: block;
+  color: #E33C64;
+  font-size: 24rpx;
+  margin-top: 10rpx;
+  padding-left: 10rpx;
+}
+
+/* textarea 容器 - 用于定位计数器 */
+.textarea-container {
+  position: relative;
+  width: 100%;
+}
+
+/* 字数计数器 */
+.word-counter {
+  position: absolute;
+  right: 20rpx;
+  bottom: 15rpx;
+  font-size: 24rpx;
+  color: #999;
+}
